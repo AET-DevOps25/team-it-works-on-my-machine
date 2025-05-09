@@ -1,0 +1,34 @@
+name: PR Client
+run-name: Check PR Client
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+    push:
+        branches: [ main ]
+    workflow_dispatch:
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+            version: latest
+      - uses: actions/setup-node@v4
+        with:
+            node-version: latest
+            cache: 'pnpm'
+            cache-dependency-path: 'client/pnpm-lock.yaml'
+      - name: Install dependencies
+        run: |
+          cd client
+          pnpm install
+      - name: Run Eslint
+        run: |
+          cd client
+          pnpm run lint
+      - name: Run Prettier
+        run: |
+          cd client
+          pnpm run format:check
