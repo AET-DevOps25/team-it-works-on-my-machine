@@ -7,7 +7,7 @@ import reactDom from 'eslint-plugin-react-dom'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'src/components/ui'] },
   {
     extends: [
       js.configs.recommended,
