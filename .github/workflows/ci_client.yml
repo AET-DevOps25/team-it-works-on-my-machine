@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: latest
           cache: 'pnpm'
-          cache-dependency-path: 'pnpm-lock.yaml'
+          cache-dependency-path: 'client/pnpm-lock.yaml'
       - name: Install dependencies
         run: pnpm install
       - name: Run Eslint
@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: latest
           cache: 'pnpm'
-          cache-dependency-path: 'pnpm-lock.yaml'
+          cache-dependency-path: 'client/pnpm-lock.yaml'
       - name: Install dependencies
         run: pnpm install
       - name: Build client
