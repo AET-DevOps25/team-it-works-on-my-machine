@@ -54,7 +54,7 @@ OPENAI_API_BASE=https://api.deepseek.com/v1  # Optional, if using DeepSeek or a 
 Make sure you're in the root of the project (`genai/`), then:
 
 ```bash
-uvicorn app.input_query.main:app --reload
+uvicorn app.main:app --reload
 ```
 
 This starts the FastAPI app at: `http://localhost:8000`
