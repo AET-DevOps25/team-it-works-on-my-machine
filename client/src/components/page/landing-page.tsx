@@ -35,7 +35,7 @@ function LandingPage() {
     )
     const data = (await res.json()) as object
     console.log(data)
-    alert(data)
+    alert(JSON.stringify(data))
   }
 
   // Runs whenever the 'code' variable changes (likely on authorization flow)
@@ -114,7 +114,7 @@ function LandingPage() {
         <div className="flex gap-4">
           <Button
             className="px-6 py-2 bg-primary text-primary-foreground rounded-lg shadow hover:bg-primary/80"
-            onClick={void handleSearch}
+            onClick={() => void handleSearch()}
           >
             Analyze
           </Button>
