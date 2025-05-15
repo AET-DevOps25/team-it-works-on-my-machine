@@ -29,9 +29,6 @@ public class GhConnectorApplication {
     @Value("${oauth.client-secret}")
     private String clientSecret;
 
-    @Value("${test}")
-    private String test;
-
     private final RestClient restClient = RestClient.create();
 
     @GetMapping(value = "/oauth/redirect", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -93,9 +90,8 @@ public class GhConnectorApplication {
         String tokenType = (String) session.getAttribute("tokenType");
 
         System.out.println("got getinfo call " + repoUrl + " " + accessToken + " " + tokenType);
-        System.out.println("this is test: " + test);
 
-        String uri = repoUrl.replace("github.com", "api.github.com/repos") + "/contents/.github/workflows";
+        String uri = repoUrl.replace("github.com", "api.github.com/repos") + "/contents";
 
         RestClient restClient;
         if (tokenType == null) {
