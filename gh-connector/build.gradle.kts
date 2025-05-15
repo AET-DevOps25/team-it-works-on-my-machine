@@ -28,6 +28,10 @@ dependencies {
 	// Optional für Tests
 	testImplementation("org.projectlombok:lombok")
 	testAnnotationProcessor("org.projectlombok:lombok")
+
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
 }
 
 tasks.withType<Test> {
