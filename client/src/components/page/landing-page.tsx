@@ -3,6 +3,7 @@ import { Input } from '../ui/input'
 import { ModeToggle } from '../mode-toggle'
 import { useEffect, useState } from 'react'
 import Profile from '../profile/Profile'
+import type { OauthResponse, UserType } from '@/lib/types'
 
 function LandingPage() {
   const [repoUrl, setRepoUrl] = useState('')
@@ -12,7 +13,7 @@ function LandingPage() {
   const urlParams = new URLSearchParams(window.location.search)
   const code = urlParams.get('code')
   // State to store the retrieved user data
-  const [data, setData] = useState(null)
+  const [data, setData] = useState<UserType | OauthResponse | null>(null)
   // State to indicate if data is being fetched
   const [loading, setLoading] = useState(false)
 
@@ -21,19 +22,20 @@ function LandingPage() {
     if (error) setError(false) // Clear error when user starts typing
   }
 
-  function handleSearch() {
+  async function handleSearch() {
     if (!repoUrl) {
       setError(true)
       return
     }
-    fetch(`http://localhost:8589/getInfo?repoUrl=${repoUrl}`, {
-      credentials: 'include',
-    })
-      .then((res) => res.json()) // Parse the response as JSON
-      .then((data) => {
-        console.log(data)
-        alert(data)
-      })
+    const res = await fetch(
+      `http://localhost:8589/getInfo?repoUrl=${repoUrl}`,
+      {
+        credentials: 'include',
+      },
+    )
+    const data = (await res.json()) as object
+    console.log(data)
+    alert(data)
   }
 
   // Runs whenever the 'code' variable changes (likely on authorization flow)
@@ -41,23 +43,27 @@ function LandingPage() {
     const token = localStorage.getItem('token')
     if (token) {
       setLoading(true) // Set loading to true while fetching data
-      fetch('https://api.github.com/user')
+      void fetch('https://api.github.com/user')
         .then((res) => res.json()) // Parse the response as JSON
         .then((data) => {
-          setData(data) // Update state with fetched user data
+          setData(data as UserType) // Update state with fetched user data
           setLoading(false) // Set loading to false when done fetching
         })
     } else if (code) {
       // If no token but 'code' is available (GitHub OAuth flow)
       setLoading(true) // Set loading to true while fetching data
-      fetch(
+      void fetch(
         `http://localhost:8589/oauth/redirect?code=${code}&state=YOUR_RANDOMLY_GENERATED_STATE`,
         { credentials: 'include' },
       )
         .then((res) => res.json()) // Parse the response as JSON
         .then((data) => {
-          setData(data.userData) // Update state with user data from response
-          localStorage.setItem('token', `${data.tokenType} ${data.token}`) // Store access token in local storage
+          const dataTyped = data as OauthResponse
+          setData(dataTyped.userData) // Update state with user data from response
+          localStorage.setItem(
+            'token',
+            `${dataTyped.tokenType} ${dataTyped.token}`,
+          ) // Store access token in local storage
           setLoading(false) // Set loading to false when done fetching
         })
     }
@@ -95,7 +101,7 @@ function LandingPage() {
           }`}
           onKeyUp={(e) => {
             if (e.key === 'Enter') {
-              handleSearch()
+              void handleSearch()
             }
           }}
           onChange={handleInputChange}
@@ -108,7 +114,7 @@ function LandingPage() {
         <div className="flex gap-4">
           <Button
             className="px-6 py-2 bg-primary text-primary-foreground rounded-lg shadow hover:bg-primary/80"
-            onClick={handleSearch}
+            onClick={void handleSearch}
           >
             Analyze
           </Button>
@@ -119,7 +125,7 @@ function LandingPage() {
             Login
           </Button>
         </div>
-        {data && <Profile user={data} />}
+        {data && <Profile user={data as UserType} />}
       </div>
     </div>
   )
