@@ -40,33 +40,34 @@ function LandingPage() {
 
   // Runs whenever the 'code' variable changes (likely on authorization flow)
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      setLoading(true) // Set loading to true while fetching data
-      void fetch('https://api.github.com/user')
-        .then((res) => res.json()) // Parse the response as JSON
-        .then((data) => {
-          setData(data as UserType) // Update state with fetched user data
-          setLoading(false) // Set loading to false when done fetching
+    const fetchData = async () => {
+      const token = localStorage.getItem('token')
+      if (token) {
+        setLoading(true) // Set loading to true while fetching data
+        const res = await fetch('https://api.github.com/user', {
+          headers: { Authorization: token },
         })
-    } else if (code) {
-      // If no token but 'code' is available (GitHub OAuth flow)
-      setLoading(true) // Set loading to true while fetching data
-      void fetch(
-        `http://localhost:8589/oauth/redirect?code=${code}&state=YOUR_RANDOMLY_GENERATED_STATE`,
-        { credentials: 'include' },
-      )
-        .then((res) => res.json()) // Parse the response as JSON
-        .then((data) => {
-          const dataTyped = data as OauthResponse
-          setData(dataTyped.userData) // Update state with user data from response
-          localStorage.setItem(
-            'token',
-            `${dataTyped.tokenType} ${dataTyped.token}`,
-          ) // Store access token in local storage
-          setLoading(false) // Set loading to false when done fetching
-        })
+        const data = (await res.json()) as UserType // Parse the response as JSON
+        setData(data) // Update state with fetched user data
+        setLoading(false) // Set loading to false when done fetching
+      } else if (code) {
+        // If no token but 'code' is available (GitHub OAuth flow)
+        setLoading(true) // Set loading to true while fetching data
+        const res = await fetch(
+          `http://localhost:8589/oauth/redirect?code=${code}&state=YOUR_RANDOMLY_GENERATED_STATE`,
+          { credentials: 'include' },
+        )
+        const data = (await res.json()) as OauthResponse // Parse the response as JSON
+        const dataTyped = data
+        setData(dataTyped.userData) // Update state with user data from response
+        localStorage.setItem(
+          'token',
+          `${dataTyped.tokenType} ${dataTyped.token}`,
+        ) // Store access token in local storage
+        setLoading(false) // Set loading to false when done fetching
+      }
     }
+    void fetchData()
   }, [code])
 
   function handleLogin() {
