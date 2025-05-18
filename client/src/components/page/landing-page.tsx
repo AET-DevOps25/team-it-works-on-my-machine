@@ -5,17 +5,63 @@ import { useEffect, useState } from 'react'
 import Profile from '../profile/Profile'
 import type { OauthResponse, UserType } from '@/lib/types'
 
+function Logout(p: {
+  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
+  setData: React.Dispatch<React.SetStateAction<UserType | OauthResponse | null>>
+}) {
+  function handleLogout() {
+    console.log('logout')
+    localStorage.removeItem('login')
+    p.setLoggedIn(false)
+    p.setData(null)
+  }
+
+  return (
+    <Button
+      className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
+      onClick={handleLogout}
+    >
+      Logout
+    </Button>
+  )
+}
+
+function Login() {
+  function handleLogin() {
+    console.log('login')
+    // Function to redirect the user to the GitHub OAuth authorization page
+    const client_id = 'Ov23liKRNopX1GiZzGT6'
+    const redirect_uri = 'http://localhost:8589/oauth/redirect'
+    const scope = 'read:user,repo'
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`
+
+    window.location.href = authUrl
+  }
+
+  return (
+    <Button
+      className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
+      onClick={handleLogin}
+    >
+      Login
+    </Button>
+  )
+}
+
 function LandingPage() {
   const [repoUrl, setRepoUrl] = useState('')
   const [error, setError] = useState(false)
 
   // Extracting the 'code' parameter from the URL query string (used for authorization)
   const urlParams = new URLSearchParams(window.location.search)
-  const code = urlParams.get('code')
+  if (urlParams.get('login')) {
+    localStorage.setItem('login', 'true')
+  }
+  const [isLoggedIn, setLoggedIn] = useState(
+    localStorage.getItem('login') === 'true',
+  )
   // State to store the retrieved user data
   const [data, setData] = useState<UserType | OauthResponse | null>(null)
-  // State to indicate if data is being fetched
-  const [loading, setLoading] = useState(false)
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRepoUrl(e.target.value)
@@ -38,52 +84,18 @@ function LandingPage() {
     alert(JSON.stringify(data))
   }
 
-  // Runs whenever the 'code' variable changes (likely on authorization flow)
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem('token')
-      if (token) {
-        setLoading(true) // Set loading to true while fetching data
-        const res = await fetch('https://api.github.com/user', {
-          headers: { Authorization: token },
+      if (isLoggedIn) {
+        const res = await fetch('http://localhost:8589/user', {
+          credentials: 'include',
         })
-        const data = (await res.json()) as UserType // Parse the response as JSON
-        setData(data) // Update state with fetched user data
-        setLoading(false) // Set loading to false when done fetching
-      } else if (code) {
-        // If no token but 'code' is available (GitHub OAuth flow)
-        setLoading(true) // Set loading to true while fetching data
-        const res = await fetch(
-          `http://localhost:8589/oauth/redirect?code=${code}&state=YOUR_RANDOMLY_GENERATED_STATE`,
-          { credentials: 'include' },
-        )
-        const data = (await res.json()) as OauthResponse // Parse the response as JSON
-        const dataTyped = data
-        setData(dataTyped.userData) // Update state with user data from response
-        localStorage.setItem(
-          'token',
-          `${dataTyped.tokenType} ${dataTyped.token}`,
-        ) // Store access token in local storage
-        setLoading(false) // Set loading to false when done fetching
+        const data = (await res.json()) as UserType
+        setData(data)
       }
     }
     void fetchData()
-  }, [code])
-
-  function handleLogin() {
-    console.log('login')
-    // Function to redirect the user to the GitHub OAuth authorization page
-    const client_id = 'Ov23liKRNopX1GiZzGT6'
-    const redirect_uri = 'http://localhost:5173/'
-    const scope = 'read:user,repo'
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`
-
-    window.location.href = authUrl
-  }
-
-  if (loading) {
-    return <h4>Loading...</h4>
-  }
+  }, [isLoggedIn])
 
   return (
     <div className="container mx-auto p-6 text-center relative">
@@ -119,12 +131,11 @@ function LandingPage() {
           >
             Analyze
           </Button>
-          <Button
-            className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
-            onClick={handleLogin}
-          >
-            Login
-          </Button>
+          {isLoggedIn ? (
+            <Logout setLoggedIn={setLoggedIn} setData={setData} />
+          ) : (
+            <Login />
+          )}
         </div>
         {data && <Profile user={data as UserType} />}
       </div>

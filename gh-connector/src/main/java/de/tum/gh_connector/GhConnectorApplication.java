@@ -10,6 +10,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class GhConnectorApplication {
     @GetMapping(value = "/oauth/redirect", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> oauthRedirect(@RequestParam String code, HttpSession session) {
 
-        Map tokenResponse;
+        Map<String, Object> tokenResponse;
 
         try {
             String body = "client_id=" + clientId +
@@ -47,7 +48,8 @@ public class GhConnectorApplication {
                     .accept(MediaType.APPLICATION_JSON)
                     .body(body)
                     .retrieve()
-                    .body(Map.class);
+                    .toEntity(new ParameterizedTypeReference<Map<String, Object>>() {
+                    }).getBody();
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body("Error fetching access token from GitHub: " + ex.getMessage());
         }
@@ -56,7 +58,10 @@ public class GhConnectorApplication {
         String tokenType = (String) tokenResponse.get("token_type");
 
         if (accessToken == null || tokenType == null) {
-            return ResponseEntity.badRequest().body("Invalid token response from GitHub.");
+            return ResponseEntity.badRequest().body("Invalid token response from GitHub. " + tokenResponse.entrySet().stream()
+                    .map(entry -> entry.getKey() + ": " + entry.getValue())
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse(""));
         }
 
         // Step 2: Use token to fetch user profile
@@ -74,13 +79,37 @@ public class GhConnectorApplication {
         // ✅ Step 3: Store access token and user info in session
         session.setAttribute("accessToken", accessToken);
         session.setAttribute("tokenType", tokenType);
-
         Map<String, Object> result = new HashMap<>();
         result.put("userData", userResponse);
-        result.put("token", accessToken);
-        result.put("tokenType", tokenType);
+        
+        // Redirect to frontend
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("http://localhost:5173/?login=success"));
+        return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+    }
 
-        return ResponseEntity.ok(result);
+    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUser(HttpSession session) {
+        String accessToken = (String) session.getAttribute("accessToken");
+        String tokenType = (String) session.getAttribute("tokenType");
+
+        if (accessToken == null || tokenType == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+        }
+
+        Map<String, Object> userResponse;
+        try {
+            userResponse = restClient.get()
+                    .uri("https://api.github.com/user")
+                    .header("Authorization", tokenType + " " + accessToken)
+                    .retrieve()
+                    .toEntity(new ParameterizedTypeReference<Map<String, Object>>() {
+                    }).getBody();
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body("Error fetching user data from GitHub: " + ex.getMessage());
+        }
+
+        return ResponseEntity.ok(userResponse);
     }
 
     @GetMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE)
