@@ -4,10 +4,28 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+    networks:
+      - generic-network
     ports:
       - "3000:80"
     environment:
       - PUBLIC_API_URL=${PUBLIC_API_URL:-http://localhost:8589}
-    #depends_on:
-    #  - gh-connector
+    depends_on:
+     - gh-connector
     restart: unless-stopped
+
+
+  gh-connector:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector:latest
+    build:
+      context: ./gh-connector
+      dockerfile: Dockerfile
+    networks:
+      - generic-network
+    ports:
+      - "8589:8589"
+    restart: unless-stopped
+
+
+networks:
+  generic-network:
