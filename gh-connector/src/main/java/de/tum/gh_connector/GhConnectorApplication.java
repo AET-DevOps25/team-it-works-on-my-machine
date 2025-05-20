@@ -147,4 +147,9 @@ public class GhConnectorApplication {
                 .map(ContentResponseItem::getPath)
                 .toList();
     }
+
+    @GetMapping(value = "/ping")
+    public String ping() {
+        return "Pong\n";
+    }
 }
