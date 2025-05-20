@@ -4,8 +4,6 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    networks:
-      - generic-network
     ports:
       - "3000:80"
     environment:
@@ -20,12 +18,6 @@ services:
     build:
       context: ./gh-connector
       dockerfile: Dockerfile
-    networks:
-      - generic-network
     ports:
       - "8589:8589"
     restart: unless-stopped
-
-
-networks:
-  generic-network:
