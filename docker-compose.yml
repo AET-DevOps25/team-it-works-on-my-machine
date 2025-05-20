@@ -1,0 +1,13 @@
+services:
+  client:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/client:latest
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - PUBLIC_API_URL=${PUBLIC_API_URL:-http://localhost:8589}
+    #depends_on:
+    #  - gh-connector
+    restart: unless-stopped
