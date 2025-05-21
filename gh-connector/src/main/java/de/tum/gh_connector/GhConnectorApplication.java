@@ -11,11 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @SpringBootApplication
 @RestController
 public class GhConnectorApplication {
@@ -64,27 +63,13 @@ public class GhConnectorApplication {
                     .orElse(""));
         }
 
-        // Step 2: Use token to fetch user profile
-        Map userResponse;
-        try {
-            userResponse = restClient.get()
-                    .uri("https://api.github.com/user")
-                    .header("Authorization", tokenType + " " + accessToken)
-                    .retrieve()
-                    .body(Map.class);
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body("Error fetching user data from GitHub: " + ex.getMessage());
-        }
-
-        // ✅ Step 3: Store access token and user info in session
+        // ✅ Step 2: Store access token and user info in session
         session.setAttribute("accessToken", accessToken);
         session.setAttribute("tokenType", tokenType);
-        Map<String, Object> result = new HashMap<>();
-        result.put("userData", userResponse);
-        
-        // Redirect to frontend
+
+        // Step 3: Redirect to frontend
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("http://localhost:5173/?login=success"));
+        httpHeaders.setLocation(URI.create("http://localhost:3000/?login=success"));
         return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
     }
 
@@ -146,5 +131,10 @@ public class GhConnectorApplication {
         return result.getBody().stream()
                 .map(ContentResponseItem::getPath)
                 .toList();
+    }
+
+    @GetMapping(value = "/ping")
+    public String ping() {
+        return "Pong\n";
     }
 }
