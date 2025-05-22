@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
 @SpringBootApplication
 @RestController
 public class GhConnectorApplication {
@@ -69,7 +69,7 @@ public class GhConnectorApplication {
 
         // Step 3: Redirect to frontend
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("http://localhost:3000/?login=success"));
+        httpHeaders.setLocation(URI.create("http://localhost/?login=success"));
         return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
     }
 
