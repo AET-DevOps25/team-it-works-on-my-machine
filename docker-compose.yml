@@ -28,7 +28,7 @@ services:
       context: ./genai
       dockerfile: Dockerfile
     ports:
-      - "8001:8000"
+      - "8000:8000"
     env_file:
       - ./genai/.env
     restart: unless-stopped
