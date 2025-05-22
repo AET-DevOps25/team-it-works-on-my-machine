@@ -21,3 +21,22 @@ services:
     ports:
       - "8589:8589"
     restart: unless-stopped
+
+  users:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/users:latest
+    build:
+      context: ./users
+      dockerfile: Dockerfile
+    ports:
+      - "8590:8590"
+    depends_on:
+     - users-db
+    restart: unless-stopped
+  users-db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
