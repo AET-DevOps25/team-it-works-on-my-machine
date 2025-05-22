@@ -21,3 +21,14 @@ services:
     ports:
       - "8589:8589"
     restart: unless-stopped
+
+  genai-python:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/genai:latest
+    build:
+      context: ./genai
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    env_file:
+      - ./genai/.env
+    restart: unless-stopped
