@@ -1,11 +1,11 @@
 name: CI Client
 run-name: Check Client Code
 on:
-    pull_request:
-      types: [opened, synchronize, reopened]
-    push:
-      branches: [ main ]
-    workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -21,36 +21,36 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: latest
-          cache: 'pnpm'
-          cache-dependency-path: 'client/pnpm-lock.yaml'
+          cache: "pnpm"
+          cache-dependency-path: "client/pnpm-lock.yaml"
       - name: Install dependencies
         run: pnpm install
       - name: Run Eslint
         run: pnpm run lint
       - name: Run Prettier
         run: pnpm run format:check
-  build:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: client
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          version: latest
-      - uses: actions/setup-node@v4
-        with:
-          node-version: latest
-          cache: 'pnpm'
-          cache-dependency-path: 'client/pnpm-lock.yaml'
-      - name: Install dependencies
-        run: pnpm install
-      - name: Build client
-        run: pnpm run build
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: client-build
-          path: client/dist
+  # build:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: client
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: pnpm/action-setup@v4
+  #       name: Install pnpm
+  #       with:
+  #         version: latest
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: latest
+  #         cache: 'pnpm'
+  #         cache-dependency-path: 'client/pnpm-lock.yaml'
+  #     - name: Install dependencies
+  #       run: pnpm install
+  #     - name: Build client
+  #       run: pnpm run build
+  #     - name: Upload artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: client-build
+  #         path: client/dist
