@@ -1,12 +1,17 @@
 Steps to run this:
+
 1: create `src/main/java/resources/application-secret.properties` file and fill with secret key
 ```
-oauth.client-secret=your-client-secret
-oauth.client-id=your-client-id
+oauth.client-id=<your-oauth-client-id>
+oauth.client-secret=<your-oauth-client-secret>
 ```
-2. run with `./gradlew build bootRun`
+Use this guide to generate these values: https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app
 
-Build the docker image
+2: Run directly with `./gradlew build bootRun`
+
+OR
+
+3: Build the docker image
 
 ```bash
 docker build -t gh-connector-image gh-connector
