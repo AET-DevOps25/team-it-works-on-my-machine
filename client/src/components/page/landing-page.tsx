@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 import Profile from '../profile/Profile'
 import type { OauthResponse, UserType } from '@/lib/types'
 
+const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
+
 function Logout(p: {
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
   setData: React.Dispatch<React.SetStateAction<UserType | OauthResponse | null>>
@@ -31,7 +33,7 @@ function Login() {
     console.log('login')
     // Function to redirect the user to the GitHub OAuth authorization page
     const client_id = 'Ov23liKRNopX1GiZzGT6'
-    const redirect_uri = 'http://localhost:8589/oauth/redirect'
+    const redirect_uri = GH_CONNECTOR_URL + '/oauth/redirect'
     const scope = 'read:user,repo'
     const authUrl = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`
 
@@ -73,12 +75,9 @@ function LandingPage() {
       setError(true)
       return
     }
-    const res = await fetch(
-      `http://localhost:8589/getInfo?repoUrl=${repoUrl}`,
-      {
-        credentials: 'include',
-      },
-    )
+    const res = await fetch(`${GH_CONNECTOR_URL}/getInfo?repoUrl=${repoUrl}`, {
+      credentials: 'include',
+    })
     const data = (await res.json()) as object
     console.log(data)
     alert(JSON.stringify(data))
@@ -87,7 +86,7 @@ function LandingPage() {
   useEffect(() => {
     const fetchData = async () => {
       if (isLoggedIn) {
-        const res = await fetch('http://localhost:8589/user', {
+        const res = await fetch(`${GH_CONNECTOR_URL}/user`, {
           credentials: 'include',
         })
         const data = (await res.json()) as UserType
