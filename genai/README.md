@@ -54,7 +54,7 @@ OPENAI_API_BASE=https://api.deepseek.com/v1  # Optional, if using DeepSeek or a 
 Make sure you're in the root of the project (`genai/`), then:
 
 ```bash
-uvicorn app.main:app --reload
+python app
 ```
 
 This starts the FastAPI app at: `http://localhost:8000`
@@ -73,9 +73,13 @@ Edit `app/input_query/ask.py`:
 
 ```python
 import requests
+from dotenv import load_dotenv
+import os
 
-if __name__=="__main__":
-    url = "http://localhost:8000/ask"
+load_dotenv()
+
+if __name__ == "__main__":
+    url = os.getenv('GENAI_URL') + "/ask"
     data = {"question": "What is LangChain?"}
 
     response = requests.post(url, json={"question": "Waht is the Rank of TUM?"})

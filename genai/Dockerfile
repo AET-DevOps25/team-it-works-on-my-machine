@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy all project files into the container
 COPY . .
 
-# Expose port 8000
-EXPOSE 8000
+# Expose port
+EXPOSE ${GENAI_PORT}
 
-# Start the FastAPI app with uvicorn, listening on 0.0.0.0:8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start the FastAPI app with uvicorn
+CMD ["python", "app/main.py"]

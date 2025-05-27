@@ -35,4 +35,4 @@ async def ask_question(payload: dict = Body(...)):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run("main:app", host="0.0.0.0", port=int(os.getenv('GENAI_PORT')), reload=True)

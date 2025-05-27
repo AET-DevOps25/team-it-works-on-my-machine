@@ -22,7 +22,7 @@ services:
       - "${GH_CONNECTOR_PORT}:${GH_CONNECTOR_PORT}"
     environment:
       - CLIENT_URL=${CLIENT_URL}
-      - GENAI_PYTHON_URL=${GENAI_PYTHON_URL}
+      - GENAI_URL=${GENAI_URL}
       - GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
       - GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET}
     restart: unless-stopped
@@ -33,9 +33,9 @@ services:
       context: ./genai
       dockerfile: Dockerfile
     ports:
-      - "${GENAI_PYTHON_PORT}:${GENAI_PYTHON_PORT}"
+      - "${GENAI_PORT}:${GENAI_PORT}"
     environment:
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
-      - GENAI_PYTHON_PORT=${GENAI_PYTHON_PORT}
-      - GENAI_PYTHON_URL=${GENAI_PYTHON_URL}
+      - GENAI_PORT=${GENAI_PORT}
+      - GENAI_URL=${GENAI_URL}
     restart: unless-stopped
