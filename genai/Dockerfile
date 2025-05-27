@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose port
-EXPOSE ${GENAI_PORT}
+EXPOSE ${GENAI_PORT:-3001}
 
 # Start the FastAPI app with uvicorn
 CMD ["python", "app/main.py"]
