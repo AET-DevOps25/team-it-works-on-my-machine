@@ -44,7 +44,6 @@ public class GhConnectorController {
             String body = "client_id=" + clientId +
                     "&client_secret=" + clientSecret +
                     "&code=" + code;
-            System.out.println("Requesting access token with body: " + body);
 
             tokenResponse = restClient.post()
                     .uri("https://github.com/login/oauth/access_token")
