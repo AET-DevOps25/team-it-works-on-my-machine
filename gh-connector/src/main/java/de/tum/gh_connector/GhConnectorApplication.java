@@ -1,164 +1,29 @@
 package de.tum.gh_connector;
 
-import org.springframework.web.reactive.function.client.WebClient;
-import de.tum.gh_connector.dto.ContentResponseItem;
-import de.tum.gh_connector.dto.GenAIAskResponse;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
+import org.springframework.context.annotation.Bean;
 
-import java.net.URI;
-import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-@CrossOrigin(origins = "http://localhost", allowCredentials = "true")
 @SpringBootApplication
-@RestController
 public class GhConnectorApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GhConnectorApplication.class, args);
     }
 
-    @Value("${oauth.client-id}")
-    private String clientId;
-
-    @Value("${oauth.client-secret}")
-    private String clientSecret;
-
-    private final RestClient restClient = RestClient.create();
-
-    @GetMapping(value = "/oauth/redirect", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> oauthRedirect(@RequestParam String code, HttpSession session) {
-
-        Map<String, Object> tokenResponse;
-
-        try {
-            String body = "client_id=" + clientId +
-                    "&client_secret=" + clientSecret +
-                    "&code=" + code;
-
-            tokenResponse = restClient.post()
-                    .uri("https://github.com/login/oauth/access_token")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .body(body)
-                    .retrieve()
-                    .toEntity(new ParameterizedTypeReference<Map<String, Object>>() {
-                    }).getBody();
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body("Error fetching access token from GitHub: " + ex.getMessage());
-        }
-
-        String accessToken = (String) tokenResponse.get("access_token");
-        String tokenType = (String) tokenResponse.get("token_type");
-
-        if (accessToken == null || tokenType == null) {
-            return ResponseEntity.badRequest().body("Invalid token response from GitHub. " + tokenResponse.entrySet().stream()
-                    .map(entry -> entry.getKey() + ": " + entry.getValue())
-                    .reduce((a, b) -> a + ", " + b)
-                    .orElse(""));
-        }
-
-        // ✅ Step 2: Store access token and user info in session
-        session.setAttribute("accessToken", accessToken);
-        session.setAttribute("tokenType", tokenType);
-
-        // Step 3: Redirect to frontend
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(URI.create("http://localhost/?login=success"));
-        return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
-    }
-
-    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getUser(HttpSession session) {
-        String accessToken = (String) session.getAttribute("accessToken");
-        String tokenType = (String) session.getAttribute("tokenType");
-
-        if (accessToken == null || tokenType == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
-        }
-
-        Map<String, Object> userResponse;
-        try {
-            userResponse = restClient.get()
-                    .uri("https://api.github.com/user")
-                    .header("Authorization", tokenType + " " + accessToken)
-                    .retrieve()
-                    .toEntity(new ParameterizedTypeReference<Map<String, Object>>() {
-                    }).getBody();
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body("Error fetching user data from GitHub: " + ex.getMessage());
-        }
-
-        return ResponseEntity.ok(userResponse);
-    }
-
-    @GetMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GenAIAskResponse getInfo(@RequestParam String repoUrl, HttpSession session) {
-
-        String accessToken = (String) session.getAttribute("accessToken");
-        String tokenType = (String) session.getAttribute("tokenType");
-
-        System.out.println("got getinfo call " + repoUrl + " " + accessToken + " " + tokenType);
-
-        String uri = repoUrl.replace("github.com", "api.github.com/repos") + "/contents";
-
-        // Create Gitub Rest Client
-        RestClient GHRestClient;
-        if (tokenType == null) {
-            GHRestClient = RestClient.builder()
-                    .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github.raw+json")
-                    .defaultHeader("X-GitHub-Api-Version", "2022-11-28")
-                    .build();
-        } else {
-            GHRestClient = RestClient.builder()
-                    .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github.raw+json")
-                    .defaultHeader("X-GitHub-Api-Version", "2022-11-28")
-                    .defaultHeader("Authorization", tokenType + " " + accessToken)
-                    .build();
-        }
-
-        // Get Repo Contents
-        ResponseEntity<List<ContentResponseItem>> repoContents = GHRestClient.get()
-                .uri(uri)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .toEntity(new ParameterizedTypeReference<>() {
-                });
-
-
-
-        // Querry GenAI Service
-        String files = repoContents.getBody().stream().map(ContentResponseItem::getPath).collect(Collectors.joining(", "));
-
-        Map<String, Object> genAIRequest = new HashMap<>();
-        genAIRequest.put("question", "Guess what this code project could be about based on these filenames from the root directory. But write only one sentence: " + files);
-
-        WebClient webClient = WebClient.create("http://genai-python:8000");
-
-        GenAIAskResponse resp = webClient.post()
-                .uri("/ask")
-                .header("Content-Type", "application/json")
-                .bodyValue(genAIRequest)
-                .retrieve()
-                .bodyToMono(GenAIAskResponse.class)
-                .block();
-
-        System.out.println(resp.getResponse());
-        return resp;
-    }
-
-    @GetMapping(value = "/ping")
-    public String ping() {
-        return "Pong\n";
-    }
+    @Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**")
+						.allowedOriginPatterns("*")
+						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+						.allowedHeaders("*")
+						.allowCredentials(true);
+			}
+		};
+	}
 }

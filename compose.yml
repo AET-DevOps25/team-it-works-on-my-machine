@@ -22,7 +22,8 @@ services:
       - "${GH_CONNECTOR_PORT}:${GH_CONNECTOR_PORT}"
     environment:
       - CLIENT_URL=${CLIENT_URL}
-      - GENAI_URL=${GENAI_URL}
+      # Since we call container -> container we use the internal hostname
+      - GENAI_URL=http://genai-python:${GENAI_PORT}
       - GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
       - GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET}
     restart: unless-stopped
