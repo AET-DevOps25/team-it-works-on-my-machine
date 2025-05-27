@@ -1,0 +1,41 @@
+services:
+  client:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/client:latest
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "${CLIENT_PORT}:${CLIENT_PORT}"
+    environment:
+      - CLIENT_PORT=${CLIENT_PORT}
+      - VITE_GH_CONNECTOR_URL=${GH_CONNECTOR_URL}
+    depends_on:
+     - gh-connector
+    restart: unless-stopped
+
+  gh-connector:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector:latest
+    build:
+      context: ./gh-connector
+      dockerfile: Dockerfile
+    ports:
+      - "${GH_CONNECTOR_PORT}:${GH_CONNECTOR_PORT}"
+    environment:
+      - CLIENT_URL=${CLIENT_URL}
+      - GENAI_PYTHON_URL=${GENAI_PYTHON_URL}
+      - GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
+      - GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET}
+    restart: unless-stopped
+
+  genai-python:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/genai:latest
+    build:
+      context: ./genai
+      dockerfile: Dockerfile
+    ports:
+      - "${GENAI_PYTHON_PORT}:${GENAI_PYTHON_PORT}"
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - GENAI_PYTHON_PORT=${GENAI_PYTHON_PORT}
+      - GENAI_PYTHON_URL=${GENAI_PYTHON_URL}
+    restart: unless-stopped
