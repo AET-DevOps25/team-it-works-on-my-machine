@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [client, gh-connector, genai]
+        service: [client, gh-connector, genai, users]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
