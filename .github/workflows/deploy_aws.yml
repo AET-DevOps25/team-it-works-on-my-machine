@@ -1,4 +1,4 @@
-name: Deploy Docker Images
+name: Deploy Docker Images to AWS EC2
 
 on:
   workflow_dispatch:
