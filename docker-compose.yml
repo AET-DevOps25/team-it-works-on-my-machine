@@ -9,9 +9,8 @@ services:
     environment:
       - PUBLIC_API_URL=${PUBLIC_API_URL:-http://localhost:8589}
     depends_on:
-     - gh-connector
+      - gh-connector
     restart: unless-stopped
-
 
   gh-connector:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector:latest
@@ -21,6 +20,30 @@ services:
     ports:
       - "8589:8589"
     restart: unless-stopped
+
+  users:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/users:latest
+    build:
+      context: ./users
+      dockerfile: Dockerfile
+    ports:
+      - "8590:8590"
+    depends_on:
+      - users-db
+    environment:
+      - DB_URL=users-db
+      - DB_USER=postgres
+      - DB_PASSWORD=123456
+    restart: unless-stopped
+
+  users-db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
 
   genai-python:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/genai:latest
