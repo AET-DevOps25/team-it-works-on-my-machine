@@ -40,3 +40,27 @@ services:
       - GENAI_PORT=${GENAI_PORT}
       - GENAI_URL=${GENAI_URL}
     restart: unless-stopped
+
+  users:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/users:latest
+    build:
+      context: ./users
+      dockerfile: Dockerfile
+    ports:
+      - "8590:8590"
+    depends_on:
+      - users-db
+    environment:
+      - DB_URL=users-db
+      - DB_USER=postgres
+      - DB_PASSWORD=123456
+    restart: unless-stopped
+
+  users-db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
