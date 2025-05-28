@@ -1,0 +1,96 @@
+services:
+  reverse-proxy:
+    image: traefik:v3.4
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=admin@tum.de"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./letsencrypt:/letsencrypt
+
+  client:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/client:latest
+    environment:
+      - CLIENT_PORT=${CLIENT_PORT}
+      - VITE_GH_CONNECTOR_URL=https://${GH_CONNECTOR_HOST}
+    depends_on:
+      - gh-connector
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.client.rule=Host(`${CLIENT_HOST}`)"
+      - "traefik.http.services.client.loadbalancer.server.port=${CLIENT_PORT}"
+      - "traefik.http.routers.client.entrypoints=websecure"
+      - "traefik.http.routers.client.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.client-compress.compress=true"
+      - "traefik.http.routers.client.middlewares=client-compress"
+      - "traefik.http.routers.client.priority=1"
+
+  gh-connector:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector:latest
+    environment:
+      - CLIENT_URL=https://${CLIENT_HOST}
+      - GENAI_URL=https://${GENAI_HOST}
+      - GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
+      - GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET}
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gh-connector.rule=Host(`${GH_CONNECTOR_HOST}`)"
+      - "traefik.http.services.gh-connector.loadbalancer.gh-connector.port=${GH_CONNECTOR_PORT}"
+      - "traefik.http.routers.gh-connector.entrypoints=websecure"
+      - "traefik.http.routers.gh-connector.tls.certresolver=letsencrypt"
+
+  genai-python:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/genai:latest
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - GENAI_PORT=${GENAI_PORT}
+      - GENAI_URL=https://${GENAI_HOST}
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.genai.rule=Host(`${GENAI_HOST}`)"
+      - "traefik.http.services.genai.loadbalancer.genai.port=${GENAI_PORT}"
+      - "traefik.http.routers.genai.entrypoints=websecure"
+      - "traefik.http.routers.genai.tls.certresolver=letsencrypt"
+
+  users:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/users:latest
+    environment:
+      - USERS_DB_URL=users-db
+      - USERS_DB_USERNAME=${USERS_DB_USERNAME}
+      - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.users.rule=Host(`${USERS_HOST}`)"
+      - "traefik.http.services.users.loadbalancer.users.port=${USERS_PORT}"
+      - "traefik.http.routers.users.entrypoints=websecure"
+      - "traefik.http.routers.users.tls.certresolver=letsencrypt"
+
+  users-db:
+    image: postgres:15-alpine
+    environment:
+      -  POSTGRES_DB=users
+      -  POSTGRES_USER=${USERS_DB_USERNAME}
+      -  POSTGRES_PASSWORD=${USERS_DB_PASSWORD}
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.users-db.rule=Host(`${USERS_DB_HOST}`)"
+      - "traefik.http.services.users-db.loadbalancer.users-db.port=${USERS_DB_PORT}"
+      - "traefik.http.routers.users-db.entrypoints=websecure"
+      - "traefik.http.routers.users-db.tls.certresolver=letsencrypt"

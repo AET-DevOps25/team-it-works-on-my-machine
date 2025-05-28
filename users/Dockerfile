@@ -10,5 +10,5 @@ RUN gradle bootJar --no-daemon
 FROM gcr.io/distroless/java21-debian12
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
-EXPOSE 8590
+EXPOSE ${USER_PORT:-3002}
 ENTRYPOINT ["java", "-jar", "app.jar"]

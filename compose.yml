@@ -1,0 +1,66 @@
+services:
+  client:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/client:latest
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "${CLIENT_PORT}:${CLIENT_PORT}"
+    environment:
+      - CLIENT_PORT=${CLIENT_PORT}
+      - VITE_GH_CONNECTOR_URL=${GH_CONNECTOR_URL}
+    depends_on:
+     - gh-connector
+    restart: unless-stopped
+
+  gh-connector:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector:latest
+    build:
+      context: ./gh-connector
+      dockerfile: Dockerfile
+    ports:
+      - "${GH_CONNECTOR_PORT}:${GH_CONNECTOR_PORT}"
+    environment:
+      - CLIENT_URL=${CLIENT_URL}
+      # Since we call container -> container we use the internal hostname
+      - GENAI_URL=http://genai-python:${GENAI_PORT}
+      - GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
+      - GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET}
+    restart: unless-stopped
+
+  genai-python:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/genai:latest
+    build:
+      context: ./genai
+      dockerfile: Dockerfile
+    ports:
+      - "${GENAI_PORT}:${GENAI_PORT}"
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - GENAI_PORT=${GENAI_PORT}
+      - GENAI_URL=${GENAI_URL}
+    restart: unless-stopped
+
+  users:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/users:latest
+    build:
+      context: ./users
+      dockerfile: Dockerfile
+    ports:
+      - "${USERS_PORT}:${USERS_PORT}"
+    depends_on:
+      - users-db
+    environment:
+      - USERS_DB_URL=users-db
+      - USERS_DB_USERNAME=${USERS_DB_USERNAME}
+      - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
+    restart: unless-stopped
+
+  users-db:
+    image: postgres:15-alpine
+    ports:
+      - "${USERS_DB_PORT}:5432"
+    environment:
+      -  POSTGRES_DB=users
+      -  POSTGRES_USER=${USERS_DB_USERNAME}
+      -  POSTGRES_PASSWORD=${USERS_DB_PASSWORD}
