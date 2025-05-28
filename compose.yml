@@ -47,7 +47,7 @@ services:
       context: ./users
       dockerfile: Dockerfile
     ports:
-      - "8590:8590"
+      - "${USERS_PORT}:${USERS_PORT}"
     depends_on:
       - users-db
     environment:
@@ -59,7 +59,7 @@ services:
   users-db:
     image: postgres:15-alpine
     ports:
-      - "5432:5432"
+      - "${USERS_DB_PORT}:5432"
     environment:
       POSTGRES_DB: users
       POSTGRES_USER: postgres
