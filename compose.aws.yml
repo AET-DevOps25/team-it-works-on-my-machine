@@ -66,3 +66,31 @@ services:
       - "traefik.http.services.genai.loadbalancer.genai.port=${GENAI_PORT}"
       - "traefik.http.routers.genai.entrypoints=websecure"
       - "traefik.http.routers.genai.tls.certresolver=letsencrypt"
+
+  users:
+    image: ghcr.io/aet-devops25/team-it-works-on-my-machine/users:latest
+    environment:
+      - USERS_DB_URL=users-db
+      - USERS_DB_USERNAME=${USERS_DB_USERNAME}
+      - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.users.rule=Host(`${USERS_HOST}`)"
+      - "traefik.http.services.users.loadbalancer.users.port=${USERS_PORT}"
+      - "traefik.http.routers.users.entrypoints=websecure"
+      - "traefik.http.routers.users.tls.certresolver=letsencrypt"
+
+  users-db:
+    image: postgres:15-alpine
+    environment:
+      -  POSTGRES_DB=users
+      -  POSTGRES_USER=${USERS_DB_USERNAME}
+      -  POSTGRES_PASSWORD=${USERS_DB_PASSWORD}
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.users-db.rule=Host(`${USERS_DB_HOST}`)"
+      - "traefik.http.services.users-db.loadbalancer.users-db.port=${USERS_DB_PORT}"
+      - "traefik.http.routers.users-db.entrypoints=websecure"
+      - "traefik.http.routers.users-db.tls.certresolver=letsencrypt"
