@@ -1,5 +1,5 @@
 ---
-- name: Insatll Docker, Docker-compose
+- name: Install Docker, Docker Compose
   hosts: docker_server
   become: yes
   tasks:
