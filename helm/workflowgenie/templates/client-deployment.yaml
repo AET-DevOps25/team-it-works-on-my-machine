@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: {{ .Values.client.replicaCount }}
+  selector:
+    matchLabels:
+      app: client-deployment
+  template:
+    metadata:
+      labels:
+        app: client-deployment
+    spec:
+      containers:
+        - name: client
+          image: "{{ .Values.client.image.repository }}:{{ .Values.client.image.tag }}"
+          imagePullPolicy: {{ .Values.client.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+            requests:
+              cpu: "50m"
+              memory: "50Mi"
+          ports:
+            - containerPort: {{ .Values.client.service.targetPort }}
+          env:
+            - name: CLIENT_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: client-config
+                  key: client-port

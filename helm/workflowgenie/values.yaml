@@ -1,0 +1,35 @@
+# No changes needed below this line
+namespace:
+  create: false
+
+gh-connector:
+  image:
+    repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+  replicaCount: 1
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: docker
+
+client:
+  image:
+    repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/client
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 80
+  replicaCount: 1
+
+ingress:
+  enabled: true
+  className: "nginx"
+  tls: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
