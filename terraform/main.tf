@@ -44,6 +44,6 @@ resource "aws_instance" "vm" {
   }
 
 provisioner "local-exec" {
-  command = "echo [docker_server] > ..\\ansible\\inventory.ini && echo ${self.public_ip} ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/id_rsa >> ..\\ansible\\inventory.ini"
+  command = "echo [docker_server] > ..\\ansible\\inventory.ini && echo ${self.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_rsa >> ..\\ansible\\inventory.ini"
 }
 }
