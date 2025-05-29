@@ -6,7 +6,7 @@ import Profile from '../profile/Profile'
 import type { OauthResponse, UserType } from '@/lib/types'
 
 const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
-const GITHUB_OAUTH_CLIENT_ID = import.meta.env.VITE_GITHUB_OAUTH_CLIENT_ID
+const GH_OAUTH_CLIENT_ID = import.meta.env.VITE_GH_OAUTH_CLIENT_ID
 
 function Logout(p: {
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
@@ -35,7 +35,7 @@ function Login() {
     // Function to redirect the user to the GitHub OAuth authorization page
     const redirect_uri = GH_CONNECTOR_URL + '/oauth/redirect'
     const scope = 'read:user,repo'
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri}&scope=${scope}`
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${GH_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri}&scope=${scope}`
 
     window.location.href = authUrl
   }

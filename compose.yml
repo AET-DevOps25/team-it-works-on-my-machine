@@ -4,7 +4,7 @@ services:
     build:
       args:
         - VITE_GH_CONNECTOR_URL=${GH_CONNECTOR_URL}
-        - VITE_GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
+        - VITE_GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
       context: ./client
       dockerfile: Dockerfile
     environment:
@@ -26,8 +26,8 @@ services:
       - CLIENT_URL=${CLIENT_URL}
       # Since we call container -> container we use the internal hostname
       - GENAI_URL=http://genai-python:${GENAI_PORT}
-      - GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
-      - GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET}
+      - GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
+      - GH_OAUTH_CLIENT_SECRET=${GH_OAUTH_CLIENT_SECRET}
     restart: unless-stopped
 
   genai-python:

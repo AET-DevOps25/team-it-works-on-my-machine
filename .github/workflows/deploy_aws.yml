@@ -48,8 +48,8 @@ jobs:
             echo "USER_DB_PASSWORD=${{ secrets.USER_DB_PASSWORD }}" >> .env.prod
 
             echo "DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}" >> .env.prod
-            echo "GITHUB_OAUTH_CLIENT_ID=${{ vars.GITHUB_OAUTH_CLIENT_ID }}" >> .env.prod
-            echo "GITHUB_OAUTH_CLIENT_SECRET=${{ secrets.GITHUB_OAUTH_CLIENT_SECRET }}" >> .env.prod
+            echo "GH_OAUTH_CLIENT_ID=${{ vars.GH_OAUTH_CLIENT_ID }}" >> .env.prod
+            echo "GH_OAUTH_CLIENT_SECRET=${{ secrets.GH_OAUTH_CLIENT_SECRET }}" >> .env.prod
 
 
       - name: SSH to VM and Execute Docker-Compose Up

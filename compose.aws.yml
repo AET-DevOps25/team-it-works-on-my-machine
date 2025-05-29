@@ -43,8 +43,8 @@ services:
     environment:
       - CLIENT_URL=https://${CLIENT_HOST}
       - GENAI_URL=https://${GENAI_HOST}
-      - GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
-      - GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET}
+      - GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
+      - GH_OAUTH_CLIENT_SECRET=${GH_OAUTH_CLIENT_SECRET}
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
