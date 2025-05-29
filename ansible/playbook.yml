@@ -1,0 +1,48 @@
+---
+- name: Install Docker, Docker Compose
+  hosts: docker_server
+  become: yes
+  tasks:
+    - name: Install Docker
+      yum:
+        name: docker
+        update_cache: true
+        state: present
+    - name: Install docker-compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-{{lookup('pipe', 'uname -m')}}
+        dest: /usr/local/bin/docker-compose
+        mode: +x
+    - name: Start docker daemon
+      systemd:
+        name: docker
+        state: started
+    - name: Install docker python module
+      pip:
+        name:
+          - docker
+          - docker-compose
+
+- name: add ec2-user to docker group
+  hosts: docker_server
+  become: yes
+  tasks:
+    - name: add ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+    - name: reconnect to server session
+      meta: reset_connection
+
+- name: start docker containers
+  hosts: docker_server
+  tasks:
+    - name: copy docker compose
+      copy:
+        src: /home/sonali-rajput/Projects/ansible/docker-compose.yml
+        dest: /home/ec2-user/docker-compose.yml
+    - name: start container
+      docker_compose:
+        project_src: /home/ec2-user
+        state: present
