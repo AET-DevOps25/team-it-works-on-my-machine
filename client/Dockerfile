@@ -1,5 +1,7 @@
 FROM node:24-alpine AS build
 
+ARG VITE_GITHUB_OAUTH_CLIENT_ID
+ARG VITE_GH_CONNECTOR_URL
 RUN corepack enable
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./

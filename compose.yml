@@ -2,13 +2,15 @@ services:
   client:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/client:latest
     build:
+      args:
+        - VITE_GH_CONNECTOR_URL=${GH_CONNECTOR_URL}
+        - VITE_GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
       context: ./client
       dockerfile: Dockerfile
+    environment:
+        - CLIENT_PORT=${CLIENT_PORT}
     ports:
       - "${CLIENT_PORT}:${CLIENT_PORT}"
-    environment:
-      - CLIENT_PORT=${CLIENT_PORT}
-      - VITE_GH_CONNECTOR_URL=${GH_CONNECTOR_URL}
     depends_on:
      - gh-connector
     restart: unless-stopped
