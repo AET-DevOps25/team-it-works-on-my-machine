@@ -12,6 +12,7 @@ RUN pnpm build
 FROM nginx:alpine
 
 ARG CLIENT_PORT=80
+ARG CLIENT_PORT_SSL=443
 
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
@@ -21,6 +22,7 @@ COPY env.sh /docker-entrypoint.d/env.sh
 RUN chmod +x /docker-entrypoint.d/env.sh
 
 EXPOSE ${CLIENT_PORT}
+EXPOSE ${CLIENT_PORT_SSL}
 
 # Let Docker run your script before starting Nginx
 ENTRYPOINT ["/docker-entrypoint.sh"]
