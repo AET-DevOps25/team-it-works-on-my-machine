@@ -19,6 +19,13 @@ spec:
     - host: "workflow-genie.student.k8s.aet.cit.tum.de"
       http:
         paths:
+          - path: /api/gh-connector/
+            pathType: Prefix
+            backend:
+              service:
+                name: ghconnector-service
+                port:
+                  number: {{ .Values.ghconnector.service.port }}
           - path: /
             pathType: Prefix
             backend:
