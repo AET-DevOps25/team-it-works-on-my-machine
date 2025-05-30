@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: client-deployment
+  name: ghconnector-deployment
 spec:
   replicas: {{ .Values.client.replicaCount }}
   selector:
     matchLabels:
-      app: client-deployment
+      app: ghconnector-deployment
   template:
     metadata:
       labels:
-        app: client-deployment
+        app: ghconnector-deployment
     spec:
       containers:
         - name: client
-          image: "{{ .Values.client.image.repository }}:{{ .Values.client.image.tag }}"
-          imagePullPolicy: {{ .Values.client.image.pullPolicy }}
+          image: "{{ .Values.ghconnector.image.repository }}:{{ .Values.ghconnector.image.tag }}"
+          imagePullPolicy: {{ .Values.ghconnector.image.pullPolicy }}
           resources:
             limits:
               cpu: "500m"
@@ -24,9 +24,9 @@ spec:
               cpu: "50m"
               memory: "50Mi"
           ports:
-            - containerPort: {{ .Values.client.service.targetPort }}
+            - containerPort: {{ .Values.ghconnector.service.targetPort }}
           env:
-            {{- range .Values.client.env }}
+            {{- range .Values.ghconnector.env }}
             - name: {{ .name }}
               value: "{{ .value }}"
             {{- end }}

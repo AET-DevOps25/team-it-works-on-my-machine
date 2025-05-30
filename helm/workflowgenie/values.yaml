@@ -5,7 +5,7 @@ namespace:
 ghconnector:
   image:
     repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector
-    tag: latest
+    tag: helm-init
     pullPolicy: Always
   service:
     type: ClusterIP
