@@ -19,9 +19,9 @@ ghconnector:
     - name: GENAI_URL
       value: http://genai-python:GENAI_PORT
     - name: GH_OAUTH_CLIENT_ID
-      value: GH_OAUTH_CLIENT_ID
+      value: HiFelix
     - name: GH_OAUTH_CLIENT_SECRET
-      value: GH_OAUTH_CLIENT_SECRET
+      value: ByeFelix
     - name: GH_CONNECTOR_PREFIX
       value: /api/gh-connector
 
@@ -41,9 +41,9 @@ client:
     - name: APP_PREFIX
       value: PREFIX_
     - name: PREFIX_GH_CONNECTOR_URL
-      value: GH_CONNECTOR_URL
+      value: HiFelix
     - name: PREFIX_GH_OAUTH_CLIENT_ID
-      value: GH_OAUTH_CLIENT_ID
+      value: HiXiyu
 
 ingress:
   enabled: true
@@ -51,6 +51,3 @@ ingress:
   tls: true
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    # nginx.ingress.kubernetes.io/rewrite-target: "/$2"
-    # kubernetes.io/ingress.class: nginx
-    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
