@@ -8,7 +8,8 @@ RUN gradle bootJar --no-daemon
 
 # Stage 2: Run the application
 FROM gcr.io/distroless/java21-debian12
+ARG GH_CONNECTOR_PORT=3000
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
-EXPOSE ${GH_CONNECTOR_PORT:-3000}
+EXPOSE ${GH_CONNECTOR_PORT}
 ENTRYPOINT ["java", "-jar", "app.jar"]
