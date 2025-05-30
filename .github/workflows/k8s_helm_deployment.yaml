@@ -9,20 +9,23 @@ jobs:
       name: Kubernetes
 
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: "Deploy"
-        uses: "deliverybot/helm@v1"
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
         with:
-          release: "workflow-genie"
-          namespace: "devops25-works-on-my-machine"
-          chart: "workflowgenie"
-          token: "${{ github.token }}"
-          values: |
-            name: foobar
-          value-files: >-
-            [
-              "values.yaml", 
-            ]
-        env:
-          KUBECONFIG_FILE: "${{ secrets.KUBECONFIG }}"
+          version: "latest"
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+      - name: Run Helm
+        run: |
+          cd helm/workflowgenie
+          helm -n devops25-works-on-my-machine workflow-genie .
