@@ -26,8 +26,7 @@ spec:
           ports:
             - containerPort: {{ .Values.client.service.targetPort }}
           env:
-            - name: CLIENT_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: client-config
-                  key: client-port
+            {{- range .Values.client.env }}
+            - name: {{ .name }}
+              value: "{{ .value }}"
+            {{- end }}

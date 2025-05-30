@@ -26,6 +26,15 @@ client:
     port: 80
     targetPort: 80
   replicaCount: 1
+  env:
+    - name: ASSET_DIR
+      value: /usr/share/nginx/html
+    - name: APP_PREFIX
+      value: PREFIX_
+    - name: PREFIX_GH_CONNECTOR_URL
+      value: GH_CONNECTOR_URL
+    - name: PREFIX_GH_OAUTH_CLIENT_ID
+      value: GH_OAUTH_CLIENT_ID
 
 ingress:
   enabled: true
