@@ -28,4 +28,4 @@ jobs:
       - name: Run Helm
         run: |
           cd helm/workflowgenie
-          helm -n devops25-works-on-my-machine workflow-genie .
+          helm upgrade -n devops25-works-on-my-machine-2 workflow-genie .
