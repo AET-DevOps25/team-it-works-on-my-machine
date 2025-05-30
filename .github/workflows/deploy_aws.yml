@@ -45,7 +45,7 @@ jobs:
             echo "CLIENT_HOST=client.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
             echo "CLIENT_URL=https://client.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
             echo "GH_CONNECTOR_HOST=gh-connector.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
-            echo "GH_CONNECTOR_URL=https://connector.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
+            echo "GH_CONNECTOR_URL=https://gh-connector.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
             echo "GENAI_HOST=genai.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
             echo "GENAI_URL=https://genai.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
             echo "USERS_HOST=user.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
