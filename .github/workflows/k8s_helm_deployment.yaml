@@ -1,5 +1,5 @@
 # .github/workflows/deploy.yml
-name: Deploy
+name: Deploy to kubernetes
 on: push
 
 jobs:
@@ -23,7 +23,6 @@ jobs:
           value-files: >-
             [
               "values.yaml", 
-              "values.production.yaml"
             ]
         env:
           KUBECONFIG_FILE: "${{ secrets.KUBECONFIG }}"
