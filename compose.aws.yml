@@ -23,7 +23,10 @@ services:
   client:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/client:latest
     environment:
-      - CLIENT_PORT=${CLIENT_PORT}
+      - ASSET_DIR=/usr/share/nginx/html
+      - APP_PREFIX=PREFIX_
+      - PREFIX_GH_CONNECTOR_URL=${GH_CONNECTOR_URL}
+      - PREFIX_GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
     depends_on:
       - gh-connector
     restart: unless-stopped
@@ -40,8 +43,8 @@ services:
   gh-connector:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector:latest
     environment:
-      - CLIENT_URL=https://${CLIENT_HOST}
-      - GENAI_URL=https://${GENAI_HOST}
+      - CLIENT_URL=${CLIENT_URL}
+      - GENAI_URL=${GENAI_URL}
       - GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
       - GH_OAUTH_CLIENT_SECRET=${GH_OAUTH_CLIENT_SECRET}
     restart: unless-stopped
@@ -57,7 +60,7 @@ services:
     environment:
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
       - GENAI_PORT=${GENAI_PORT}
-      - GENAI_URL=https://${GENAI_HOST}
+      - GENAI_URL=${GENAI_URL}
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
@@ -69,7 +72,7 @@ services:
   users:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/users:latest
     environment:
-      - USERS_DB_URL=users-db
+      - USERS_DB_HOST=${USERS_DB_HOST}
       - USERS_DB_USERNAME=${USERS_DB_USERNAME}
       - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
     restart: unless-stopped

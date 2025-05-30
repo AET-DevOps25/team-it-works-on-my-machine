@@ -2,13 +2,15 @@ services:
   client:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/client:latest
     build:
-      args:
-        - VITE_GH_CONNECTOR_URL=${GH_CONNECTOR_URL}
-        - VITE_GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
       context: ./client
       dockerfile: Dockerfile
-    environment:
+      args:
         - CLIENT_PORT=${CLIENT_PORT}
+    environment:
+        - ASSET_DIR=/usr/share/nginx/html
+        - APP_PREFIX=PREFIX_
+        - PREFIX_GH_CONNECTOR_URL=${GH_CONNECTOR_URL}
+        - PREFIX_GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
     ports:
       - "${CLIENT_PORT}:${CLIENT_PORT}"
     depends_on:
@@ -20,6 +22,8 @@ services:
     build:
       context: ./gh-connector
       dockerfile: Dockerfile
+      args:
+        - GH_CONNECTOR_PORT=${GH_CONNECTOR_PORT}
     ports:
       - "${GH_CONNECTOR_PORT}:${GH_CONNECTOR_PORT}"
     environment:
@@ -35,6 +39,8 @@ services:
     build:
       context: ./genai
       dockerfile: Dockerfile
+      args:
+        - GENAI_PORT=${GENAI_PORT}
     ports:
       - "${GENAI_PORT}:${GENAI_PORT}"
     environment:
@@ -48,12 +54,14 @@ services:
     build:
       context: ./users
       dockerfile: Dockerfile
+      args:
+        - USERS_PORT=${USERS_PORT}
     ports:
       - "${USERS_PORT}:${USERS_PORT}"
     depends_on:
       - users-db
     environment:
-      - USERS_DB_URL=users-db
+      - USERS_DB_HOST=users-db
       - USERS_DB_USERNAME=${USERS_DB_USERNAME}
       - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
     restart: unless-stopped
