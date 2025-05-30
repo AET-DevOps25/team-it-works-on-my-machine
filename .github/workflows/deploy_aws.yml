@@ -43,13 +43,13 @@ jobs:
             echo "USERS_DB_PORT=5432" >> .env.prod
 
             echo "CLIENT_HOST=client.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
-            echo "CLIENT_URL=https://${CLIENT_HOST}" >> .env.prod
+            echo "CLIENT_URL=https://\$\{CLIENT_HOST\}" >> .env.prod
             echo "GH_CONNECTOR_HOST=gh-connector.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
-            echo "GH_CONNECTOR_URL=https://${GH_CONNECTOR_HOST}" >> .env.prod
+            echo "GH_CONNECTOR_URL=https://\$\{GH_CONNECTOR_HOST\}" >> .env.prod
             echo "GENAI_HOST=genai.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
-            echo "GENAI_URL=https://${GENAI_HOST}" >> .env.prod
+            echo "GENAI_URL=https://\$\{GENAI_HOST\}" >> .env.prod
             echo "USERS_HOST=user.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
-            echo "USERS_URL=https://${USERS_HOST}" >> .env.prod
+            echo "USERS_URL=https://\$\{USERS_HOST\}" >> .env.prod
 
             echo "USERS_DB_HOST=user-db.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
             echo "USERS_DB_USERNAME=${{ vars.USER_DB_USERNAME }}" >> .env.prod
