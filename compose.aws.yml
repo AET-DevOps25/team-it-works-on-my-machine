@@ -73,7 +73,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.genai.rule=Host(`${GENAI_HOST}`)"
-      - "traefik.http.services.genai.loadbalancer.server.port=${GH_CONNECTOR_PORT}"
+      - "traefik.http.services.genai.loadbalancer.server.port=${GENAI_PORT}"
       - "traefik.http.routers.genai.entrypoints=genai"
       - "traefik.http.routers.genai.tls.certresolver=letsencrypt"
 
