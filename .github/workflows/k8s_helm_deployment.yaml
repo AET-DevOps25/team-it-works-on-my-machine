@@ -1,5 +1,5 @@
 # .github/workflows/deploy.yml
-name: Deploy to kubernetes
+name: Deploy to Kubernetes
 on: push
 
 jobs:
