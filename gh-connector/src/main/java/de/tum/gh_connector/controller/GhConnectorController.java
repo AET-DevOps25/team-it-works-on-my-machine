@@ -6,12 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import de.tum.gh_connector.dto.ContentResponseItem;
 import de.tum.gh_connector.dto.GenAIAskResponse;
@@ -21,10 +26,10 @@ import jakarta.servlet.http.HttpSession;
 @RestController
 public class GhConnectorController {
 
-    @Value("${github.oauth.client.id}")
+    @Value("${gh.oauth.client.id}")
     private String clientId;
 
-    @Value("${github.oauth.client.secret}")
+    @Value("${gh.oauth.client.secret}")
     private String clientSecret;
 
     @Value("${genai.url}")

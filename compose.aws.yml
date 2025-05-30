@@ -24,7 +24,6 @@ services:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/client:latest
     environment:
       - CLIENT_PORT=${CLIENT_PORT}
-      - VITE_GH_CONNECTOR_URL=https://${GH_CONNECTOR_HOST}
     depends_on:
       - gh-connector
     restart: unless-stopped
@@ -43,8 +42,8 @@ services:
     environment:
       - CLIENT_URL=https://${CLIENT_HOST}
       - GENAI_URL=https://${GENAI_HOST}
-      - GITHUB_OAUTH_CLIENT_ID=${GITHUB_OAUTH_CLIENT_ID}
-      - GITHUB_OAUTH_CLIENT_SECRET=${GITHUB_OAUTH_CLIENT_SECRET}
+      - GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
+      - GH_OAUTH_CLIENT_SECRET=${GH_OAUTH_CLIENT_SECRET}
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
