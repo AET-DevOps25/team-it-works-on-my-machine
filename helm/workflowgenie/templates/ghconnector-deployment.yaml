@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: ghconnector-deployment
 spec:
-  replicas: {{ .Values.client.replicaCount }}
+  replicas: {{ .Values.ghconnector.replicaCount }}
   selector:
     matchLabels:
       app: ghconnector-deployment
@@ -13,7 +13,7 @@ spec:
         app: ghconnector-deployment
     spec:
       containers:
-        - name: client
+        - name: ghconnector
           image: "{{ .Values.ghconnector.image.repository }}:{{ .Values.ghconnector.image.tag }}"
           imagePullPolicy: {{ .Values.ghconnector.image.pullPolicy }}
           resources:

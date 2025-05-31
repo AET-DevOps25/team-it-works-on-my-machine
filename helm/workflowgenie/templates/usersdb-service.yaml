@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: usersdb-service
+spec:
+  selector:
+    app: usersdb-deployment
+  ports:
+    - port: {{ .Values.usersdb.service.port }}
+      targetPort: {{ .Values.usersdb.service.targetPort }}
+      protocol: TCP
+  type: {{ .Values.usersdb.service.type }}

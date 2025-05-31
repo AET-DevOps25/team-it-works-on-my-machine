@@ -2,28 +2,9 @@
 namespace:
   create: false
 
-ghconnector:
-  image:
-    repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector
-    tag: helm-init
-    pullPolicy: Always
-  service:
-    type: ClusterIP
-    port: 3000
-    targetPort: 3000
-  replicaCount: 1
-  env:
-    - name: CLIENT_URL
-      value: CLIENT_URL
-    # Since we call container -> container we use the internal hostname
-    - name: GENAI_URL
-      value: http://genai-python:GENAI_PORT
-    - name: GH_OAUTH_CLIENT_ID
-      value: HiFelix
-    - name: GH_OAUTH_CLIENT_SECRET
-      value: ByeFelix
-    - name: GH_CONNECTOR_PREFIX
-      value: /api/gh-connector
+meta:
+  name: workflow-geniee
+  url: workflow-genie.student.k8s.aet.cit.tum.de
 
 client:
   image:
@@ -44,6 +25,82 @@ client:
       value: HiFelix
     - name: PREFIX_GH_OAUTH_CLIENT_ID
       value: HiXiyu
+
+ghconnector:
+  image:
+    repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector
+    tag: helm-init
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+  replicaCount: 1
+  env:
+    - name: CLIENT_URL
+      value: CLIENT_URL
+    - name: GENAI_URL
+      value: genai-service
+    - name: GH_OAUTH_CLIENT_ID
+      value: HiFelix
+    - name: GH_OAUTH_CLIENT_SECRET
+      value: ByeFelix
+    - name: GH_CONNECTOR_PREFIX
+      value: /api/gh-connector
+
+genai:
+  image:
+    repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/genai
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 3001
+    targetPort: 3001
+  replicaCount: 1
+  env:
+    - name: DEEPSEEK_API_KEY
+      value: ${DEEPSEEK_API_KEY}
+    - name: GENAI_PORT
+      value: 3001
+    - name: GENAI_URL
+      value: ${GENAI_URL}
+
+users:
+  image:
+    repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/users
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 3002
+    targetPort: 3002
+  replicaCount: 1
+  env:
+    - name: USERS_DB_HOST
+      value: usersdb-service
+    - name: USERS_DB_USERNAME
+      value: postgres
+    - name: USERS_DB_PASSWORD
+      value: 123456
+
+usersdb:
+  image:
+    repository: docker.io/postgres
+    tag: 15-alpine
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+  replicaCount: 1
+  env:
+    - name: POSTGRES_DB
+      value: users
+    - name: POSTGRES_USER
+      value: postgres
+    - name: POSTGRES_PASSWORD
+      value: 123456
 
 ingress:
   enabled: true
