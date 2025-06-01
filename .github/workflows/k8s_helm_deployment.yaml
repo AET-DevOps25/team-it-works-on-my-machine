@@ -32,4 +32,5 @@ jobs:
       - name: Run Helm
         run: |
           cd helm/workflowgenie
-          helm upgrade --install -n devops25-works-on-my-machine-2 workflow-genie .
+          helm upgrade --debug --install -n devops25-works-on-my-machine-2 workflow-genie .
+          kubectl rollout restart deployment -n devops25-works-on-my-machine-2
