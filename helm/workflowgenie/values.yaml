@@ -22,7 +22,7 @@ client:
     - name: APP_PREFIX
       value: PREFIX_
     - name: PREFIX_GH_CONNECTOR_URL
-      value: api/gh-connector
+      value: https://workflow-genie.student.k8s.aet.cit.tum.de/api/gh-connector
     - name: PREFIX_GH_OAUTH_CLIENT_ID
       value: HiXiyu
 
