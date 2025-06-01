@@ -22,14 +22,14 @@ client:
     - name: APP_PREFIX
       value: PREFIX_
     - name: PREFIX_GH_CONNECTOR_URL
-      value: HiFelix
+      value: workflow-genie.student.k8s.aet.cit.tum.de/api/gh-connector
     - name: PREFIX_GH_OAUTH_CLIENT_ID
       value: HiXiyu
 
 ghconnector:
   image:
     repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector
-    tag: helm-init
+    tag: latest
     pullPolicy: Always
   service:
     type: ClusterIP

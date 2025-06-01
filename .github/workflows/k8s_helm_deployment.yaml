@@ -1,6 +1,10 @@
-# .github/workflows/deploy.yml
 name: Deploy to Kubernetes
-on: push
+
+on:
+  workflow_run:
+    workflows: [Build Docker Images]
+    types:
+      - completed
 
 jobs:
   deployment:
