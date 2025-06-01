@@ -1,0 +1,35 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_run:
+    workflows: [Build Docker Images]
+    types:
+      - completed
+
+jobs:
+  deployment:
+    runs-on: "ubuntu-latest"
+    environment:
+      name: Kubernetes
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "latest"
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+      - name: Run Helm
+        run: |
+          cd helm/workflowgenie
+          helm upgrade --install -n devops25-works-on-my-machine-2 workflow-genie .

@@ -1,0 +1,36 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "workflow-genie-ingress"
+  {{- $annotations := .Values.ingress.annotations | default dict }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.tls }}
+  tls:
+    - hosts:
+        - "{{ .Values.meta.url }}"
+      secretName: "{{ .Values.meta.name }}-tls"
+  {{- end }}
+  rules:
+    - host: "{{ .Values.meta.url }}"
+      http:
+        paths:
+          - path: /api/gh-connector/
+            pathType: Prefix
+            backend:
+              service:
+                name: ghconnector-service
+                port:
+                  number: {{ .Values.ghconnector.service.port }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: client-service
+                port:
+                  number: {{ .Values.client.service.port }}
+{{- end }}
