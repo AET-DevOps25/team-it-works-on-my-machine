@@ -47,7 +47,7 @@ def embed_structured_chunks_concurrent(
             })
         for i, code in enumerate(chunk.get("code_blocks", [])):
             if not code.strip():
-                continue  # 跳过空代码块
+                continue
             records_to_embed.append({
                 "chunk_id": f'{chunk["chunk_id"]}-code-{i}',
                 "type": "code",
@@ -86,5 +86,5 @@ if __name__ == "__main__":
         output_file=output_path,
         model="text-embedding-3-small",
         # sleep_sec=0.5,
-        max_workers=5  # 并发线程数
+        max_workers=5
     )
