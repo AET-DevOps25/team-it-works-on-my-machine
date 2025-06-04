@@ -45,7 +45,6 @@ services:
       - "${GENAI_PORT}:${GENAI_PORT}"
     environment:
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
-      - GENAI_PORT=${GENAI_PORT}
       - GENAI_URL=${GENAI_URL}
     restart: unless-stopped
 

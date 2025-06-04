@@ -11,19 +11,24 @@ RUN pnpm build
 # Use an Nginx image to serve the static files
 FROM nginx:alpine
 
-ARG CLIENT_PORT=80
-ARG CLIENT_PORT_SSL=443
+ARG CLIENT_PORT=99
+# ARG CLIENT_PORT_SSL=443
 
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+# ENV CLIENT_PORT=$CLIENT_PORT
+# ENV CLIENT_PORT_SSL=$CLIENT_PORT_SSL
+
+COPY nginx/nginx.conf.template /nginx.conf.template
+RUN envsubst < /nginx.conf.template > /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # Copy the runtime injection script into the container
 COPY env.sh /docker-entrypoint.d/env.sh
 RUN chmod +x /docker-entrypoint.d/env.sh
 
-EXPOSE ${CLIENT_PORT}
-EXPOSE ${CLIENT_PORT_SSL}
+
+EXPOSE $CLIENT_PORT
+# EXPOSE $CLIENT_PORT_SSL
 
 # Let Docker run your script before starting Nginx
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx -g 'daemon off;'"]

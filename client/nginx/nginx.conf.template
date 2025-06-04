@@ -1,7 +1,7 @@
 server {
     # TODO use environment variable for port
-    listen 80;
-    listen 443;
+    listen ${CLIENT_PORT};
+    # listen ${CLIENT_PORT_SSL};
     server_name localhost;
 
     root /usr/share/nginx/html;

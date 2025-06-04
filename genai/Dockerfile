@@ -1,7 +1,6 @@
 # Use Python 3.9 slim as the base image
 FROM python:3.9-slim
 
-ARG GENAI_PORT=3001
 
 # Set the working directory to /app
 WORKDIR /app
@@ -16,6 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose port
+ARG GENAI_PORT=3001
+ENV GENAI_PORT=$GENAI_PORT
 EXPOSE ${GENAI_PORT}
 
 # Start the FastAPI app with uvicorn
