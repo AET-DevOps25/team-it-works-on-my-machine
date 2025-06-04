@@ -14,11 +14,12 @@ FROM nginx:alpine
 ARG CLIENT_PORT=80
 ARG CLIENT_PORT_SSL=443
 
-# ENV CLIENT_PORT=$CLIENT_PORT
-# ENV CLIENT_PORT_SSL=$CLIENT_PORT_SSL
+ENV CLIENT_PORT=$CLIENT_PORT
+ENV CLIENT_PORT_SSL=$CLIENT_PORT_SSL
 
 COPY nginx/nginx.conf.template /nginx.conf.template
-RUN envsubst < /nginx.conf.template > /etc/nginx/conf.d/default.conf
+RUN envsubst '${CLIENT_PORT} ${CLIENT_PORT_SSL}'  < /nginx.conf.template > /etc/nginx/conf.d/default.conf
+# COPY nginx/nginx.conf.template /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # Copy the runtime injection script into the container
