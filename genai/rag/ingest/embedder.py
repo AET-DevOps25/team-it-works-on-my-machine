@@ -78,8 +78,14 @@ def embed_structured_chunks_concurrent(
 
 
 if __name__ == "__main__":
-    input_path = Path(r"E:\Desktop\team-it-works-on-my-machine\genai\rag\data\processed\structured_chunks.json")
-    output_path = Path(r"E:\Desktop\team-it-works-on-my-machine\genai\rag\data\processed\embedded_chunks.json")
+    import os
+
+    input_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "processed",
+                              "structured_chunks.json")
+    output_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "processed",
+                               "embedded_chunks.json")
+
+    output_path = Path(output_path)
 
     embed_structured_chunks_concurrent(
         input_file=input_path,

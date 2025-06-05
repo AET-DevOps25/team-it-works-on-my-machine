@@ -31,7 +31,10 @@ def chunk_by_heading(content_blocks: List[Dict], url: str) -> List[Dict]:
 
 
 if __name__ == "__main__":
-    input_file = r"E:\Desktop\team-it-works-on-my-machine\genai\rag\data\processed\actions_docs_raw.json"
+    import os
+
+    input_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "processed",
+                             "actions_docs_raw.json")
     # read JSON
     file_path = Path(input_file)
     with file_path.open(encoding="utf-8") as f:
@@ -46,7 +49,8 @@ if __name__ == "__main__":
         all_chunks.extend(chunks)
 
     # save the chunked content
-    output_file = r"E:\Desktop\team-it-works-on-my-machine\genai\rag\data\processed\actions_docs_chunked.json"
+    output_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "processed",
+                             "actions_docs_chunked.json")
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(all_chunks, f, ensure_ascii=False, indent=2)
 

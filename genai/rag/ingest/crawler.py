@@ -39,7 +39,6 @@ def fetch_and_clean_github_docs(url):
     if not content_div:
         raise ValueError("GitHub Docs No main content area found")
 
-    # 是否显示
     def is_visible(tag):
         style = tag.get("style", "")
         return "display: none" not in style
@@ -97,7 +96,10 @@ def export_crawled_content(content, output_path):
 if __name__ == "__main__":
     import os
 
-    urls = get_urls(doc_path=r"E:\Desktop\team-it-works-on-my-machine\genai\rag\data\raw\actions")
+    doc_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "raw",
+                            "actions")
+
+    urls = get_urls(doc_path=doc_path)
 
     print(len(urls))
     all_content = []
@@ -118,5 +120,6 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Error fetching {url}: {e}")
 
-    output_path = r"E:\Desktop\team-it-works-on-my-machine\genai\rag\data\processed\actions_docs_raw.json"
+    output_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "processed",
+                               "actions_docs_raw.json")
     export_crawled_content(all_content, output_path)

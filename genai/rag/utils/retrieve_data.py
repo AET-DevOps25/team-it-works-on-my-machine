@@ -49,5 +49,9 @@ def main(workflow_path: str, collection_name: str = "workflow_docs"):
 
 
 if __name__ == "__main__":
-    path = r"E:\Desktop\team-it-works-on-my-machine\.github\workflows\ci_client.yml"
+    import os
+
+    path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), ".github",
+        "workflows", "ci_client.yml")
     main(path)

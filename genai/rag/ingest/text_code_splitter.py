@@ -13,10 +13,17 @@ def split_text_into_paragraphs_and_code(text):
 
     return paragraphs, code_blocks
 
-if __name__ == "__main__":
-    input_path = Path(r"E:\Desktop\team-it-works-on-my-machine\genai\rag\data\processed\actions_docs_chunked.json")
-    output_path = Path(r"E:\Desktop\team-it-works-on-my-machine\genai\rag\data\processed\structured_chunks.json")
 
+if __name__ == "__main__":
+    import os
+
+    input_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "processed",
+                              "actions_docs_chunked.json")
+    input_path = Path(input_path)
+
+    output_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "processed",
+                               "structured_chunks.json")
+    output_path = Path(output_path)
 
     with input_path.open(encoding="utf-8") as f:
         raw_chunks = json.load(f)
