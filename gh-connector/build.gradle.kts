@@ -16,7 +16,7 @@ java {
 
 spotless {
 	java {
-    	palantirJavaFormat()
+		palantirJavaFormat()
 	}
 }
 
