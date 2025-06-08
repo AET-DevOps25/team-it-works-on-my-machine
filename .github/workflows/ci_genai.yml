@@ -16,6 +16,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
       - name: Install dependencies
-        run: uv venv && .venv\Scripts\activate && uv pip install -r requirements.txt
+        run: uv venv && .venv/Scripts/activate && uv pip install -r requirements.txt
       - name: Lint & typecheck code
         run: uvx ruff check && uvx ty check
