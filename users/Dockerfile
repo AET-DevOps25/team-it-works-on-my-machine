@@ -8,8 +8,7 @@ RUN gradle bootJar --no-daemon
 
 # Stage 2: Run the application
 FROM gcr.io/distroless/java21-debian12
-ARG USERS_PORT=3002
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
-EXPOSE ${USERS_PORT:-3002}
+EXPOSE 3002
 ENTRYPOINT ["java", "-jar", "app.jar"]

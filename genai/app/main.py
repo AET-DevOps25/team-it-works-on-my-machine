@@ -31,8 +31,14 @@ async def ask_question(payload: dict = Body(...)):
     response = chain.invoke({"question": question})
     return {"response": response.content}
 
+@app.get("/ping")
+async def ping():
+    return "Pong from GenAI Service"
+
+
+
 
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="0.0.0.0", port=int(os.getenv('GENAI_PORT')), reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=int(3001), reload=True)

@@ -22,7 +22,6 @@ import de.tum.gh_connector.dto.ContentResponseItem;
 import de.tum.gh_connector.dto.GenAIAskResponse;
 import jakarta.servlet.http.HttpSession;
 
-
 @RestController
 public class GhConnectorController {
 
@@ -34,7 +33,7 @@ public class GhConnectorController {
 
     @Value("${genai.url}")
     private String genaiUrl;
-    
+
     @Value("${client.url}")
     private String clientUrl;
 
@@ -66,10 +65,11 @@ public class GhConnectorController {
         String tokenType = (String) tokenResponse.get("token_type");
 
         if (accessToken == null || tokenType == null) {
-            return ResponseEntity.badRequest().body("Invalid token response from GitHub. " + tokenResponse.entrySet().stream()
-                    .map(entry -> entry.getKey() + ": " + entry.getValue())
-                    .reduce((a, b) -> a + ", " + b)
-                    .orElse(""));
+            return ResponseEntity.badRequest()
+                    .body("Invalid token response from GitHub. " + tokenResponse.entrySet().stream()
+                            .map(entry -> entry.getKey() + ": " + entry.getValue())
+                            .reduce((a, b) -> a + ", " + b)
+                            .orElse(""));
         }
 
         // ✅ Step 2: Store access token and user info in session
@@ -139,13 +139,14 @@ public class GhConnectorController {
                 .toEntity(new ParameterizedTypeReference<>() {
                 });
 
-
-
         // Querry GenAI Service
-        String files = repoContents.getBody().stream().map(ContentResponseItem::getPath).collect(Collectors.joining(", "));
+        String files = repoContents.getBody().stream().map(ContentResponseItem::getPath)
+                .collect(Collectors.joining(", "));
 
         Map<String, Object> genAIRequest = new HashMap<>();
-        genAIRequest.put("question", "Guess what this code project could be about based on these filenames from the root directory. But write only one sentence: " + files);
+        genAIRequest.put("question",
+                "Guess what this code project could be about based on these filenames from the root directory. But write only one sentence: "
+                        + files);
 
         WebClient webClient = WebClient.create(genaiUrl);
 
@@ -163,7 +164,7 @@ public class GhConnectorController {
 
     @GetMapping(value = "/ping")
     public String ping() {
-        return "Pong\n";
+        return "Pong from GH-Connector\n";
     }
 
 }

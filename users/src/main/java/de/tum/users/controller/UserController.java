@@ -31,7 +31,8 @@ public class UserController {
     @GetMapping("/users/{username}")
     public User getUser(@PathVariable String username) {
         return userRepository.findByUsername(username)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with username: " + username));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "User not found with username: " + username));
     }
 
     @PostMapping("/users")
@@ -40,12 +41,16 @@ public class UserController {
         return userRepository.save(user);
     }
 
-
     @DeleteMapping("/users/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String username) {
         User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);
+    }
+
+    @GetMapping(value = "/ping")
+    public String ping() {
+        return "Pong from User Service\n";
     }
 }
