@@ -16,3 +16,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run Format Check and tests
         run: ./gradlew build
+        env:
+            GH_OAUTH_CLIENT_ID: 123
+            GH_OAUTH_CLIENT_SECRET: 123
