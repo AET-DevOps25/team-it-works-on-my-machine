@@ -1,0 +1,35 @@
+{{- range $componentName, $component := .Values.components }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $componentName }}-deployment
+spec:
+  replicas: {{ $component.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $componentName }}-deployment
+  template:
+    metadata:
+      labels:
+        app: {{ $componentName }}-deployment
+    spec:
+      containers:
+        - name: {{ $componentName }}
+          image: "{{ $component.image.repository }}:{{ $component.image.tag }}"
+          imagePullPolicy: {{ $component.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+            requests:
+              cpu: "50m"
+              memory: "50Mi"
+          ports:
+            - containerPort: {{ $component.service.targetPort }}
+          env:
+            {{- range $component.env }}
+            - name: {{ .name }}
+              value: "{{ .value }}"
+            {{- end }}
+---
+{{- end }}

@@ -1,0 +1,15 @@
+{{- range $componentName, $component := .Values.components }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $componentName }}-service
+spec:
+  selector:
+    app: {{ $componentName }}-deployment
+  ports:
+    - port: {{ $component.service.port }}
+      targetPort: {{ $component.service.targetPort }}
+      protocol: TCP
+  type: {{ $component.service.type }}
+---
+{{- end }}
