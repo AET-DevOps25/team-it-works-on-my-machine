@@ -25,12 +25,12 @@ spec:
               service:
                 name: ghconnector-service
                 port:
-                  number: {{ .Values.ghconnector.service.port }}
+                  number: {{ .Values.components.ghconnector.service.port }}
           - path: /
             pathType: Prefix
             backend:
               service:
                 name: client-service
                 port:
-                  number: {{ .Values.client.service.port }}
+                  number: {{ .Values.components.client.service.port }}
 {{- end }}
