@@ -4,15 +4,13 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-      args:
-        - CLIENT_PORT=${CLIENT_PORT}
     environment:
         - ASSET_DIR=/usr/share/nginx/html
         - APP_PREFIX=PREFIX_
         - PREFIX_GH_CONNECTOR_URL=${GH_CONNECTOR_URL}
         - PREFIX_GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
     ports:
-      - "${CLIENT_PORT}:${CLIENT_PORT}"
+      - "${CLIENT_PORT}:80"
     depends_on:
      - gh-connector
     restart: unless-stopped
@@ -22,10 +20,8 @@ services:
     build:
       context: ./gh-connector
       dockerfile: Dockerfile
-      args:
-        - GH_CONNECTOR_PORT=${GH_CONNECTOR_PORT}
     ports:
-      - "${GH_CONNECTOR_PORT}:${GH_CONNECTOR_PORT}"
+      - "${GH_CONNECTOR_PORT}:3000"
     environment:
       - CLIENT_URL=${CLIENT_URL}
       # Since we call container -> container we use the internal hostname
@@ -39,13 +35,10 @@ services:
     build:
       context: ./genai
       dockerfile: Dockerfile
-      args:
-        - GENAI_PORT=${GENAI_PORT}
     ports:
-      - "${GENAI_PORT}:${GENAI_PORT}"
+      - "${GENAI_PORT}:3001"
     environment:
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
-      - GENAI_PORT=${GENAI_PORT}
       - GENAI_URL=${GENAI_URL}
     restart: unless-stopped
 
@@ -54,10 +47,8 @@ services:
     build:
       context: ./users
       dockerfile: Dockerfile
-      args:
-        - USERS_PORT=${USERS_PORT}
     ports:
-      - "${USERS_PORT}:${USERS_PORT}"
+      - "${USERS_PORT}:3002"
     depends_on:
       - users-db
     environment:
