@@ -1,11 +1,13 @@
 package de.tum.gh_connector.controller;
 
+import de.tum.gh_connector.dto.ContentResponseItem;
+import de.tum.gh_connector.dto.GenAIAskResponse;
+import jakarta.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -17,10 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import de.tum.gh_connector.dto.ContentResponseItem;
-import de.tum.gh_connector.dto.GenAIAskResponse;
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 public class GhConnectorController {
@@ -45,18 +43,17 @@ public class GhConnectorController {
         Map<String, Object> tokenResponse;
 
         try {
-            String body = "client_id=" + clientId +
-                    "&client_secret=" + clientSecret +
-                    "&code=" + code;
+            String body = "client_id=" + clientId + "&client_secret=" + clientSecret + "&code=" + code;
 
-            tokenResponse = restClient.post()
+            tokenResponse = restClient
+                    .post()
                     .uri("https://github.com/login/oauth/access_token")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .accept(MediaType.APPLICATION_JSON)
                     .body(body)
                     .retrieve()
-                    .toEntity(new ParameterizedTypeReference<Map<String, Object>>() {
-                    }).getBody();
+                    .toEntity(new ParameterizedTypeReference<Map<String, Object>>() {})
+                    .getBody();
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body("Error fetching access token from GitHub: " + ex.getMessage());
         }
@@ -66,10 +63,11 @@ public class GhConnectorController {
 
         if (accessToken == null || tokenType == null) {
             return ResponseEntity.badRequest()
-                    .body("Invalid token response from GitHub. " + tokenResponse.entrySet().stream()
-                            .map(entry -> entry.getKey() + ": " + entry.getValue())
-                            .reduce((a, b) -> a + ", " + b)
-                            .orElse(""));
+                    .body("Invalid token response from GitHub. "
+                            + tokenResponse.entrySet().stream()
+                                    .map(entry -> entry.getKey() + ": " + entry.getValue())
+                                    .reduce((a, b) -> a + ", " + b)
+                                    .orElse(""));
         }
 
         // ✅ Step 2: Store access token and user info in session
@@ -93,12 +91,13 @@ public class GhConnectorController {
 
         Map<String, Object> userResponse;
         try {
-            userResponse = restClient.get()
+            userResponse = restClient
+                    .get()
                     .uri("https://api.github.com/user")
                     .header("Authorization", tokenType + " " + accessToken)
                     .retrieve()
-                    .toEntity(new ParameterizedTypeReference<Map<String, Object>>() {
-                    }).getBody();
+                    .toEntity(new ParameterizedTypeReference<Map<String, Object>>() {})
+                    .getBody();
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body("Error fetching user data from GitHub: " + ex.getMessage());
         }
@@ -136,21 +135,23 @@ public class GhConnectorController {
                 .uri(uri)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .toEntity(new ParameterizedTypeReference<>() {
-                });
+                .toEntity(new ParameterizedTypeReference<>() {});
 
         // Querry GenAI Service
-        String files = repoContents.getBody().stream().map(ContentResponseItem::getPath)
+        String files = repoContents.getBody().stream()
+                .map(ContentResponseItem::getPath)
                 .collect(Collectors.joining(", "));
 
         Map<String, Object> genAIRequest = new HashMap<>();
-        genAIRequest.put("question",
+        genAIRequest.put(
+                "question",
                 "Guess what this code project could be about based on these filenames from the root directory. But write only one sentence: "
                         + files);
 
         WebClient webClient = WebClient.create(genaiUrl);
 
-        GenAIAskResponse resp = webClient.post()
+        GenAIAskResponse resp = webClient
+                .post()
                 .uri("/ask")
                 .header("Content-Type", "application/json")
                 .bodyValue(genAIRequest)
@@ -166,5 +167,4 @@ public class GhConnectorController {
     public String ping() {
         return "Pong from GH-Connector\n";
     }
-
 }
