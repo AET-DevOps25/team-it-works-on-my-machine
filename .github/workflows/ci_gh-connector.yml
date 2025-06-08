@@ -1,0 +1,27 @@
+name: CI GH Connector
+run-name: Check GH Connector Code
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gh-connector
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Run Format Check and tests
+        run: ./gradlew build
+        env:
+            GH_OAUTH_CLIENT_ID: 123
+            GH_OAUTH_CLIENT_SECRET: 123

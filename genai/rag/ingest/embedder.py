@@ -24,8 +24,8 @@ def embed_structured_chunks_concurrent(
         output_file: Union[str, Path],
         model: str = "text-embedding-3-small",
         max_workers: int = 5,
-        max_records: int = None,
-        api_key: str = None
+        max_records: int | None = None,
+        api_key: str | None = None
 ):
     input_path = Path(input_file)
     output_path = Path(output_file)
