@@ -57,9 +57,9 @@ Make sure you're in the root of the project (`genai/`), then:
 python app
 ```
 
-This starts the FastAPI app at: `http://localhost:8000`
+This starts the FastAPI app at: `http://localhost:3001`
 
-Open your browser at [http://localhost:8000/docs](http://localhost:8000/docs) to test via Swagger UI.
+Open your browser at [http://localhost:3001/docs](http://localhost:8000/docs) to test via Swagger UI.
 
 ---
 

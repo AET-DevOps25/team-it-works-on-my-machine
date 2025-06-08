@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Body
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.utils import secret_from_env
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
@@ -12,8 +12,8 @@ app = FastAPI()
 # Simple Q&A Chain
 def create_chain():
     llm = ChatOpenAI(
-        model="deepseek-chat",
-        openai_api_key=os.getenv("DEEPSEEK_API_KEY"),
+        model_name="deepseek-chat",
+        openai_api_key=secret_from_env("DEEPSEEK_API_KEY")(),
         openai_api_base="https://api.deepseek.com/v1",
     )
     prompt = ChatPromptTemplate.from_template(
