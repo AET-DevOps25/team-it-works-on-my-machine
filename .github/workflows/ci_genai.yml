@@ -23,6 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
+
       - run: uv venv
       - run: source .venv/bin/activate
       - name: Install dependencies
