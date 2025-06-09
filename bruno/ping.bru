@@ -1,0 +1,18 @@
+meta {
+  name: ping
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/ping
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("ping should return", function () {
+    const data = res.getBody();
+    expect(res.getBody()).to.eql("Pong from GH-Connector\n");
+  });
+}
