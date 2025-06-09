@@ -1,7 +1,9 @@
 package de.tum.gh_connector.controller;
 
+import de.tum.gh_connector.client.GHRestClient;
 import de.tum.gh_connector.dto.ContentResponseItem;
 import de.tum.gh_connector.dto.GenAIAskResponse;
+import de.tum.gh_connector.dto.WorkflowFile;
 import jakarta.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.HashMap;
@@ -36,6 +38,12 @@ public class GhConnectorController {
     private String clientUrl;
 
     private final RestClient restClient = RestClient.create();
+
+    private final GHRestClient ghRestClient;
+
+    public GhConnectorController(GHRestClient ghRestClient) {
+        this.ghRestClient = ghRestClient;
+    }
 
     @GetMapping(value = "/oauth/redirect", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> oauthRedirect(@RequestParam String code, HttpSession session) {
@@ -161,6 +169,17 @@ public class GhConnectorController {
 
         System.out.println(resp.getResponse());
         return resp;
+    }
+
+    @GetMapping(value = "/getInfo2", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<WorkflowFile> getInfo2(@RequestParam String repoUrl) {
+        boolean b = ghRestClient.repoHasWorkflowsDirectory(repoUrl);
+
+        if (b) {
+            return ghRestClient.crawlWorkflows(repoUrl);
+        }
+
+        return null;
     }
 
     @GetMapping(value = "/ping")
