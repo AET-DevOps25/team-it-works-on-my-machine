@@ -41,6 +41,14 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 	implementation ("org.springframework.boot:spring-boot-starter-webflux")
+
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:2024.0.1")
+	}
 }
 
 tasks.withType<Test> {

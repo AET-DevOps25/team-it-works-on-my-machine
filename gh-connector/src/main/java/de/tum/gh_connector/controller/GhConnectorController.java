@@ -1,6 +1,7 @@
 package de.tum.gh_connector.controller;
 
 import de.tum.gh_connector.client.GHRestClient;
+import de.tum.gh_connector.client.GHRestClient2;
 import de.tum.gh_connector.dto.ContentResponseItem;
 import de.tum.gh_connector.dto.GenAIAskResponse;
 import de.tum.gh_connector.dto.WorkflowFile;
@@ -40,9 +41,11 @@ public class GhConnectorController {
     private final RestClient restClient = RestClient.create();
 
     private final GHRestClient ghRestClient;
+    private final GHRestClient2 ghRestClient2;
 
-    public GhConnectorController(GHRestClient ghRestClient) {
+    public GhConnectorController(GHRestClient ghRestClient, GHRestClient2 ghRestClient2) {
         this.ghRestClient = ghRestClient;
+        this.ghRestClient2 = ghRestClient2;
     }
 
     @GetMapping(value = "/oauth/redirect", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -180,6 +183,12 @@ public class GhConnectorController {
         }
 
         return null;
+    }
+
+    @GetMapping(value = "/getInfo3", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ContentResponseItem getInfo3(@RequestParam String repoUrl) {
+
+        return ghRestClient2.getFileContent(repoUrl);
     }
 
     @GetMapping(value = "/ping")
