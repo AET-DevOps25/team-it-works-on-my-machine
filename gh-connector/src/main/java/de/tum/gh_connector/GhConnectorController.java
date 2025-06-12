@@ -1,10 +1,9 @@
-package de.tum.gh_connector.controller;
+package de.tum.gh_connector;
 
-import de.tum.gh_connector.client.GHRestClient;
-import de.tum.gh_connector.client.GHRestClient2;
 import de.tum.gh_connector.dto.ContentResponseItem;
+import de.tum.gh_connector.dto.GHConnectorResponse;
 import de.tum.gh_connector.dto.GenAIAskResponse;
-import de.tum.gh_connector.dto.WorkflowFile;
+import de.tum.gh_connector.service.GHConnectorService;
 import jakarta.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.HashMap;
@@ -40,12 +39,10 @@ public class GhConnectorController {
 
     private final RestClient restClient = RestClient.create();
 
-    private final GHRestClient ghRestClient;
-    private final GHRestClient2 ghRestClient2;
+    private final GHConnectorService ghConnectorService;
 
-    public GhConnectorController(GHRestClient ghRestClient, GHRestClient2 ghRestClient2) {
-        this.ghRestClient = ghRestClient;
-        this.ghRestClient2 = ghRestClient2;
+    public GhConnectorController(GHConnectorService ghConnectorService) {
+        this.ghConnectorService = ghConnectorService;
     }
 
     @GetMapping(value = "/oauth/redirect", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -175,20 +172,8 @@ public class GhConnectorController {
     }
 
     @GetMapping(value = "/getInfo2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<WorkflowFile> getInfo2(@RequestParam String repoUrl) {
-        boolean b = ghRestClient.repoHasWorkflowsDirectory(repoUrl);
-
-        if (b) {
-            return ghRestClient.crawlWorkflows(repoUrl);
-        }
-
-        return null;
-    }
-
-    @GetMapping(value = "/getInfo3", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ContentResponseItem getInfo3(@RequestParam String repoUrl) {
-
-        return ghRestClient2.getFileContent(repoUrl);
+    public GHConnectorResponse getInfo3(@RequestParam String repoUrl) {
+        return ghConnectorService.analyzeRepo(repoUrl);
     }
 
     @GetMapping(value = "/ping")
