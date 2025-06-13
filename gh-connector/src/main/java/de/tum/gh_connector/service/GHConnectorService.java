@@ -24,10 +24,13 @@ public class GHConnectorService {
 
         String contentPath;
         try {
-            contentPath = constructGHApiContentPath(repoUri);
-            assertWorkflowDirAccess(contentPath);
+            String ownerRepo = constructGHApiContentPath(repoUri);
+            String[] ownerRepoParts = ownerRepo.split("/");
+            String owner =  ownerRepoParts[0];
+            String repo =  ownerRepoParts[1];
+            assertWorkflowDirAccess(owner, repo);
 
-            return crawlWorkflows(contentPath);
+            return crawlWorkflows(owner, repo);
         } catch (IllegalArgumentException e) {
             return constructError("There was an error while working with the provided URL: " + e.getMessage());
         }
@@ -35,11 +38,11 @@ public class GHConnectorService {
 //        return constructError("not implemented yet");
     }
 
-    private GHConnectorResponse crawlWorkflows(String contentPath) {
+    private GHConnectorResponse crawlWorkflows(String owner, String repo) {
         List<WorkflowFile> workflowFiles = new ArrayList<>();
 
         try {
-            crawlWorkflows(".github/workflows", contentPath, workflowFiles);
+            crawlWorkflows(owner, repo, ".github/workflows", workflowFiles);
         } catch (Exception e) {
             //TODO
             e.printStackTrace();
@@ -51,19 +54,19 @@ public class GHConnectorService {
                 .build();
     }
 
-    private void crawlWorkflows(String searchPath, String basePath, List<WorkflowFile> resulList) {
-        List<ContentResponseItem> contents = ghRestClient.getFolderContent(basePath + searchPath);
+    private void crawlWorkflows(String owner, String repo, String searchPath, List<WorkflowFile> resulList) {
+        List<ContentResponseItem> contents = ghRestClient.getFolderContent(owner, repo, searchPath);
 
         for (ContentResponseItem item : contents) {
             try {
 
                 if (item.getType().equals("dir")) {
-                    crawlWorkflows(item.getPath(), basePath, resulList);
+                    crawlWorkflows(owner, repo, item.getPath(), resulList);
                 }
 
                 if (item.getType().equals("file")
                         && (item.getName().endsWith(".yml") || item.getName().endsWith(".yaml"))) {
-                    ContentResponseItem contentItem = ghRestClient.getFileContent(basePath + item.getPath());
+                    ContentResponseItem contentItem = ghRestClient.getFileContent(owner, repo, item.getPath());
                     resulList.add(WorkflowFile.fromContentResponseItem(contentItem));
                 }
             } catch (Exception e) {
@@ -74,17 +77,15 @@ public class GHConnectorService {
         }
     }
 
-    private void assertWorkflowDirAccess(String contentPath) throws IllegalArgumentException {
+    private void assertWorkflowDirAccess(String owner, String repo) throws IllegalArgumentException {
         try {
-            ghRestClient.getFolderContent(contentPath);
+            ghRestClient.getFolderContent(owner, repo, "");
         } catch (FeignException.NotFound e) {
             throw new IllegalArgumentException("The specified Repository doesn't exist or you are not authorized to access it");
         }
 
-        String workflowsPath = contentPath + "/.github/workflows";
-
         try {
-            ghRestClient.getFolderContent(workflowsPath);
+            ghRestClient.getFolderContent(owner, repo, "/.github/workflows");
         } catch (FeignException.NotFound e) {
             throw new IllegalArgumentException("The specified Repository doesn't have a workflow directory");
         }
@@ -115,7 +116,7 @@ public class GHConnectorService {
             throw new IllegalArgumentException("This error should never occur");
         }
 
-        return "/repos/" + pathParts[1] + "/" + pathParts[2] + "/contents/";
+        return pathParts[1] + "/" + pathParts[2];
     }
 
     private GHConnectorResponse constructError(String message) {

@@ -16,16 +16,16 @@ import java.util.List;
 public interface GHRestClient {
 
     @GetMapping(
-            value= "{path}",
+            value = "/repos/{owner}/{repo}/contents/{filepath}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    ContentResponseItem getFileContent(@PathVariable("path") String path);
+    ContentResponseItem getFileContent(@PathVariable("owner") String owner, @PathVariable("repo") String repo, @PathVariable("filepath") String filePath);
 
     @GetMapping(
-            value= "{path}",
+            value = "/repos/{owner}/{repo}/contents/{filepath}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    List<ContentResponseItem> getFolderContent(@PathVariable("path") String path);
+    List<ContentResponseItem> getFolderContent(@PathVariable("owner") String owner, @PathVariable("repo") String repo, @PathVariable("filepath") String filePath);
 }
