@@ -40,6 +40,8 @@ services:
     environment:
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
       - GENAI_URL=${GENAI_URL}
+      - QDRANT_API_KEY=${QDRANT_API_KEY}
+      - QDRANT_URL=${QDRANT_URL}
     restart: unless-stopped
 
   users:
