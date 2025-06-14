@@ -27,7 +27,7 @@ def embed_text(text: str, model: str = "text-embedding-3-small") -> list[float]:
     return response.data[0].embedding
 
 
-def retrieve_from_qdrant(collection_name: str, query_vector: list[float], top_k: int = 5):
+def retrieve_from_qdrant(collection_name: str, query_vector: list[float], top_k: int = 3):
     results = qdrant_client.search(
         collection_name=collection_name,
         query_vector=query_vector,
@@ -36,16 +36,13 @@ def retrieve_from_qdrant(collection_name: str, query_vector: list[float], top_k:
     return results
 
 
-def main(workflow_path: str, collection_name: str = "workflow_docs"):
-    workflow_text = read_workflow(workflow_path)
-
-    query_vector = embed_text(workflow_text)
-
+def retrieve_text(text: str, collection_name: str = "workflow_docs"):
+    query_vector = embed_text(text)
     results = retrieve_from_qdrant(collection_name, query_vector)
-
     for i, res in enumerate(results):
         print(f"\n--- Result #{i + 1} (Score: {res.score:.4f}) ---")
         print(res.payload)
+    return results
 
 
 if __name__ == "__main__":
@@ -54,4 +51,6 @@ if __name__ == "__main__":
     path = os.path.join(
         os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), ".github",
         "workflows", "ci_client.yml")
-    main(path)
+    with open(path, "r", encoding="utf-8") as file:
+        workflow_content = file.read()
+        retrieve_text(workflow_content)
