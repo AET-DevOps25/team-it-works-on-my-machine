@@ -5,4 +5,7 @@ import lombok.Data;
 @Data
 public class ContentResponseItem {
     private String path;
+    private String name;
+    private String type;
+    private String content;
 }

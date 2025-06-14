@@ -1,7 +1,9 @@
-package de.tum.gh_connector.controller;
+package de.tum.gh_connector;
 
 import de.tum.gh_connector.dto.ContentResponseItem;
+import de.tum.gh_connector.dto.GHConnectorResponse;
 import de.tum.gh_connector.dto.GenAIAskResponse;
+import de.tum.gh_connector.service.GHConnectorService;
 import jakarta.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.HashMap;
@@ -36,6 +38,12 @@ public class GhConnectorController {
     private String clientUrl;
 
     private final RestClient restClient = RestClient.create();
+
+    private final GHConnectorService ghConnectorService;
+
+    public GhConnectorController(GHConnectorService ghConnectorService) {
+        this.ghConnectorService = ghConnectorService;
+    }
 
     @GetMapping(value = "/oauth/redirect", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> oauthRedirect(@RequestParam String code, HttpSession session) {
@@ -161,6 +169,11 @@ public class GhConnectorController {
 
         System.out.println(resp.getResponse());
         return resp;
+    }
+
+    @GetMapping(value = "/getInfo2", produces = MediaType.APPLICATION_JSON_VALUE)
+    public GHConnectorResponse getInfo3(@RequestParam String repoUrl) {
+        return ghConnectorService.analyzeRepo(repoUrl);
     }
 
     @GetMapping(value = "/ping")
