@@ -28,4 +28,11 @@ public interface GHRestClient {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     List<ContentResponseItem> getFolderContent(@PathVariable("owner") String owner, @PathVariable("repo") String repo, @PathVariable("filepath") String filePath);
+
+    @GetMapping(
+            value = "/repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    List<ContentResponseItem> getTree(@PathVariable("owner") String owner, @PathVariable("repo") String repo, @PathVariable("tree_sha") String treeSha);
 }

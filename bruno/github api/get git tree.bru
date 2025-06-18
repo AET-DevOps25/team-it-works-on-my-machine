@@ -1,0 +1,16 @@
+meta {
+  name: get git tree
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://api.github.com/repos/ls1intum/Artemis/contents/
+  body: none
+  auth: inherit
+}
+
+headers {
+  Accept: application/vnd.github.raw+json
+  X-GitHub-Api-Version: 2022-11-28
+}

@@ -22,7 +22,6 @@ public class GHConnectorService {
 
         System.out.println("got called with: " + repoUri);
 
-        String contentPath;
         try {
             String ownerRepo = constructGHApiContentPath(repoUri);
             String[] ownerRepoParts = ownerRepo.split("/");
