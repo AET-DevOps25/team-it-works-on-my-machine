@@ -49,7 +49,7 @@ public class GHConnectorService {
         }
 
         return GHConnectorResponse.builder()
-                .status("200")
+                .status(200)
                 .files(workflowFiles)
                 .build();
     }
@@ -121,7 +121,7 @@ public class GHConnectorService {
 
     private GHConnectorResponse constructError(String message) {
         return GHConnectorResponse.builder()
-                .status("400")
+                .status(400)
                 .message(message)
                 .build();
     }

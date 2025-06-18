@@ -172,8 +172,15 @@ public class GhConnectorController {
     }
 
     @GetMapping(value = "/getInfo2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GHConnectorResponse getInfo2(@RequestParam String repoUrl) {
-        return ghConnectorService.analyzeRepo(repoUrl);
+    public ResponseEntity<GHConnectorResponse> getInfo2(@RequestParam String repoUrl) {
+        GHConnectorResponse response = ghConnectorService.analyzeRepo(repoUrl);
+        HttpStatus status = HttpStatus.resolve(response.getStatus()); // z.B. 200, 404, 500 etc.
+
+        if (status == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR; // Fallback bei ungültigem Statuscode
+        }
+
+        return new ResponseEntity<>(response, status);
     }
 
     @GetMapping(value = "/ping")

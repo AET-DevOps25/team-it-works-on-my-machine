@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GHConnectorResponse {
-    String status;
+    int status;
     String message;
     List<WorkflowFile> files;
 }
