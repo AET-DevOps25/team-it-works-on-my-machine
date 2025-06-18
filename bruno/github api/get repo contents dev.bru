@@ -1,0 +1,15 @@
+meta {
+  name: get repo contents dev
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/getInfo2?repoUrl=https://github.com/ls1intum/artemis
+  body: none
+  auth: inherit
+}
+
+params:query {
+  repoUrl: https://github.com/ls1intum/artemis
+}

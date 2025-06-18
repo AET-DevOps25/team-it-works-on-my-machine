@@ -1,7 +1,9 @@
-package de.tum.gh_connector.controller;
+package de.tum.gh_connector;
 
 import de.tum.gh_connector.dto.ContentResponseItem;
+import de.tum.gh_connector.dto.GHConnectorResponse;
 import de.tum.gh_connector.dto.GenAIAskResponse;
+import de.tum.gh_connector.service.GHConnectorService;
 import jakarta.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.HashMap;
@@ -36,6 +38,12 @@ public class GhConnectorController {
     private String clientUrl;
 
     private final RestClient restClient = RestClient.create();
+
+    private final GHConnectorService ghConnectorService;
+
+    public GhConnectorController(GHConnectorService ghConnectorService) {
+        this.ghConnectorService = ghConnectorService;
+    }
 
     @GetMapping(value = "/oauth/redirect", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> oauthRedirect(@RequestParam String code, HttpSession session) {
@@ -161,6 +169,18 @@ public class GhConnectorController {
 
         System.out.println(resp.getResponse());
         return resp;
+    }
+
+    @GetMapping(value = "/getInfo2", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GHConnectorResponse> getInfo2(@RequestParam String repoUrl) {
+        GHConnectorResponse response = ghConnectorService.analyzeRepo(repoUrl);
+        HttpStatus status = HttpStatus.resolve(response.getStatus()); // z.B. 200, 404, 500 etc.
+
+        if (status == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR; // Fallback bei ungültigem Statuscode
+        }
+
+        return new ResponseEntity<>(response, status);
     }
 
     @GetMapping(value = "/ping")
