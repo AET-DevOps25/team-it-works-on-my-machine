@@ -172,7 +172,7 @@ public class GhConnectorController {
     }
 
     @GetMapping(value = "/getInfo2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GHConnectorResponse getInfo3(@RequestParam String repoUrl) {
+    public GHConnectorResponse getInfo2(@RequestParam String repoUrl) {
         return ghConnectorService.analyzeRepo(repoUrl);
     }
 
