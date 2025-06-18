@@ -24,10 +24,5 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install dependencies
-        run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install -r requirements.txt
       - name: Lint & typecheck code
         run: uvx ruff check && uvx ty check

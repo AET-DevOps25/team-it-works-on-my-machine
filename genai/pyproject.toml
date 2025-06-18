@@ -1,0 +1,27 @@
+[project]
+name = "genai"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bs4>=0.0.2",
+    "fastapi>=0.95.0",
+    "langchain-core>=0.1.0",
+    "langchain-openai>=0.0.1",
+    "python-dotenv>=1.0.0",
+    "qdrant-client>=1.14.3",
+    "uvicorn>=0.22.0",
+]
+
+[project.scripts]
+app = "genai.app.main:main"
+ask = "genai.app.input_query.ask:ask"
+analyze_yaml = "genai.app.input_query.analyze_yaml:analyze_yaml"
+
+[build-system]
+requires = ["uv_build>=0.7.13,<0.8.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""

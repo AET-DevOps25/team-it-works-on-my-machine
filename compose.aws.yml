@@ -67,6 +67,7 @@ services:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/genai:latest
     environment:
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - GENAI_PORT=${GENAI_PORT}
       - GENAI_URL=${GENAI_URL}
       - QDRANT_API_KEY=${QDRANT_API_KEY}

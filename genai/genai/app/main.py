@@ -7,9 +7,9 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from genai.rag.utils.retrieve_data import retrieve_text
+from ..rag.utils.retrieve_data import retrieve_text
 import traceback
-import os
+import uvicorn
 
 load_dotenv()
 
@@ -122,8 +122,8 @@ async def analyze_yamls(payload: YamlRequest):
 
     return {"results": results}
 
+def main():
+    uvicorn.run("genai.app.main:app", host="0.0.0.0", port=int(3001), reload=True)
 
 if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("main:app", host="0.0.0.0", port=int(3001), reload=True)
+    main()

@@ -1,6 +1,6 @@
 import requests
 
-if __name__ == "__main__":
+def analyze_yaml():
     url = "http://localhost:3001/analyze-yamls"
 
     # prepare the payload with two YAML files
@@ -44,3 +44,6 @@ if __name__ == "__main__":
     else:
         print("❌ Something goes wrong:", response.status_code)
         print(response.text)
+
+if __name__ == "__main__":
+    analyze_yaml()
