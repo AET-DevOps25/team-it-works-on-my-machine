@@ -5,19 +5,17 @@ import de.tum.gh_connector.dto.ContentResponseItem;
 import de.tum.gh_connector.dto.GHConnectorResponse;
 import de.tum.gh_connector.dto.WorkflowFile;
 import feign.FeignException;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GHConnectorService {
 
     private final GHRestClient ghRestClient;
 
-    public  GHConnectorService(GHRestClient ghRestClient) {
+    public GHConnectorService(GHRestClient ghRestClient) {
         this.ghRestClient = ghRestClient;
     }
 
@@ -29,8 +27,8 @@ public class GHConnectorService {
         try {
             String ownerRepo = constructGHApiContentPath(repoUri);
             String[] ownerRepoParts = ownerRepo.split("/");
-            String owner =  ownerRepoParts[0];
-            String repo =  ownerRepoParts[1];
+            String owner = ownerRepoParts[0];
+            String repo = ownerRepoParts[1];
             assertWorkflowDirAccess(owner, repo);
 
             return crawlWorkflows(owner, repo);
@@ -38,7 +36,7 @@ public class GHConnectorService {
             return constructError("There was an error while working with the provided URL: " + e.getMessage());
         }
 
-//        return constructError("not implemented yet");
+        //        return constructError("not implemented yet");
     }
 
     private GHConnectorResponse crawlWorkflows(String owner, String repo) {
@@ -47,14 +45,11 @@ public class GHConnectorService {
         try {
             crawlWorkflows(owner, repo, ".github/workflows", workflowFiles);
         } catch (Exception e) {
-            //TODO
+            // TODO
             e.printStackTrace();
         }
 
-        return GHConnectorResponse.builder()
-                .status(200)
-                .files(workflowFiles)
-                .build();
+        return GHConnectorResponse.builder().status(200).files(workflowFiles).build();
     }
 
     private void crawlWorkflows(String owner, String repo, String searchPath, List<WorkflowFile> resulList) {
@@ -75,7 +70,6 @@ public class GHConnectorService {
             } catch (Exception e) {
                 // todo: rate exeeded
                 e.printStackTrace();
-
             }
         }
     }
@@ -84,7 +78,8 @@ public class GHConnectorService {
         try {
             ghRestClient.getFolderContent(owner, repo, "");
         } catch (FeignException.NotFound e) {
-            throw new IllegalArgumentException("The specified Repository doesn't exist or you are not authorized to access it");
+            throw new IllegalArgumentException(
+                    "The specified Repository doesn't exist or you are not authorized to access it");
         }
 
         try {
@@ -123,9 +118,6 @@ public class GHConnectorService {
     }
 
     private GHConnectorResponse constructError(String message) {
-        return GHConnectorResponse.builder()
-                .status(400)
-                .message(message)
-                .build();
+        return GHConnectorResponse.builder().status(400).message(message).build();
     }
 }
