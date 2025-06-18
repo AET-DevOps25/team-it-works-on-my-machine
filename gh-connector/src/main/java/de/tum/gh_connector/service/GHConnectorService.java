@@ -13,10 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class GHConnectorService {
 
     private final GHRestClient ghRestClient;
+
+    public  GHConnectorService(GHRestClient ghRestClient) {
+        this.ghRestClient = ghRestClient;
+    }
 
     public GHConnectorResponse analyzeRepo(String repoUri) {
 
