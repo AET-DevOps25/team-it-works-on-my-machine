@@ -60,8 +60,6 @@ components:
       targetPort: 3001
     replicaCount: 1
     env:
-      - name: DEEPSEEK_API_KEY
-        value: ${DEEPSEEK_API_KEY}
       - name: OPENAI_API_KEY
         value: ${OPENAI_API_KEY}
       - name: GENAI_PORT

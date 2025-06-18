@@ -7,7 +7,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from ..rag.utils.retrieve_data import retrieve_text
+from genai.rag.utils.retrieve_data import retrieve_text
 import traceback
 import uvicorn
 
@@ -28,10 +28,10 @@ class YamlRequest(BaseModel):
 
 # Simple Q&A Chain
 def create_chain():
+
     llm = ChatOpenAI(
-        model_name="deepseek-chat",
-        openai_api_key=secret_from_env("DEEPSEEK_API_KEY")(),
-        openai_api_base="https://api.deepseek.com/v1",
+        model_name="gpt-4o",
+        openai_api_key=secret_from_env("OPENAI_API_KEY")(),
     )
     prompt = ChatPromptTemplate.from_template(
         "You are a professional assistant. Answer this question in English: {question}"

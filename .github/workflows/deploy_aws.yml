@@ -55,7 +55,6 @@ jobs:
             echo "USERS_DB_USERNAME=${{ vars.USER_DB_USERNAME }}" >> .env.prod
             echo "USERS_DB_PASSWORD=${{ secrets.USER_DB_PASSWORD }}" >> .env.prod
 
-            echo "DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}" >> .env.prod
             echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env.prod
             echo "GH_OAUTH_CLIENT_ID=${{ vars.GH_OAUTH_CLIENT_ID }}" >> .env.prod
             echo "GH_OAUTH_CLIENT_SECRET=${{ secrets.GH_OAUTH_CLIENT_SECRET }}" >> .env.prod
