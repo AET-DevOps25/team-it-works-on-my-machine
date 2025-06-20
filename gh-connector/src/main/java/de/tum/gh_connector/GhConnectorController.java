@@ -143,7 +143,7 @@ public class GhConnectorController {
     public GenAIAskResponse getInfo(@RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
         User user = getAuthToken(id);
 
-        System.out.println("got getinfo call " + repoUrl);
+        log.debug("got getinfo call {}", repoUrl);
 
         String uri = repoUrl.replace("github.com", "api.github.com/repos") + "/contents";
 
