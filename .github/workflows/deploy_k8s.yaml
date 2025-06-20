@@ -11,6 +11,7 @@ jobs:
     runs-on: "ubuntu-latest"
     environment:
       name: Kubernetes
+      url: 'https://workflow-genie.student.k8s.aet.cit.tum.de'
 
     steps:
       - name: Checkout code
