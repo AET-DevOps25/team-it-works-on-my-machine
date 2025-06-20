@@ -31,17 +31,19 @@ public class UserController {
     public User getUser(@PathVariable String id) {
         return userRepository
                 .findById(id)
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
     }
 
     @PostMapping(value = "/users", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public String createUser(@RequestBody User user) {
-        var newUser = userRepository.findByGithubId(user.getGithubId()).map(existingUser -> {
-            existingUser.setToken(user.getToken());
-            return userRepository.save(existingUser);
-        }).orElseGet(() -> userRepository.save(user));
+        var newUser = userRepository
+                .findByGithubId(user.getGithubId())
+                .map(existingUser -> {
+                    existingUser.setToken(user.getToken());
+                    return userRepository.save(existingUser);
+                })
+                .orElseGet(() -> userRepository.save(user));
         userRepository.flush();
         return newUser.getId();
     }

@@ -11,15 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "UserRestClient", url = "${users.url}", configuration = GHFeighConfig.class)
 public interface UserRestClient {
 
-    @PostMapping(
-            value = "/users",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.TEXT_PLAIN_VALUE)
-        String createOrUpdateUser(@RequestBody User request);
+    @PostMapping(value = "/users", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    String createOrUpdateUser(@RequestBody User request);
 
-    @GetMapping(
-            value = "/users/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     User getUserById(@PathVariable("id") String id);
 }

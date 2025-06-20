@@ -1,15 +1,13 @@
 package de.tum.gh_connector.client;
 
+import de.tum.gh_connector.dto.ContentResponseItem;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
-
-import de.tum.gh_connector.dto.ContentResponseItem;
 
 @FeignClient(name = "GHRestClient", url = "https://api.github.com", configuration = GHFeighConfig.class)
 public interface GHRestClient {
@@ -37,5 +35,4 @@ public interface GHRestClient {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     Map<String, String> getUserInfo(@RequestHeader("Authorization") String bearerToken);
-
 }

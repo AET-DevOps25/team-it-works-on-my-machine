@@ -12,8 +12,7 @@ public class User {
     private String username;
     private String token;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String githubId, String username, String token) {
         this.githubId = githubId;

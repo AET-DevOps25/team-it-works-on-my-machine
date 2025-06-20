@@ -1,13 +1,17 @@
 package de.tum.gh_connector;
 
+import de.tum.gh_connector.client.GHRestClient;
+import de.tum.gh_connector.client.UserRestClient;
+import de.tum.gh_connector.dto.ContentResponseItem;
+import de.tum.gh_connector.dto.GHConnectorResponse;
+import de.tum.gh_connector.dto.GenAIAskResponse;
+import de.tum.gh_connector.dto.User;
+import de.tum.gh_connector.service.GHConnectorService;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import de.tum.gh_connector.client.UserRestClient;
-import de.tum.gh_connector.dto.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,12 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import de.tum.gh_connector.client.GHRestClient;
-import de.tum.gh_connector.dto.ContentResponseItem;
-import de.tum.gh_connector.dto.GHConnectorResponse;
-import de.tum.gh_connector.dto.GenAIAskResponse;
-import de.tum.gh_connector.service.GHConnectorService;
 import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
@@ -53,7 +51,8 @@ public class GhConnectorController {
 
     private final GHConnectorService ghConnectorService;
 
-    public GhConnectorController(GHConnectorService ghConnectorService, UserRestClient userRestClient, GHRestClient gHRestClient) {
+    public GhConnectorController(
+            GHConnectorService ghConnectorService, UserRestClient userRestClient, GHRestClient gHRestClient) {
         this.ghConnectorService = ghConnectorService;
         this.userRestClient = userRestClient;
         this.gHRestClient = gHRestClient;
@@ -107,7 +106,9 @@ public class GhConnectorController {
         // Step 3: Redirect to frontend
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(URI.create(clientUrl + "/?login=success"));
-        httpHeaders.add(HttpHeaders.SET_COOKIE, ResponseCookie.from("id", id).path("/").build().toString());
+        httpHeaders.add(
+                HttpHeaders.SET_COOKIE,
+                ResponseCookie.from("id", id).path("/").build().toString());
         return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
     }
 
@@ -129,18 +130,20 @@ public class GhConnectorController {
     }
 
     private User getAuthToken(String id) {
-        if  (id == null) {
+        if (id == null) {
             return null;
         }
         try {
             return userRestClient.getUserById(id);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error fetching user data from GitHub: " + ex.getMessage());
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Error fetching user data from GitHub: " + ex.getMessage());
         }
     }
 
     @GetMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GenAIAskResponse getInfo(@RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
+    public GenAIAskResponse getInfo(
+            @RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
         User user = getAuthToken(id);
 
         log.debug("got getinfo call {}", repoUrl);
