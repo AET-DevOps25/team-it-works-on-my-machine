@@ -1,6 +1,8 @@
 package de.tum.gh_connector.service;
 
 import de.tum.gh_connector.client.GHRestClient;
+import de.tum.gh_connector.client.GenAIRestClient;
+import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.ContentResponseItem;
 import de.tum.gh_connector.dto.GHConnectorResponse;
 import de.tum.gh_connector.dto.WorkflowFile;
@@ -15,8 +17,13 @@ public class GHConnectorService {
 
     private final GHRestClient ghRestClient;
 
-    public GHConnectorService(GHRestClient ghRestClient) {
+    private final UserSRestClient userSRestClient;
+    private final GenAIRestClient genAIRestClient;
+
+    public GHConnectorService(GHRestClient ghRestClient, UserSRestClient userSRestClient, GenAIRestClient genAIRestClient) {
         this.ghRestClient = ghRestClient;
+        this.userSRestClient = userSRestClient;
+        this.genAIRestClient = genAIRestClient;
     }
 
     public GHConnectorResponse analyzeRepo(String repoUri) {
@@ -119,5 +126,13 @@ public class GHConnectorService {
 
     private GHConnectorResponse constructError(String message) {
         return GHConnectorResponse.builder().status(400).message(message).build();
+    }
+
+    public String pingUserS() {
+        return userSRestClient.ping();
+    }
+
+    public String pingGenAI() {
+        return genAIRestClient.ping();
     }
 }

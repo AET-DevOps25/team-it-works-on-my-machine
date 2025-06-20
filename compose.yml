@@ -23,9 +23,10 @@ services:
     ports:
       - "${GH_CONNECTOR_PORT}:3000"
     environment:
-      - CLIENT_URL=${CLIENT_URL}
       # Since we call container -> container we use the internal hostname
+      - CLIENT_URL=${CLIENT_URL}
       - GENAI_URL=http://genai-python:${GENAI_PORT}
+      - USERS_URL=http://users:${USERS_PORT}
       - GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
       - GH_OAUTH_CLIENT_SECRET=${GH_OAUTH_CLIENT_SECRET}
     restart: unless-stopped
