@@ -24,7 +24,7 @@ components:
         value: PREFIX_
       - name: PREFIX_GH_CONNECTOR_URL
         value: https://workflow-genie.student.k8s.aet.cit.tum.de/api/gh-connector
-    envFromSecrets:
+    envFromSecret:
       - name: PREFIX_GH_OAUTH_CLIENT_ID
         secretName: workflow-genie-secrets
         secretKey: GH_OAUTH_CLIENT_ID
@@ -46,6 +46,9 @@ components:
         value: genai-service
       - name: GH_CONNECTOR_PREFIX
         value: /api/gh-connector
+      - name: JAVA_TOOL_OPTIONS
+        value: -Djava.net.preferIPv4Stack=true
+
     envFromSecret:
       - name: GH_OAUTH_CLIENT_ID
         secretName: workflow-genie-secrets
