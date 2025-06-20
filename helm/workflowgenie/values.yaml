@@ -43,7 +43,9 @@ components:
       - name: CLIENT_URL
         value: https://workflow-genie.student.k8s.aet.cit.tum.de
       - name: GENAI_URL
-        value: genai-service
+        value: genai-service:3001
+      - name: USERS_URL
+        value: users-service:3002
       - name: GH_CONNECTOR_PREFIX
         value: /api/gh-connector
       - name: JAVA_TOOL_OPTIONS
