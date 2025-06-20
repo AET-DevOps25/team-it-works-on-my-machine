@@ -1,0 +1,21 @@
+meta {
+  name: ask
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{genai_url}}/ask
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "question": "What is the Rank of TUM?"
+  }
+}
+
+body:text {
+  Hello World
+}

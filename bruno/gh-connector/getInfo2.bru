@@ -1,11 +1,11 @@
 meta {
-  name: feignclient test
+  name: getInfo2
   type: http
-  seq: 3
+  seq: 5
 }
 
 get {
-  url: http://localhost:3000/getInfo2?repoUrl=https://github.com/AET-DevOps25/w06-template
+  url: {{gh_connector_url}}/getInfo2?repoUrl=https://github.com/AET-DevOps25/w06-template
   body: none
   auth: inherit
 }

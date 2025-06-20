@@ -1,0 +1,19 @@
+meta {
+  name: create user or update token
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{users_url}}/users
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "githubId": "abc",
+    "token": "123",
+    "username": "Max"
+  }
+}

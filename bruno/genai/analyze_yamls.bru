@@ -1,0 +1,26 @@
+meta {
+  name: analyze_yamls
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{genai_url}}/analyze-yamls
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "yamls": [
+      {
+        "filename": "build.yml",
+        "content": "\n    name: Build\n    on: push\n    jobs:\n      build:\n        runs-on: ubuntu-latest\n        steps:\n          - uses: actions/checkout@v2\n          - run: echo \"Building...\"\n    "
+      },
+      {
+        "filename": "test.yml",
+        "content": "\n    name: Test\n    on: pull_request\n    jobs:\n      test:\n        runs-on: ubuntu-latest\n        steps:\n          - uses: actions/setup-node@v2\n          - run: npm install\n          - run: npm test\n    "
+      }
+    ]
+  }
+}
