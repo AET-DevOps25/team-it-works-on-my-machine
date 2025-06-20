@@ -1,5 +1,6 @@
 package de.tum.users.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +21,7 @@ public class User {
     private String id;
 
     @Column(name = "github_id")
+    @JsonProperty("github_id")
     private String githubId;
 
     @Column(name = "username", updatable = false, nullable = false, unique = true)
