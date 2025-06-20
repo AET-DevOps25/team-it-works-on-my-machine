@@ -4,6 +4,7 @@ import de.tum.users.model.User;
 import de.tum.users.repository.UserRepository;
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,28 +27,35 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("/users/{username}")
-    public User getUser(@PathVariable String username) {
+    @GetMapping("/users/{id}")
+    public User getUser(@PathVariable String id) {
         return userRepository
-                .findByUsername(username)
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with username: " + username));
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
     }
 
-    @PostMapping("/users")
+    @PostMapping(value = "/users", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+    public String createUser(@RequestBody User user) {
+        var newUser = userRepository
+                .findByGithubId(user.getGithubId())
+                .map(existingUser -> {
+                    existingUser.setToken(user.getToken());
+                    return userRepository.save(existingUser);
+                })
+                .orElseGet(() -> userRepository.save(user));
+        userRepository.flush();
+        return newUser.getId();
     }
 
-    @DeleteMapping("/users/{username}")
+    @DeleteMapping("/users/{githubId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+    public void deleteUser(@PathVariable String githubId) {
+        User user = userRepository.findByGithubId(githubId).orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);
     }
 
-    @GetMapping(value = "/ping")
+    @GetMapping(value = "/ping", produces = MediaType.TEXT_PLAIN_VALUE)
     public String ping() {
         return "Pong from User Service\n";
     }

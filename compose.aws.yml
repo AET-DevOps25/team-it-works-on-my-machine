@@ -53,6 +53,7 @@ services:
     environment:
       - CLIENT_URL=${CLIENT_URL}
       - GENAI_URL=${GENAI_URL}
+      - USERS_URL=${USERS_URL}
       - GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
       - GH_OAUTH_CLIENT_SECRET=${GH_OAUTH_CLIENT_SECRET}
     restart: unless-stopped
