@@ -192,8 +192,9 @@ public class GhConnectorController {
     public String pingUser() {
         return "through GH-Connector: " + ghConnectorService.pingUserS();
     }
+
     @GetMapping(value = "/pinggenai")
     public String pingGenAI() {
-        return "through GH-Connector: " +  ghConnectorService.pingGenAI();
+        return "through GH-Connector: " + ghConnectorService.pingGenAI();
     }
 }

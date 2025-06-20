@@ -9,5 +9,4 @@ public interface UserSRestClient {
 
     @GetMapping(value = "/ping", produces = MediaType.TEXT_PLAIN_VALUE)
     String ping();
-
 }

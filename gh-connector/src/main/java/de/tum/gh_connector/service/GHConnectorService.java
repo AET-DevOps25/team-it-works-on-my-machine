@@ -20,7 +20,8 @@ public class GHConnectorService {
     private final UserSRestClient userSRestClient;
     private final GenAIRestClient genAIRestClient;
 
-    public GHConnectorService(GHRestClient ghRestClient, UserSRestClient userSRestClient, GenAIRestClient genAIRestClient) {
+    public GHConnectorService(
+            GHRestClient ghRestClient, UserSRestClient userSRestClient, GenAIRestClient genAIRestClient) {
         this.ghRestClient = ghRestClient;
         this.userSRestClient = userSRestClient;
         this.genAIRestClient = genAIRestClient;
