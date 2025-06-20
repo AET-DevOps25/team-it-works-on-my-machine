@@ -31,5 +31,12 @@ spec:
             - name: {{ .name }}
               value: "{{ .value }}"
             {{- end }}
+            {{- range $component.envFromSecret }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .secretName }}
+                  key: {{ .secretKey }}
+            {{- end }}
 ---
 {{- end }}
