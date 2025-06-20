@@ -1,0 +1,18 @@
+meta {
+  name: ping production
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://workflow-genie.student.k8s.aet.cit.tum.de/api/gh-connector/ping
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("ping should return", function () {
+    const data = res.getBody();
+    expect(res.getBody()).to.eql("Pong from GH-Connector\n");
+  });
+}

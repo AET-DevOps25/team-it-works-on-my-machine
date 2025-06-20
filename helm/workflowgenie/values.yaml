@@ -24,8 +24,10 @@ components:
         value: PREFIX_
       - name: PREFIX_GH_CONNECTOR_URL
         value: https://workflow-genie.student.k8s.aet.cit.tum.de/api/gh-connector
+    envFromSecrets:
       - name: PREFIX_GH_OAUTH_CLIENT_ID
-        value: HiXiyu
+        secretName: workflow-genie-secrets
+        secretKey: GH_OAUTH_CLIENT_ID
 
   ghconnector:
     image:
@@ -39,15 +41,18 @@ components:
     replicaCount: 1
     env:
       - name: CLIENT_URL
-        value: CLIENT_URL
+        value: https://workflow-genie.student.k8s.aet.cit.tum.de
       - name: GENAI_URL
         value: genai-service
-      - name: GH_OAUTH_CLIENT_ID
-        value: HiFelix
-      - name: GH_OAUTH_CLIENT_SECRET
-        value: ByeFelix
       - name: GH_CONNECTOR_PREFIX
         value: /api/gh-connector
+    envFromSecret:
+      - name: GH_OAUTH_CLIENT_ID
+        secretName: workflow-genie-secrets
+        secretKey: GH_OAUTH_CLIENT_ID
+      - name: GH_OAUTH_CLIENT_SECRET
+        secretName: workflow-genie-secrets
+        secretKey: GH_OAUTH_CLIENT_SECRET
 
   genai:
     image:
@@ -60,16 +65,16 @@ components:
       targetPort: 3001
     replicaCount: 1
     env:
+    envFromSecret:
       - name: OPENAI_API_KEY
-        value: ${OPENAI_API_KEY}
-      - name: GENAI_PORT
-        value: 3001
-      - name: GENAI_URL
-        value: ${GENAI_URL}
+        secretName: workflow-genie-secrets
+        secretKey: OPENAI_API_KEY
       - name: QDRANT_API_KEY
-        value: ${QDRANT_API_KEY}
+        secretName: workflow-genie-secrets
+        secretKey: QDRANT_API_KEY
       - name: QDRANT_URL
-        value: ${QDRANT_URL}
+        secretName: workflow-genie-secrets
+        secretKey: QDRANT_URL
 
   users:
     image:
