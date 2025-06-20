@@ -11,7 +11,6 @@ public class WorkflowFile {
     String content;
 
     public static WorkflowFile fromContentResponseItem(ContentResponseItem content) {
-        //        System.out.println(content.getContent().replace("\n", "").replace("\r", ""));
         byte[] decodedBytes = Base64.getDecoder()
                 .decode(content.getContent().replace("\n", "").replace("\r", ""));
 

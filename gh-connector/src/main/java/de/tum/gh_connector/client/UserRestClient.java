@@ -16,4 +16,7 @@ public interface UserRestClient {
 
     @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     User getUserById(@PathVariable("id") String id);
+
+    @GetMapping(value = "/ping", produces = MediaType.TEXT_PLAIN_VALUE)
+    String ping();
 }
