@@ -18,7 +18,7 @@ public interface UserRestClient {
         String createOrUpdateUser(@RequestBody User request);
 
     @GetMapping(
-            value = "users/{id}",
+            value = "/users/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     User getUserById(@PathVariable("id") String id);
