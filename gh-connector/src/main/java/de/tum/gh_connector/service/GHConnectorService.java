@@ -2,7 +2,7 @@ package de.tum.gh_connector.service;
 
 import de.tum.gh_connector.client.GHRestClient;
 import de.tum.gh_connector.client.GenAIRestClient;
-import de.tum.gh_connector.client.UserSRestClient;
+import de.tum.gh_connector.client.UserRestClient;
 import de.tum.gh_connector.dto.ContentResponseItem;
 import de.tum.gh_connector.dto.GHConnectorResponse;
 import de.tum.gh_connector.dto.WorkflowFile;
@@ -17,13 +17,13 @@ public class GHConnectorService {
 
     private final GHRestClient ghRestClient;
 
-    private final UserSRestClient userSRestClient;
+    private final UserRestClient userSRestClient;
     private final GenAIRestClient genAIRestClient;
 
     public GHConnectorService(
-            GHRestClient ghRestClient, UserSRestClient userSRestClient, GenAIRestClient genAIRestClient) {
+            GHRestClient ghRestClient, UserRestClient userRestClient, GenAIRestClient genAIRestClient) {
         this.ghRestClient = ghRestClient;
-        this.userSRestClient = userSRestClient;
+        this.userSRestClient = userRestClient;
         this.genAIRestClient = genAIRestClient;
     }
 
@@ -31,7 +31,6 @@ public class GHConnectorService {
 
         System.out.println("got called with: " + repoUri);
 
-        String contentPath;
         try {
             String ownerRepo = constructGHApiContentPath(repoUri);
             String[] ownerRepoParts = ownerRepo.split("/");
@@ -43,8 +42,6 @@ public class GHConnectorService {
         } catch (IllegalArgumentException e) {
             return constructError("There was an error while working with the provided URL: " + e.getMessage());
         }
-
-        //        return constructError("not implemented yet");
     }
 
     private GHConnectorResponse crawlWorkflows(String owner, String repo) {
