@@ -43,6 +43,9 @@ dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-webflux")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+	//Prometheus dependencies
+    implementation("io.micrometer:micrometer-registry-prometheus")
 }
 
 dependencyManagement {

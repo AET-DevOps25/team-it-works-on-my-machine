@@ -10,11 +10,12 @@ from pydantic import BaseModel
 from genai.rag.utils.retrieve_data import retrieve_text
 import traceback
 import uvicorn
+from prometheus_fastapi_instrumentator import Instrumentator
 
 load_dotenv()
 
 app = FastAPI()
-
+Instrumentator().instrument(app).expose(app)
 
 # Define the input types for the YAML files
 class YamlFile(BaseModel):
