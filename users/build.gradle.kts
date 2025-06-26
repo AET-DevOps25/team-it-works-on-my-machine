@@ -38,7 +38,7 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	//Prometheus dependencies
-    implementation("io.micrometer:micrometer-registry-prometheus:1.9.1")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 }
 
 tasks.withType<Test> {

@@ -45,8 +45,9 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
 	//Prometheus dependencies
-    implementation("io.micrometer:micrometer-registry-prometheus:1.9.1")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 }
+
 dependencyManagement {
 	imports {
 		mavenBom("org.springframework.cloud:spring-cloud-dependencies:2024.0.1")
