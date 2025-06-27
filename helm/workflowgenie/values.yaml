@@ -49,7 +49,9 @@ components:
       - name: GH_CONNECTOR_PREFIX
         value: /api/gh-connector
       - name: JAVA_TOOL_OPTIONS
-        value: -Djava.net.preferIPv4Stack=true
+        value: "-Djava.net.preferIPv4Stack=true"
+      - name: JAVA_TOOL_OPTIONS
+        value: "-Djava.net.preferIPv6Stack=false"
 
     envFromSecret:
       - name: GH_OAUTH_CLIENT_ID
