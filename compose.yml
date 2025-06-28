@@ -64,6 +64,8 @@ services:
     image: postgres:15-alpine
     ports:
       - "${USERS_DB_PORT}:5432"
+    volumes:
+      - users-db-storage:/var/lib/postgresql/data
     environment:
       -  POSTGRES_DB=users
       -  POSTGRES_USER=${USERS_DB_USERNAME}
@@ -126,8 +128,10 @@ services:
 
 
 volumes:
+  users-db-storage:
   prometheus_data:
   grafana-storage:
   loki-storage:
   promtail-storage:
+
 
