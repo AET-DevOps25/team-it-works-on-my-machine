@@ -1,9 +1,8 @@
 package de.tum.gh_connector.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class WorkflowExplanation {
@@ -18,5 +17,4 @@ public class WorkflowExplanation {
 
     @JsonProperty("detailed_analysis")
     String detailedAnalysis;
-
 }

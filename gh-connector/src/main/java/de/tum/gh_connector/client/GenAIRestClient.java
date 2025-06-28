@@ -14,6 +14,9 @@ public interface GenAIRestClient {
     @GetMapping(value = "/ping", produces = MediaType.TEXT_PLAIN_VALUE)
     String ping();
 
-    @PostMapping(value = "/analyze-yamls", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+            value = "/analyze-yamls",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     GenAIResponse analyzeYamls(@RequestBody GenAIRequest genAIRequest);
 }

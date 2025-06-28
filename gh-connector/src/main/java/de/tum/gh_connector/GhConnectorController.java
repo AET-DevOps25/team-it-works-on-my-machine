@@ -4,13 +4,11 @@ import de.tum.gh_connector.client.GHAPIRestClient;
 import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
 import de.tum.gh_connector.service.GHConnectorService;
-
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -125,8 +123,7 @@ public class GhConnectorController {
                 .uri(uri)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .toEntity(new ParameterizedTypeReference<>() {
-                });
+                .toEntity(new ParameterizedTypeReference<>() {});
 
         // Querry GenAI Service
         String files = repoContents.getBody().stream()
@@ -155,10 +152,10 @@ public class GhConnectorController {
     }
 
     @GetMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GHConnectorResponse> getInfo2(@RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
+    public ResponseEntity<GHConnectorResponse> getInfo2(
+            @RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
         GHConnectorResponse response = ghConnectorService.analyzeRepo(repoUrl, id);
         HttpStatus status = HttpStatus.resolve(response.getStatus()); // z.B. 200, 404, 500 etc.
-
 
         if (status == null) {
             status = HttpStatus.INTERNAL_SERVER_ERROR; // Fallback bei ungültigem Statuscode

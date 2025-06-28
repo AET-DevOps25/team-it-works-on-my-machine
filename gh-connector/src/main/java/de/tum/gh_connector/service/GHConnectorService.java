@@ -81,11 +81,9 @@ public class GHConnectorService {
             String repo = ownerRepoParts[1];
             assertWorkflowDirAccess(owner, repo, bearerToken);
 
-            List<WorkflowFile> yamls =  crawlWorkflows(owner, repo, bearerToken);
+            List<WorkflowFile> yamls = crawlWorkflows(owner, repo, bearerToken);
 
-            GenAIRequest genAIRequest = GenAIRequest.builder()
-                            .yamls(yamls)
-                            .build();
+            GenAIRequest genAIRequest = GenAIRequest.builder().yamls(yamls).build();
 
             GenAIResponse genAIResponse = genAIRestClient.analyzeYamls(genAIRequest);
             return GHConnectorResponse.fromGenAIResponse(genAIResponse);
@@ -108,7 +106,8 @@ public class GHConnectorService {
         return workflowFiles;
     }
 
-    private void crawlWorkflows(String owner, String repo, String searchPath, List<WorkflowFile> resulList, String bearerToken) {
+    private void crawlWorkflows(
+            String owner, String repo, String searchPath, List<WorkflowFile> resulList, String bearerToken) {
         List<ContentResponseItem> contents = ghAPIRestClient.getFolderContent(owner, repo, searchPath, bearerToken);
 
         for (ContentResponseItem item : contents) {
@@ -130,7 +129,8 @@ public class GHConnectorService {
         }
     }
 
-    private void assertWorkflowDirAccess(String owner, String repo, String bearerToken) throws IllegalArgumentException {
+    private void assertWorkflowDirAccess(String owner, String repo, String bearerToken)
+            throws IllegalArgumentException {
         try {
             ghAPIRestClient.getFolderContent(owner, repo, "", bearerToken);
         } catch (FeignException.NotFound e) {
