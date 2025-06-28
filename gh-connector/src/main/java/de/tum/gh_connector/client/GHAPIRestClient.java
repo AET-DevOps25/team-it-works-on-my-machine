@@ -1,16 +1,23 @@
 package de.tum.gh_connector.client;
 
 import de.tum.gh_connector.dto.ContentResponseItem;
+
 import java.util.List;
 import java.util.Map;
+
+import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "GHRestClient", url = "https://api.github.com", configuration = GHFeighConfig.class)
-public interface GHRestClient {
+@Headers({
+        "X-GitHub-Api-Version: 2022-11-28",
+        "Accept: application/vnd.github+json"
+})
+@FeignClient(name = "GHAPIRestClient", url = "https://api.github.com")
+public interface GHAPIRestClient {
 
     @GetMapping(
             value = "/repos/{owner}/{repo}/contents/{filepath}",
