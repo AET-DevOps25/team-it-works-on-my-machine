@@ -1,13 +1,20 @@
 package de.tum.gh_connector.dto;
 
 import java.util.Base64;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
-@Data
 @Builder
+@Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class WorkflowFile {
-    String name;
+
+    @JsonProperty("filename")
+    String fileName;
+
     String content;
 
     public static WorkflowFile fromContentResponseItem(ContentResponseItem content) {
@@ -15,7 +22,7 @@ public class WorkflowFile {
                 .decode(content.getContent().replace("\n", "").replace("\r", ""));
 
         return WorkflowFile.builder()
-                .name(content.getPath())
+                .fileName(content.getPath())
                 .content(new String(decodedBytes))
                 .build();
     }

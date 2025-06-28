@@ -76,13 +76,21 @@ public class GHConnectorService {
             String repo = ownerRepoParts[1];
             assertWorkflowDirAccess(owner, repo);
 
-            return crawlWorkflows(owner, repo);
+            List<WorkflowFile> yamls =  crawlWorkflows(owner, repo);
+
+            GenAIRequest genAIRequest = GenAIRequest.builder()
+                            .yamls(yamls)
+                            .build();
+
+            GenAIResponse genAIResponse = genAIRestClient.analyzeYamls(genAIRequest);
+            return GHConnectorResponse.fromGenAIResponse(genAIResponse);
+
         } catch (IllegalArgumentException e) {
             return constructError("There was an error while working with the provided URL: " + e.getMessage());
         }
     }
 
-    private GHConnectorResponse crawlWorkflows(String owner, String repo) {
+    private List<WorkflowFile> crawlWorkflows(String owner, String repo) {
         List<WorkflowFile> workflowFiles = new ArrayList<>();
 
         try {
@@ -92,7 +100,7 @@ public class GHConnectorService {
             e.printStackTrace();
         }
 
-        return GHConnectorResponse.builder().status(200).files(workflowFiles).build();
+        return workflowFiles;
     }
 
     private void crawlWorkflows(String owner, String repo, String searchPath, List<WorkflowFile> resulList) {

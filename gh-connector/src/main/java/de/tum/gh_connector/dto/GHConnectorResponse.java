@@ -11,5 +11,12 @@ import lombok.Data;
 public class GHConnectorResponse {
     int status;
     String message;
-    List<WorkflowFile> files;
+    List<WorkflowExplanation> results;
+
+    public static GHConnectorResponse fromGenAIResponse(GenAIResponse genAIResponse) {
+        return GHConnectorResponse.builder()
+                .status(200)
+                .results(genAIResponse.getResults())
+                .build();
+    }
 }
