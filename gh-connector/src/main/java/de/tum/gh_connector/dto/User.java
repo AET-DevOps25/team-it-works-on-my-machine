@@ -1,11 +1,11 @@
 package de.tum.gh_connector.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class User {
 
     private String id;
@@ -16,11 +16,4 @@ public class User {
     private String username;
     private String token;
 
-    public User() {}
-
-    public User(String githubId, String username, String token) {
-        this.githubId = githubId;
-        this.username = username;
-        this.token = token;
-    }
 }

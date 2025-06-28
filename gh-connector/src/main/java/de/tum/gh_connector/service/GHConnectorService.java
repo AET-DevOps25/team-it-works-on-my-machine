@@ -1,30 +1,67 @@
 package de.tum.gh_connector.service;
 
-import de.tum.gh_connector.client.GHRestClient;
+import de.tum.gh_connector.client.GHAPIRestClient;
+import de.tum.gh_connector.client.GHAuthClient;
 import de.tum.gh_connector.client.GenAIRestClient;
-import de.tum.gh_connector.client.UserRestClient;
-import de.tum.gh_connector.dto.ContentResponseItem;
-import de.tum.gh_connector.dto.GHConnectorResponse;
-import de.tum.gh_connector.dto.WorkflowFile;
+import de.tum.gh_connector.client.UserSRestClient;
+import de.tum.gh_connector.dto.*;
 import feign.FeignException;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class GHConnectorService {
 
-    private final GHRestClient ghRestClient;
+    private final GHAPIRestClient ghAPIRestClient;
+    private final GHAuthClient ghAuthClient;
 
-    private final UserRestClient userSRestClient;
+    private final UserSRestClient userSRestClient;
     private final GenAIRestClient genAIRestClient;
 
+    @Value("${gh.oauth.client.id}")
+    private String clientId;
+
+    @Value("${gh.oauth.client.secret}")
+    private String clientSecret;
+
     public GHConnectorService(
-            GHRestClient ghRestClient, UserRestClient userRestClient, GenAIRestClient genAIRestClient) {
-        this.ghRestClient = ghRestClient;
-        this.userSRestClient = userRestClient;
+            GHAPIRestClient ghAPIRestClient, UserSRestClient userSRestClient, GenAIRestClient genAIRestClient, GHAuthClient ghAuthClient) {
+        this.ghAPIRestClient = ghAPIRestClient;
+        this.userSRestClient = userSRestClient;
         this.genAIRestClient = genAIRestClient;
+        this.ghAuthClient = ghAuthClient;
+    }
+
+    public String performAuth(String code) {
+
+        GHAuthResponse ghAuthResponse = ghAuthClient.performAuth(code, clientId, clientSecret);
+        String accessToken = ghAuthResponse.getAccessToken();
+        String tokenType = ghAuthResponse.getTokenType();
+
+        if (accessToken == null || tokenType == null) {
+            return null;
+        }
+
+        String auth = tokenType + " " + accessToken;
+
+        Map<String, String> userResponse = ghAPIRestClient.getUserInfo(auth);
+        log.info("userResponse: {}", userResponse);
+
+        User user = User.builder()
+                .token(auth)
+                .githubId(userResponse.get("id"))
+                .username(userResponse.get("login"))
+                .build();
+
+        return userSRestClient.createOrUpdateUser(user);
     }
 
     public GHConnectorResponse analyzeRepo(String repoUri) {
@@ -58,7 +95,7 @@ public class GHConnectorService {
     }
 
     private void crawlWorkflows(String owner, String repo, String searchPath, List<WorkflowFile> resulList) {
-        List<ContentResponseItem> contents = ghRestClient.getFolderContent(owner, repo, searchPath);
+        List<ContentResponseItem> contents = ghAPIRestClient.getFolderContent(owner, repo, searchPath);
 
         for (ContentResponseItem item : contents) {
             try {
@@ -69,7 +106,7 @@ public class GHConnectorService {
 
                 if (item.getType().equals("file")
                         && (item.getName().endsWith(".yml") || item.getName().endsWith(".yaml"))) {
-                    ContentResponseItem contentItem = ghRestClient.getFileContent(owner, repo, item.getPath());
+                    ContentResponseItem contentItem = ghAPIRestClient.getFileContent(owner, repo, item.getPath());
                     resulList.add(WorkflowFile.fromContentResponseItem(contentItem));
                 }
             } catch (Exception e) {
@@ -81,14 +118,14 @@ public class GHConnectorService {
 
     private void assertWorkflowDirAccess(String owner, String repo) throws IllegalArgumentException {
         try {
-            ghRestClient.getFolderContent(owner, repo, "");
+            ghAPIRestClient.getFolderContent(owner, repo, "");
         } catch (FeignException.NotFound e) {
             throw new IllegalArgumentException(
                     "The specified Repository doesn't exist or you are not authorized to access it");
         }
 
         try {
-            ghRestClient.getFolderContent(owner, repo, "/.github/workflows");
+            ghAPIRestClient.getFolderContent(owner, repo, "/.github/workflows");
         } catch (FeignException.NotFound e) {
             throw new IllegalArgumentException("The specified Repository doesn't have a workflow directory");
         }

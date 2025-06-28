@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "UserRestClient", url = "${users.url}", configuration = GHFeighConfig.class)
-public interface UserRestClient {
+@FeignClient(name = "UserRestClient", url = "${users.url}")
+public interface UserSRestClient {
 
     @PostMapping(value = "/users", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     String createOrUpdateUser(@RequestBody User request);
