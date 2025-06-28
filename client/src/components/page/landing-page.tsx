@@ -99,18 +99,23 @@ function LandingPage() {
   return (
     <div className="container mx-auto p-6 text-center relative">
       <ModeToggle className="absolute top-4 right-4" />
+      <ul>
+        <li>Public Repo with simple workflows: </li>
+        <li>https://github.com/AET-DevOps25/w06-template</li>
+        <li>Jonas Private Repo:</li>
+        <li>https://github.com/Funky-Punky/bachelor-cellbase</li>
+      </ul>
       <h1 className="text-4xl font-extrabold text-primary mb-6 mt-16">
-        Workflow Geenie
+        Workflow Genie
       </h1>
       <div className="flex flex-col items-center gap-4">
         <Input
           type="search"
           placeholder="Insert GitHub Repo URL"
-          className={`w-full max-w-md p-3 rounded-lg ${
-            error
-              ? 'border-red-500 focus-visible:ring-red-300 hover:border-red-500'
-              : 'border-border hover:border-border'
-          }`}
+          className={`w-full max-w-md p-3 rounded-lg ${error
+            ? 'border-red-500 focus-visible:ring-red-300 hover:border-red-500'
+            : 'border-border hover:border-border'
+            }`}
           onKeyUp={(e) => {
             if (e.key === 'Enter') {
               void handleSearch()
