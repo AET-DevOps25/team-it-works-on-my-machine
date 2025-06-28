@@ -6,12 +6,10 @@ import de.tum.gh_connector.client.GenAIRestClient;
 import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
 import feign.FeignException;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,7 +31,10 @@ public class GHConnectorService {
     private String clientSecret;
 
     public GHConnectorService(
-            GHAPIRestClient ghAPIRestClient, UserSRestClient userSRestClient, GenAIRestClient genAIRestClient, GHAuthClient ghAuthClient) {
+            GHAPIRestClient ghAPIRestClient,
+            UserSRestClient userSRestClient,
+            GenAIRestClient genAIRestClient,
+            GHAuthClient ghAuthClient) {
         this.ghAPIRestClient = ghAPIRestClient;
         this.userSRestClient = userSRestClient;
         this.genAIRestClient = genAIRestClient;

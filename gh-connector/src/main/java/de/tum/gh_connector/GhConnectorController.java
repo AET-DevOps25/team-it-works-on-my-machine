@@ -1,7 +1,6 @@
 package de.tum.gh_connector;
 
 import de.tum.gh_connector.client.GHAPIRestClient;
-import de.tum.gh_connector.client.GHAuthClient;
 import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
 import de.tum.gh_connector.service.GHConnectorService;
@@ -38,7 +37,6 @@ public class GhConnectorController {
 
     @Value("${client.url}")
     private String clientUrl;
-
 
     private final GHConnectorService ghConnectorService;
 

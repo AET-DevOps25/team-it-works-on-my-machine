@@ -11,11 +11,9 @@ public interface GHAuthClient {
     @PostMapping(
             value = "/login/oauth/access_token",
             consumes = "application/x-www-form-urlencoded",
-            headers = "Accept=application/json"
-    )
+            headers = "Accept=application/json")
     GHAuthResponse performAuth(
             @RequestParam("code") String code,
             @RequestParam("client_id") String clientId,
-            @RequestParam("client_secret") String clientSecret
-    );
+            @RequestParam("client_secret") String clientSecret);
 }
