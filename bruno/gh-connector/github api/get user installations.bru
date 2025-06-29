@@ -1,0 +1,11 @@
+meta {
+  name: get user installations
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://api.github.com/user/installations
+  body: none
+  auth: inherit
+}

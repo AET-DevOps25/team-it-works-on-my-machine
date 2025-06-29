@@ -1,8 +1,16 @@
 meta {
   name: github api
-  seq: 2
 }
 
-auth {
-  mode: inherit
+headers {
+  Authorization: bearer {{process.env.GH_TOKEN}}
+}
+
+docs {
+  First you need to copy the `get code` url to the browser and authenticate.
+  
+  After that you will be redirected to `http://localhost:3000/code=...` where you will need to copy the code and insert it into the `code to accesstoken` request.
+  
+  After that you will receive an bearer token, which you need to insert into a `.env` file of the root of the bruno collection (`/bruno`) with key `GH_TOKEN=...`.
+  
 }

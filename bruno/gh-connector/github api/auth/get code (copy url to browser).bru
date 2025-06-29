@@ -1,0 +1,16 @@
+meta {
+  name: get code (copy url to browser)
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://github.com/login/oauth/authorize?client_id=Iv23li7Dwqwv5Ng24Li0&redirect_uri=http://localhost:3000/oauth/redirect
+  body: none
+  auth: inherit
+}
+
+params:query {
+  client_id: Iv23li7Dwqwv5Ng24Li0
+  redirect_uri: http://localhost:3000/oauth/redirect
+}

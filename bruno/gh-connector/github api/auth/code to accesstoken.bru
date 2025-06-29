@@ -1,0 +1,17 @@
+meta {
+  name: code to accesstoken
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://github.com/login/oauth/access_token
+  body: formUrlEncoded
+  auth: inherit
+}
+
+body:form-urlencoded {
+  code: 
+  client_id: {{process.env.GH_OAUTH_CLIENT_ID}}
+  client_secret: {{process.env.GH_OAUTH_CLIENT_SECRET}}
+}

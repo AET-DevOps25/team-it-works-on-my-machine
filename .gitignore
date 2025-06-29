@@ -379,3 +379,5 @@ sketch
 # gitignore template for Vue.js projects
 #
 # Recommended template: Node.gitignore
+
+bruno/.env

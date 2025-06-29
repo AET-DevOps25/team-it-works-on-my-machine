@@ -1,0 +1,15 @@
+meta {
+  name: get user installations repos
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://api.github.com/user/installations/:installationId/repositories
+  body: none
+  auth: inherit
+}
+
+params:path {
+  installationId: 
+}
