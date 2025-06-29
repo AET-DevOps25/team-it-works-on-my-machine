@@ -4,6 +4,7 @@ import { ModeToggle } from '../mode-toggle'
 import { useEffect, useState } from 'react'
 import Profile from '../profile/Profile'
 import type { OauthResponse, UserType } from '@/lib/types'
+import Cookies from 'universal-cookie'
 
 const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
 const GH_OAUTH_CLIENT_ID = import.meta.env.VITE_GH_OAUTH_CLIENT_ID
@@ -23,6 +24,9 @@ function Logout(p: {
       url.searchParams.delete('login')
       window.history.replaceState({}, document.title, url.toString())
     }
+    const cookies = new Cookies(document.cookie)
+    cookies.remove('id')
+    cookies.update()
   }
 
   return (
