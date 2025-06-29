@@ -95,7 +95,7 @@ public class GhConnectorController {
     }
 
     @GetMapping(value = "/getInfo-old", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GenAIAskResponse getInfo(
+    public GenAIAskResponse getInfoOld(
             @RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
         User user = getAuthToken(id);
 
@@ -152,7 +152,7 @@ public class GhConnectorController {
     }
 
     @GetMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GHConnectorResponse> getInfo2(
+    public ResponseEntity<GHConnectorResponse> getInfo(
             @RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
         GHConnectorResponse response = ghConnectorService.analyzeRepo(repoUrl, id);
         HttpStatus status = HttpStatus.resolve(response.getStatus()); // z.B. 200, 404, 500 etc.
