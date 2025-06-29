@@ -55,13 +55,13 @@ public class GHConnectorService {
 
         String auth = tokenType + " " + accessToken;
 
-        Map<String, String> userResponse = ghAPIRestClient.getUserInfo(auth);
+        Map<String, Object> userResponse = ghAPIRestClient.getUserInfo(auth);
         log.info("userResponse: {}", userResponse);
 
         User user = User.builder()
                 .token(auth)
-                .githubId(userResponse.get("id"))
-                .username(userResponse.get("login"))
+                .githubId((String) userResponse.get("id"))
+                .username((String) userResponse.get("login"))
                 .build();
 
         return userSRestClient.createOrUpdateUser(user);

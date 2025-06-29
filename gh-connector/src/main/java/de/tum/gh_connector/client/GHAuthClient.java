@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "GHAuthClient", url = "https://github.com")
+@FeignClient(name = "GHAuthClient", url = "https://github.com", configuration = FeignLogConfig.class)
 public interface GHAuthClient {
 
     @PostMapping(

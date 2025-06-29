@@ -38,5 +38,5 @@ public interface GHAPIRestClient {
             value = "/user",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Map<String, String> getUserInfo(@RequestHeader("Authorization") String bearerToken);
+    Map<String, Object> getUserInfo(@RequestHeader("Authorization") String bearerToken);
 }

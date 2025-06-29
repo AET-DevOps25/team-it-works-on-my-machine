@@ -72,7 +72,7 @@ public class GhConnectorController {
             return ResponseEntity.badRequest().body("Not authenticated");
         }
 
-        Map<String, String> userResponse;
+        Map<String, Object> userResponse;
         try {
             userResponse = ghAPIRestClient.getUserInfo(user.getToken());
         } catch (Exception ex) {

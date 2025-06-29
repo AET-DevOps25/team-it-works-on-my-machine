@@ -34,8 +34,8 @@ function Login() {
     console.log('login')
     // Function to redirect the user to the GitHub OAuth authorization page
     const redirect_uri = GH_CONNECTOR_URL + '/oauth/redirect'
-    const scope = 'read:user,repo'
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${GH_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri}&scope=${scope}`
+    // const scope = 'read:user,repo'
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${GH_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri}`
 
     window.location.href = authUrl
   }
@@ -112,11 +112,10 @@ function LandingPage() {
         <Input
           type="search"
           placeholder="Insert GitHub Repo URL"
-          className={`w-full max-w-md p-3 rounded-lg ${
-            error
+          className={`w-full max-w-md p-3 rounded-lg ${error
               ? 'border-red-500 focus-visible:ring-red-300 hover:border-red-500'
               : 'border-border hover:border-border'
-          }`}
+            }`}
           onKeyUp={(e) => {
             if (e.key === 'Enter') {
               void handleSearch()
