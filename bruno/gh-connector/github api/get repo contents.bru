@@ -1,11 +1,11 @@
 meta {
   name: get repo contents
   type: http
-  seq: 1
+  seq: 2
 }
 
 get {
-  url: https://api.github.com/repos/ls1intum/Artemis/contents/.browserslistrc
+  url: https://api.github.com/repos/Funky-Punky/bachelor-cellbase/contents/
   body: none
   auth: inherit
 }
@@ -13,4 +13,5 @@ get {
 headers {
   Accept: application/vnd.github+json
   X-GitHub-Api-Version: 2022-11-28
+  Authorization: bearer xxx
 }

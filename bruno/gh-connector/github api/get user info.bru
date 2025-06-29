@@ -1,0 +1,15 @@
+meta {
+  name: get user info
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://api.github.com/user
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: bearer xxx
+}

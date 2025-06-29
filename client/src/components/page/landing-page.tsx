@@ -34,8 +34,8 @@ function Login() {
     console.log('login')
     // Function to redirect the user to the GitHub OAuth authorization page
     const redirect_uri = GH_CONNECTOR_URL + '/oauth/redirect'
-    const scope = 'read:user,repo'
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${GH_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri}&scope=${scope}`
+    // const scope = 'read:user,repo'
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${GH_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri}`
 
     window.location.href = authUrl
   }
@@ -99,8 +99,14 @@ function LandingPage() {
   return (
     <div className="container mx-auto p-6 text-center relative">
       <ModeToggle className="absolute top-4 right-4" />
+      <ul>
+        <li>Public Repo with simple workflows: </li>
+        <li>https://github.com/AET-DevOps25/w06-template</li>
+        <li>Jonas Private Repo:</li>
+        <li>https://github.com/Funky-Punky/bachelor-cellbase</li>
+      </ul>
       <h1 className="text-4xl font-extrabold text-primary mb-6 mt-16">
-        Workflow Geenie
+        Workflow Genie
       </h1>
       <div className="flex flex-col items-center gap-4">
         <Input
