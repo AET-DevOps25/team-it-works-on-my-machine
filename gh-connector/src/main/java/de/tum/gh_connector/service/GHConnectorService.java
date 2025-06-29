@@ -119,7 +119,8 @@ public class GHConnectorService {
 
                 if (item.getType().equals("file")
                         && (item.getName().endsWith(".yml") || item.getName().endsWith(".yaml"))) {
-                    ContentResponseItem contentItem = ghAPIRestClient.getFileContent(owner, repo, item.getPath(), bearerToken);
+                    ContentResponseItem contentItem =
+                            ghAPIRestClient.getFileContent(owner, repo, item.getPath(), bearerToken);
                     resulList.add(WorkflowFile.fromContentResponseItem(contentItem));
                 }
             } catch (Exception e) {
