@@ -17,6 +17,12 @@ function Logout(p: {
     localStorage.removeItem('login')
     p.setLoggedIn(false)
     p.setData(null)
+    // Remove "login=success" from the URL if present
+    const url = new URL(window.location.href)
+    if (url.searchParams.has('login')) {
+      url.searchParams.delete('login')
+      window.history.replaceState({}, document.title, url.toString())
+    }
   }
 
   return (
