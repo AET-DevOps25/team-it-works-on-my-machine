@@ -27,3 +27,11 @@ Alternativaly install eveything manually according to the instructions in the su
 2. GenAI README: [README](https://github.com/AET-DevOps25/team-it-works-on-my-machine/blob/main/genai/README.md)
 3. Client README: [README](https://github.com/AET-DevOps25/team-it-works-on-my-machine/blob/main/client/README.md)
 
+```bash
+cat >/etc/resolv.conf << EOF
+search generic-namespace.svc.cluster.local svc.cluster.local cluster.local aet.cit.tum.de cit.tum.de in.tum.de ase.in.tum.de
+nameserver 198.19.0.10
+nameserver 2a09:80c0:88::11:ffff:a
+options ndots:5
+EOF
+```
