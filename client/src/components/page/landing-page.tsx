@@ -56,6 +56,23 @@ function Login() {
   )
 }
 
+function InstallApp() {
+  function handleInstall() {
+    console.log('install')
+    // Open the GitHub App installation page in a new tab
+    const installUrl = `https://github.com/apps/devops-workflowgenie-2025/installations/select_target`
+    window.open(installUrl, '_blank', 'noopener,noreferrer')
+  }
+  return (
+    <Button
+      className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
+      onClick={handleInstall}
+    >
+      Install App on GitHub
+    </Button>
+  )
+}
+
 function LandingPage() {
   const [repoUrl, setRepoUrl] = useState('')
   const [error, setError] = useState(false)
@@ -147,6 +164,7 @@ function LandingPage() {
           ) : (
             <Login />
           )}
+          {isLoggedIn && <InstallApp />}
         </div>
         {data && <Profile user={data as UserType} />}
       </div>
