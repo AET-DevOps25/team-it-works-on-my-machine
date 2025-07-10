@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: AWS
-      url: 'https://client.${{ inputs.EC2_PUBLIC_IP }}.nip.io'
+      url: 'https://${{ inputs.EC2_PUBLIC_IP }}.nip.io'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
