@@ -26,6 +26,13 @@ spec:
                 name: ghconnector-service
                 port:
                   number: {{ .Values.components.ghconnector.service.port }}
+          - path: /api/users/
+            pathType: Prefix
+            backend:
+              service:
+                name: users-service
+                port:
+                  number: {{ .Values.components.ghconnector.service.port }}
           - path: /
             pathType: Prefix
             backend:

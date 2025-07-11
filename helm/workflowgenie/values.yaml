@@ -100,6 +100,8 @@ components:
         value: postgres
       - name: USERS_DB_PASSWORD
         value: 123456
+      - name: USERS_PREFIX
+        value: /api/users
 
   usersdb:
     image:
