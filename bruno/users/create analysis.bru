@@ -1,0 +1,22 @@
+meta {
+  name: create analysis
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{users_url}}/users/:userId/analysis
+  body: json
+  auth: none
+}
+
+params:path {
+  userId: d6774930-4522-48a3-8698-b714f7f46247
+}
+
+body:json {
+  {
+    "content": "hello",
+    "repository": "abc"
+  }
+}
