@@ -11,7 +11,6 @@ services:
       - "--entrypoints.gh_connector.address=:${GH_CONNECTOR_PORT}"
       - "--entrypoints.genai.address=:${GENAI_PORT}"
       - "--entrypoints.users.address=:${USERS_PORT}"
-      - "--entrypoints.users_db.address=:${USERS_DB_PORT}"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.letsencrypt.acme.email=admin@tum.de"
@@ -83,7 +82,7 @@ services:
   users:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/users:latest
     environment:
-      - USERS_DB_HOST=${USERS_DB_HOST}
+      - USERS_DB_HOST=users-db
       - USERS_DB_USERNAME=${USERS_DB_USERNAME}
       - USERS_DB_PASSWORD=${USERS_DB_PASSWORD}
     restart: unless-stopped
@@ -101,9 +100,3 @@ services:
       -  POSTGRES_USER=${USERS_DB_USERNAME}
       -  POSTGRES_PASSWORD=${USERS_DB_PASSWORD}
     restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.users-db.rule=Host(`${USERS_DB_HOST}`)"
-      - "traefik.http.services.users-db.loadbalancer.server.port=${USERS_DB_PORT}"
-      - "traefik.http.routers.users-db.entrypoints=users_db"
-      - "traefik.http.routers.users-db.tls.certresolver=letsencrypt"
