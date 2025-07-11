@@ -45,7 +45,7 @@ components:
       - name: GENAI_URL
         value: genai-service:3001
       - name: USERS_URL
-        value: users-service:3002
+        value: users-service:3002/api/users
       - name: GH_CONNECTOR_PREFIX
         value: /api/gh-connector
       - name: JAVA_TOOL_OPTIONS

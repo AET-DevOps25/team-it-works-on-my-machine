@@ -32,7 +32,7 @@ spec:
               service:
                 name: users-service
                 port:
-                  number: {{ .Values.components.ghconnector.service.port }}
+                  number: {{ .Values.components.users.service.port }}
           - path: /
             pathType: Prefix
             backend:
