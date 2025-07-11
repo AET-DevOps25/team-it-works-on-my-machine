@@ -1,0 +1,24 @@
+meta {
+  name: delete analysis
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{users_url}}/users/:userId/analysis/:analysisId
+  body: json
+  auth: none
+}
+
+params:path {
+  userId: 
+  analysisId: 
+}
+
+body:json {
+  {
+    "githubId": "abc",
+    "token": "123",
+    "username": "Max"
+  }
+}
