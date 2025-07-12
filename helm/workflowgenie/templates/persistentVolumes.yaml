@@ -1,0 +1,17 @@
+{{- range $componentName, $component := .Values.components }}
+  {{- range $component.volumes }}
+  kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: {{ .name }}-claim
+  spec:
+    storageClassName: csi-rbd-sc
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: {{ .storage }}
+
+  {{- end }}
+---
+{{- end }}

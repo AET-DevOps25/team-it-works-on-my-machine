@@ -38,5 +38,17 @@ spec:
                   name: {{ .secretName }}
                   key: {{ .secretKey }}
             {{- end }}
+          volumeMounts:
+            {{- range $component.volumes }}
+            - mountPath: {{ .mountPath }}
+              name: {{ .name }}
+            {{- end }}
+      volumes:
+        {{- range $component.volumes }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .name }}-claim
+        {{- end }}
+        
 ---
 {{- end }}
