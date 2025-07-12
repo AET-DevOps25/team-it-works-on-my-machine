@@ -94,63 +94,6 @@ public class GhConnectorController {
         }
     }
 
-    @GetMapping(value = "/getInfo-old", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GenAIAskResponse getInfoOld(
-            @RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
-        User user = getAuthToken(id);
-
-        log.debug("got getinfo call {}", repoUrl);
-
-        String uri = repoUrl.replace("github.com", "api.github.com/repos") + "/contents";
-
-        // Create Gitub Rest Client
-        RestClient GHRestClient;
-        if (user == null) {
-            GHRestClient = RestClient.builder()
-                    .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github.raw+json")
-                    .defaultHeader("X-GitHub-Api-Version", "2022-11-28")
-                    .build();
-        } else {
-            GHRestClient = RestClient.builder()
-                    .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github.raw+json")
-                    .defaultHeader("X-GitHub-Api-Version", "2022-11-28")
-                    .defaultHeader("Authorization", user.getToken())
-                    .build();
-        }
-
-        // Get Repo Contents
-        ResponseEntity<List<ContentResponseItem>> repoContents = GHRestClient.get()
-                .uri(uri)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .toEntity(new ParameterizedTypeReference<>() {});
-
-        // Querry GenAI Service
-        String files = repoContents.getBody().stream()
-                .map(ContentResponseItem::getPath)
-                .collect(Collectors.joining(", "));
-
-        Map<String, Object> genAIRequest = new HashMap<>();
-        genAIRequest.put(
-                "question",
-                "Guess what this code project could be about based on these filenames from the root directory. But write only one sentence: "
-                        + files);
-
-        WebClient webClient = WebClient.create(genaiUrl);
-
-        GenAIAskResponse resp = webClient
-                .post()
-                .uri("/ask")
-                .header("Content-Type", "application/json")
-                .bodyValue(genAIRequest)
-                .retrieve()
-                .bodyToMono(GenAIAskResponse.class)
-                .block();
-
-        System.out.println(resp.getResponse());
-        return resp;
-    }
-
     @GetMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GHConnectorResponse> getInfo(
             @RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {

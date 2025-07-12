@@ -44,7 +44,6 @@ public class GHConnectorService {
     }
 
     public String performAuth(String code) {
-
         GHAuthResponse ghAuthResponse = ghAuthClient.performAuth(code, clientId, clientSecret);
         String accessToken = ghAuthResponse.getAccessToken();
         String tokenType = ghAuthResponse.getTokenType();
@@ -133,14 +132,15 @@ public class GHConnectorService {
     private void assertWorkflowDirAccess(String owner, String repo, String bearerToken)
             throws IllegalArgumentException {
         try {
-            ghAPIRestClient.getFolderContent(owner, repo, "", bearerToken);
+            var x = ghAPIRestClient.getFolderContent(owner, repo, "", bearerToken);
+            System.out.println(x);
         } catch (FeignException.NotFound e) {
             throw new IllegalArgumentException(
                     "The specified Repository doesn't exist or you are not authorized to access it");
         }
 
         try {
-            ghAPIRestClient.getFolderContent(owner, repo, "/.github/workflows", bearerToken);
+            ghAPIRestClient.getFolderContent(owner, repo, ".github/workflows", bearerToken);
         } catch (FeignException.NotFound e) {
             throw new IllegalArgumentException("The specified Repository doesn't have a workflow directory");
         }
@@ -150,7 +150,7 @@ public class GHConnectorService {
         URI uri = URI.create(repoUri);
 
         if (!"https".equals(uri.getScheme())) {
-            throw new IllegalArgumentException("The provided URL is not HTTPS: " + uri);
+            throw new IllegalArgumentException("The provided URL is not HTTPS");
         }
 
         if (!"github.com".equals(uri.getHost())) {
@@ -159,12 +159,12 @@ public class GHConnectorService {
 
         String path = uri.getPath();
         if (path == null || path.isEmpty()) {
-            throw new IllegalArgumentException("URL has no specified path.");
+            throw new IllegalArgumentException("URL has no specified path");
         }
 
         String[] pathParts = path.split("/");
         if (pathParts.length < 3 || "".equals(pathParts[1]) || "".equals(pathParts[2])) {
-            throw new IllegalArgumentException("URL Path is not long enough - The repository is not clear.");
+            throw new IllegalArgumentException("URL Path is not long enough - The repository is not clear");
         }
 
         if (!"".equals(pathParts[0])) {
