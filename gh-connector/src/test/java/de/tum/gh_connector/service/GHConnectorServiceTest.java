@@ -1,5 +1,9 @@
 package de.tum.gh_connector.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import de.tum.gh_connector.client.GHAPIRestClient;
 import de.tum.gh_connector.client.GHAuthClient;
 import de.tum.gh_connector.client.GenAIRestClient;
@@ -7,31 +11,27 @@ import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
 import feign.FeignException;
 import feign.Request;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
 class GHConnectorServiceTest {
 
     @Mock
     private GHAPIRestClient ghAPIRestClient;
+
     @Mock
     private GHAuthClient ghAuthClient;
 
     @Mock
     private UserSRestClient userSRestClient;
+
     @Mock
     private GenAIRestClient genAIRestClient;
 
@@ -51,7 +51,7 @@ class GHConnectorServiceTest {
             .name("item2.yaml")
             .path(".github/workflows/item2.yaml")
             .type("file")
-            .content("Y29udGVudDI=")  // "content2"
+            .content("Y29udGVudDI=") // "content2"
             .build();
 
     ContentResponseItem dir = ContentResponseItem.builder()
@@ -64,15 +64,23 @@ class GHConnectorServiceTest {
             .name("item3.yml")
             .path(".github/workflows/dir/item3.yml")
             .type("file")
-            .content("Y29udGVudDM=")  // "content3"
+            .content("Y29udGVudDM=") // "content3"
             .build();
 
     GenAIRequest genAIRequest = GenAIRequest.builder()
             .yamls(List.of(
-                    WorkflowFile.builder().fileName(".github/workflows/item1.yml").content("content1").build(),
-                    WorkflowFile.builder().fileName(".github/workflows/item2.yaml").content("content2").build(),
-                    WorkflowFile.builder().fileName(".github/workflows/dir/item3.yml").content("content3").build()
-            ))
+                    WorkflowFile.builder()
+                            .fileName(".github/workflows/item1.yml")
+                            .content("content1")
+                            .build(),
+                    WorkflowFile.builder()
+                            .fileName(".github/workflows/item2.yaml")
+                            .content("content2")
+                            .build(),
+                    WorkflowFile.builder()
+                            .fileName(".github/workflows/dir/item3.yml")
+                            .content("content3")
+                            .build()))
             .build();
 
     GenAIResponse genAIResponse = GenAIResponse.builder()
@@ -107,9 +115,8 @@ class GHConnectorServiceTest {
 
     @Test
     void performAuthNoType() {
-        GHAuthResponse ghAuthResponse = GHAuthResponse.builder()
-                .accessToken("token")
-                .build();
+        GHAuthResponse ghAuthResponse =
+                GHAuthResponse.builder().accessToken("token").build();
 
         when(ghAuthClient.performAuth("code", null, null)).thenReturn(ghAuthResponse);
         assertNull(ghConnectorService.performAuth("code"));
@@ -117,9 +124,8 @@ class GHConnectorServiceTest {
 
     @Test
     void performAuthNoToken() {
-        GHAuthResponse ghAuthResponse = GHAuthResponse.builder()
-                .tokenType("Bearer")
-                .build();
+        GHAuthResponse ghAuthResponse =
+                GHAuthResponse.builder().tokenType("Bearer").build();
 
         when(ghAuthClient.performAuth("code", null, null)).thenReturn(ghAuthResponse);
         assertNull(ghConnectorService.performAuth("code"));
@@ -141,12 +147,17 @@ class GHConnectorServiceTest {
 
     @Test
     void analyzeRepoTest() {
-        when(ghAPIRestClient.getFolderContent("ls1intum", "Artemis", ".github/workflows", null)).thenReturn(List.of(item1, item2, dir));
-        when(ghAPIRestClient.getFolderContent("ls1intum", "Artemis", ".github/workflows/dir", null)).thenReturn(List.of(item3));
+        when(ghAPIRestClient.getFolderContent("ls1intum", "Artemis", ".github/workflows", null))
+                .thenReturn(List.of(item1, item2, dir));
+        when(ghAPIRestClient.getFolderContent("ls1intum", "Artemis", ".github/workflows/dir", null))
+                .thenReturn(List.of(item3));
 
-        when(ghAPIRestClient.getFileContent("ls1intum", "Artemis", ".github/workflows/item1.yml", null)).thenReturn(item1);
-        when(ghAPIRestClient.getFileContent("ls1intum", "Artemis", ".github/workflows/item2.yaml", null)).thenReturn(item2);
-        when(ghAPIRestClient.getFileContent("ls1intum", "Artemis", ".github/workflows/dir/item3.yml", null)).thenReturn(item3);
+        when(ghAPIRestClient.getFileContent("ls1intum", "Artemis", ".github/workflows/item1.yml", null))
+                .thenReturn(item1);
+        when(ghAPIRestClient.getFileContent("ls1intum", "Artemis", ".github/workflows/item2.yaml", null))
+                .thenReturn(item2);
+        when(ghAPIRestClient.getFileContent("ls1intum", "Artemis", ".github/workflows/dir/item3.yml", null))
+                .thenReturn(item3);
 
         when(genAIRestClient.analyzeYamls(genAIRequest)).thenReturn(genAIResponse);
 
@@ -158,13 +169,15 @@ class GHConnectorServiceTest {
         assertEquals(
                 GHConnectorResponse.builder()
                         .status(400)
-                        .message("There was an error while working with the provided URL: The provided URL is not HTTPS")
+                        .message(
+                                "There was an error while working with the provided URL: The provided URL is not HTTPS")
                         .build(),
                 ghConnectorService.analyzeRepo("http://github.com/ls1intum/Artemis", "id"));
         assertEquals(
                 GHConnectorResponse.builder()
                         .status(400)
-                        .message("There was an error while working with the provided URL: URL does not point to github.com")
+                        .message(
+                                "There was an error while working with the provided URL: URL does not point to github.com")
                         .build(),
                 ghConnectorService.analyzeRepo("https://gitlab.com/ls1intum/Artemis", "id"));
         assertEquals(
@@ -176,7 +189,8 @@ class GHConnectorServiceTest {
         assertEquals(
                 GHConnectorResponse.builder()
                         .status(400)
-                        .message("There was an error while working with the provided URL: URL Path is not long enough - The repository is not clear")
+                        .message(
+                                "There was an error while working with the provided URL: URL Path is not long enough - The repository is not clear")
                         .build(),
                 ghConnectorService.analyzeRepo("https://github.com/Artemis", "id"));
     }
@@ -184,13 +198,15 @@ class GHConnectorServiceTest {
     @Test
     void testInvalidRepo() {
         Map<String, Collection<String>> myMap = new HashMap<>();
-        FeignException.NotFound notFound = new FeignException.NotFound(null, Request.create(Request.HttpMethod.GET,"", myMap, (byte[]) null, null), null, null);
+        FeignException.NotFound notFound = new FeignException.NotFound(
+                null, Request.create(Request.HttpMethod.GET, "", myMap, (byte[]) null, null), null, null);
         when(ghAPIRestClient.getFolderContent("hello", "world", "", null)).thenThrow(notFound);
 
         assertEquals(
                 GHConnectorResponse.builder()
                         .status(400)
-                        .message("There was an error while working with the provided URL: The specified Repository doesn't exist or you are not authorized to access it")
+                        .message(
+                                "There was an error while working with the provided URL: The specified Repository doesn't exist or you are not authorized to access it")
                         .build(),
                 ghConnectorService.analyzeRepo("https://github.com/hello/world", "id"));
     }
@@ -198,13 +214,16 @@ class GHConnectorServiceTest {
     @Test
     void testNoWorkflowDir() {
         Map<String, Collection<String>> myMap = new HashMap<>();
-        FeignException.NotFound notFound = new FeignException.NotFound(null, Request.create(Request.HttpMethod.GET,"", myMap, (byte[]) null, null), null, null);
-        when(ghAPIRestClient.getFolderContent("hello", "world", ".github/workflows", null)).thenThrow(notFound);
+        FeignException.NotFound notFound = new FeignException.NotFound(
+                null, Request.create(Request.HttpMethod.GET, "", myMap, (byte[]) null, null), null, null);
+        when(ghAPIRestClient.getFolderContent("hello", "world", ".github/workflows", null))
+                .thenThrow(notFound);
 
         assertEquals(
                 GHConnectorResponse.builder()
                         .status(400)
-                        .message("There was an error while working with the provided URL: The specified Repository doesn't have a workflow directory")
+                        .message(
+                                "There was an error while working with the provided URL: The specified Repository doesn't have a workflow directory")
                         .build(),
                 ghConnectorService.analyzeRepo("https://github.com/hello/world", "id"));
     }
