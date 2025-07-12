@@ -132,8 +132,7 @@ public class GHConnectorService {
     private void assertWorkflowDirAccess(String owner, String repo, String bearerToken)
             throws IllegalArgumentException {
         try {
-            var x = ghAPIRestClient.getFolderContent(owner, repo, "", bearerToken);
-            System.out.println(x);
+            ghAPIRestClient.getFolderContent(owner, repo, "", bearerToken);
         } catch (FeignException.NotFound e) {
             throw new IllegalArgumentException(
                     "The specified Repository doesn't exist or you are not authorized to access it");
