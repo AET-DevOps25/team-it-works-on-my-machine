@@ -115,7 +115,7 @@ components:
     replicaCount: 1
     volumes:
       - name: usersdb-volume
-        mountPath: /var/lib/postgresql/data/pgdata
+        mountPath: /var/lib/postgresql/data
         storage: 1Gi
     env:
       - name: POSTGRES_DB
