@@ -113,6 +113,10 @@ components:
       port: 5432
       targetPort: 5432
     replicaCount: 1
+    volumes:
+      - name: usersdb-volume
+        mountPath: /var/lib/postgresql/data
+        storage: 1Gi
     env:
       - name: POSTGRES_DB
         value: users
@@ -120,6 +124,8 @@ components:
         value: postgres
       - name: POSTGRES_PASSWORD
         value: 123456
+      - name: PGDATA
+        value: /var/lib/postgresql/data/pgdata
 
 ingress:
   enabled: true
