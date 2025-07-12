@@ -43,11 +43,6 @@ class GhConnectorControllerTest {
     }
 
     @Test
-    void helloIAlwaysFail() {
-        fail();
-    }
-
-    @Test
     void testPing() {
         String ret = ghConnectorController.ping();
         assertEquals("Pong from GH-Connector\n", ret);
