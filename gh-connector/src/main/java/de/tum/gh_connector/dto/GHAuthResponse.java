@@ -1,8 +1,10 @@
 package de.tum.gh_connector.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 public class GHAuthResponse {
     @JsonProperty("token_type")

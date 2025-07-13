@@ -5,13 +5,9 @@ import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
 import de.tum.gh_connector.service.GHConnectorService;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,8 +17,6 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
@@ -92,63 +86,6 @@ public class GhConnectorController {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Error fetching user data from GitHub: " + ex.getMessage());
         }
-    }
-
-    @GetMapping(value = "/getInfo-old", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GenAIAskResponse getInfoOld(
-            @RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
-        User user = getAuthToken(id);
-
-        log.debug("got getinfo call {}", repoUrl);
-
-        String uri = repoUrl.replace("github.com", "api.github.com/repos") + "/contents";
-
-        // Create Gitub Rest Client
-        RestClient GHRestClient;
-        if (user == null) {
-            GHRestClient = RestClient.builder()
-                    .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github.raw+json")
-                    .defaultHeader("X-GitHub-Api-Version", "2022-11-28")
-                    .build();
-        } else {
-            GHRestClient = RestClient.builder()
-                    .defaultHeader(HttpHeaders.ACCEPT, "application/vnd.github.raw+json")
-                    .defaultHeader("X-GitHub-Api-Version", "2022-11-28")
-                    .defaultHeader("Authorization", user.getToken())
-                    .build();
-        }
-
-        // Get Repo Contents
-        ResponseEntity<List<ContentResponseItem>> repoContents = GHRestClient.get()
-                .uri(uri)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .toEntity(new ParameterizedTypeReference<>() {});
-
-        // Querry GenAI Service
-        String files = repoContents.getBody().stream()
-                .map(ContentResponseItem::getPath)
-                .collect(Collectors.joining(", "));
-
-        Map<String, Object> genAIRequest = new HashMap<>();
-        genAIRequest.put(
-                "question",
-                "Guess what this code project could be about based on these filenames from the root directory. But write only one sentence: "
-                        + files);
-
-        WebClient webClient = WebClient.create(genaiUrl);
-
-        GenAIAskResponse resp = webClient
-                .post()
-                .uri("/ask")
-                .header("Content-Type", "application/json")
-                .bodyValue(genAIRequest)
-                .retrieve()
-                .bodyToMono(GenAIAskResponse.class)
-                .block();
-
-        System.out.println(resp.getResponse());
-        return resp;
     }
 
     @GetMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE)
