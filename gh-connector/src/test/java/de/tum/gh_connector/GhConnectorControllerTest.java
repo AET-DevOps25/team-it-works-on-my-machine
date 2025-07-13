@@ -31,9 +31,6 @@ class GhConnectorControllerTest {
 
     @BeforeEach
     void setUp() {
-        // if i uncomment this line the mocks don't get replaced correctly.
-        // i realize, that this makes no fucking sense, but i cant be bothered to look into it any further.
-        //        MockitoAnnotations.openMocks(this);
         user = User.builder()
                 .githubId("ghid")
                 .id("wgid")
