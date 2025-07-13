@@ -1,7 +1,7 @@
 import time
 from typing import List
 
-from fastapi import FastAPI, Body, HTTPException
+from fastapi import FastAPI, HTTPException
 from langchain_core.utils import secret_from_env
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
