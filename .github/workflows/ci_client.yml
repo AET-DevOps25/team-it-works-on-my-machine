@@ -36,3 +36,5 @@ jobs:
         run: pnpm run format:check
       - name: Run Tests
         run: pnpm run test
+      - name: Run Build
+        run: pnpm run build
