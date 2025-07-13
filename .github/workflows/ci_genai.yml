@@ -29,4 +29,5 @@ jobs:
       - name: Lint & typecheck code
         run: uvx ruff check && uvx ty check
       - name: Run tests
-        run: uvx pytest --cov=genai --cov-report=xml --cov-report=html --cov-report=term-missing
+        run: |
+          PYTHONPATH=genai uvx pytest --cov=genai --cov-report=xml --cov-report=html --cov-report=term-missing
