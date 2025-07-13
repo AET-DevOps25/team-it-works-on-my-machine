@@ -29,5 +29,4 @@ jobs:
       - name: Lint & typecheck code
         run: uvx ruff check && uvx ty check
       - name: Run tests
-        run: |
-          PYTHONPATH=genai uvx pytest 
+        run: pytest
