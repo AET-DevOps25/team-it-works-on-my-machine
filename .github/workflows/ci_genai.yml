@@ -29,4 +29,4 @@ jobs:
       - name: Lint & typecheck code
         run: uvx ruff check && uvx ty check
       - name: Run tests
-        run: PYTHONPATH=. uvx pytest
+        run: uv run pytest

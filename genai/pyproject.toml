@@ -29,5 +29,7 @@ module-root = ""
 
 [dependency-groups]
 dev = [
+    "fastapi>=0.115.13",
     "pytest>=8.4.1",
+    "python-dotenv>=1.1.0",
 ]
