@@ -14,10 +14,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+@SpringBootTest
 class UserControllerTest {
     @Mock
     private UserRepository userRepository;
@@ -33,7 +34,6 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         user = new User("ghid", "username", "token");
         user.setId("12345678");
         user.setAnalysis(new ArrayList<>());
