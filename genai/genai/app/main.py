@@ -1,7 +1,7 @@
 import time
 from typing import List
 
-from fastapi import FastAPI, Body, HTTPException
+from fastapi import FastAPI, HTTPException
 from langchain_core.utils import secret_from_env
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
@@ -41,15 +41,6 @@ def create_chain():
 
 
 chain = create_chain()
-
-
-@app.post("/ask")
-async def ask_question(payload: dict = Body(...)):
-    question = payload["question"]
-    response = chain.invoke({"question": question})
-    return {"response": response.content}
-
-
 @app.get("/ping")
 async def ping():
     return "Pong from GenAI Service"
