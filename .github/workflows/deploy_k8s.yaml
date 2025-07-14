@@ -12,7 +12,7 @@ jobs:
     runs-on: "ubuntu-latest"
     environment:
       name: Kubernetes
-      url: 'https://workflow-genie.student.k8s.aet.cit.tum.de'
+      url: "https://workflow-genie.student.k8s.aet.cit.tum.de"
 
     steps:
       - name: Checkout code
@@ -36,3 +36,4 @@ jobs:
           cd helm/workflowgenie
           helm upgrade --debug --install -n generic-namespace workflow-genie .
           kubectl rollout restart deployment -n generic-namespace
+          kubectl rollout restart deployment -n monitoring-womm
