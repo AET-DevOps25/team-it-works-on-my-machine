@@ -1,0 +1,29 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "monitoring-womm"
+  {{- $annotations := .Values.ingress.annotations | default dict }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.tls }}
+  tls:
+    - hosts:
+        - "{{ .Values.meta.monitoringurl }}"
+      secretName: "{{ .Values.meta.monitoringname }}-tls"
+  {{- end }}
+  rules:
+    - host: "{{ .Values.meta.monitoringurl }}"
+      http:
+        paths:
+          - path: /prometheus/
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-service
+                port:
+                  number: {{ .Values.components.prometheus.service.port }}
+{{- end }}

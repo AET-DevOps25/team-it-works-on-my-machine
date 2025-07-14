@@ -77,13 +77,8 @@ services:
     ports:
       - "${PROMETHEUS_PORT}:9090"
     volumes:
-      - ./prometheus/prometheus.yml.templage:/etc/prometheus/prometheus.yml.template:ro
-      - ./prometheus/entrypoint.sh:/entrypoint.sh:ro
+      - ./prometheus/prometheus.local.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
-    environment:
-      - GH_CONNECTOR_URL=http://gh-connector${GH_CONNECTOR_PORT}
-      - GENAI_URL=http://genai-python:${GENAI_PORT}
-      - USERS_URL=http://users:${USERS_PORT}
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -91,7 +86,6 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--web.enable-lifecycle'
     restart: unless-stopped
-    entrypoint: ["/bin/sh", "/entrypoint.sh"]
 
   grafana:
     image: grafana/grafana-oss:latest
