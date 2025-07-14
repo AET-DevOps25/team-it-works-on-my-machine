@@ -2,18 +2,17 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
-  - job_name: "users"
-    metrics_path: "/actuator/prometheus"
-    static_configs:
-      - targets: ["198.19.141.97:3002"]
-
   - job_name: "gh-connector"
     metrics_path: "/api/gh-connector/actuator/prometheus"
     static_configs:
-      - targets:
-          ["ghconnector-service.generic-namespace.svc.cluster.local:3000"]
+      - targets: ["ghconnector-service.generic-namespace:3000"]
 
   - job_name: "genai-python"
     metrics_path: "/metrics"
     static_configs:
-      - targets: ["genai-service.generic-namespace.svc.cluster.local:3001"]
+      - targets: ["genai-service.generic-namespace:3001"]
+
+  - job_name: "users"
+    metrics_path: "/api/users/actuator/prometheus"
+    static_configs:
+      - targets: ["users-service.generic-namespace:3002"]
