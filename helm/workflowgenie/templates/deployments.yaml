@@ -16,6 +16,9 @@ spec:
       containers:
         - name: {{ $componentName }}
           image: "{{ $component.image.repository }}:{{ $component.image.tag }}"
+          {{- if $component.args }}
+          args: {{ $component.args }}
+          {{- end }}
           imagePullPolicy: {{ $component.image.pullPolicy }}
           resources:
             limits:

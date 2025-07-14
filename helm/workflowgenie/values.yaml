@@ -5,6 +5,8 @@ namespace:
 meta:
   name: workflow-geniee
   url: workflow-genie.student.k8s.aet.cit.tum.de
+  monitoringname: monitoring-womm
+  monitoringurl: monitoring-womm.student.k8s.aet.cit.tum.de
 
 components:
   client:
@@ -52,7 +54,6 @@ components:
         value: "-Djava.net.preferIPv4Stack=true"
       - name: JAVA_TOOL_OPTIONS
         value: "-Djava.net.preferIPv6Stack=false"
-
     envFromSecret:
       - name: GH_OAUTH_CLIENT_ID
         secretName: workflow-genie-secrets
@@ -71,7 +72,6 @@ components:
       port: 3001
       targetPort: 3001
     replicaCount: 1
-    env:
     envFromSecret:
       - name: OPENAI_API_KEY
         secretName: workflow-genie-secrets
@@ -126,6 +126,28 @@ components:
         value: 123456
       - name: PGDATA
         value: /var/lib/postgresql/data/pgdata
+
+  prometheus:
+    image:
+      repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/prometheus
+      tag: latest
+      pullPolicy: Always
+    args:
+      - "--web.external-url=/prometheus/"
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--web.enable-lifecycle"
+    service:
+      type: ClusterIP
+      port: 9090
+      targetPort: 9090
+    replicaCount: 1
+    volumes:
+      - name: prometheus-volume
+        mountPath: /prometheus
+        storage: 1Gi
 
 ingress:
   enabled: true
