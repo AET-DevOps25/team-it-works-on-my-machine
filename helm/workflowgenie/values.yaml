@@ -128,6 +128,7 @@ components:
         value: /var/lib/postgresql/data/pgdata
 
   prometheus:
+    namespace: monitoring-womm
     image:
       repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/prometheus
       tag: latest
@@ -135,7 +136,7 @@ components:
     args:
       - "--web.external-url=/prometheus/"
       - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.path=/prometheus/"
       - "--web.console.libraries=/etc/prometheus/console_libraries"
       - "--web.console.templates=/etc/prometheus/consoles"
       - "--web.enable-lifecycle"
@@ -144,10 +145,10 @@ components:
       port: 9090
       targetPort: 9090
     replicaCount: 1
-    volumes:
-      - name: prometheus-volume
-        mountPath: /prometheus
-        storage: 1Gi
+    # volumes:
+    #   - name: prometheus-volume
+    #     mountPath: /prometheus
+    #     storage: 1Gi
 
 ingress:
   enabled: true

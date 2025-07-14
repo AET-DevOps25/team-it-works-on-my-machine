@@ -3,6 +3,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ $componentName }}-deployment
+  {{- if $component.namespace }}
+  namespace: {{ $component.namespace}}
+  {{- end }}
 spec:
   replicas: {{ $component.replicaCount }}
   selector:
@@ -17,7 +20,10 @@ spec:
         - name: {{ $componentName }}
           image: "{{ $component.image.repository }}:{{ $component.image.tag }}"
           {{- if $component.args }}
-          args: {{ $component.args }}
+          args:
+            {{- range $arg := $component.args }}
+            - {{ $arg | quote }}
+            {{- end }}
           {{- end }}
           imagePullPolicy: {{ $component.image.pullPolicy }}
           resources:

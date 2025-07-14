@@ -4,6 +4,9 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ .name }}-claim
+  {{- if $component.namespace }}
+  namespace: {{ $component.namespace}}
+  {{- end }}
 spec:
   storageClassName: csi-rbd-sc
   accessModes:
