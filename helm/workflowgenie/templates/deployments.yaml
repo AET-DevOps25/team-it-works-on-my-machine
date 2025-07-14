@@ -28,11 +28,11 @@ spec:
           imagePullPolicy: {{ $component.image.pullPolicy }}
           resources:
             limits:
-              cpu: "500m"
-              memory: "256Mi"
+              cpu: "5000m"
+              memory: "1024Mi"
             requests:
-              cpu: "50m"
-              memory: "50Mi"
+              cpu: "500m"
+              memory: "1024Mi"
           ports:
             - containerPort: {{ $component.service.targetPort }}
           env:
