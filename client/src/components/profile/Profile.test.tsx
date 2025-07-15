@@ -25,7 +25,7 @@ describe('Profile', () => {
             repository: 'test-repo',
             content: [
               {
-                fileName: 'test-file.txt',
+                filename: 'test-file.txt',
                 summary: 'Test summary',
                 related_docs: ['doc1', 'doc2'],
                 detailed_analysis: 'Detailed analysis content',
