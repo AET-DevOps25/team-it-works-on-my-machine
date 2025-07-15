@@ -8,16 +8,23 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card'
+import Markdown from 'react-markdown'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@radix-ui/react-accordion'
 
 const Profile = ({ user }: { user: UserType }) => {
   return (
     <div className="user-info">
       <h2>User Information</h2>
-      <div className="avatar-container">
+      <div className="avatar-container flex justify-center">
         <img
           src={user.github.avatar_url}
           alt="User Avatar"
-          className="avatar"
+          className="avatar h-[64px] w-[64px] rounded-full"
         />
       </div>
       <div className="info-container">
@@ -30,39 +37,43 @@ const Profile = ({ user }: { user: UserType }) => {
       </div>
       <div>
         <h2>Analysis:</h2>
-        <ul>
+        <Accordion type="single" collapsible>
           {user.user.analysis.map((analysis) => (
-            <li key={analysis.id}>
-              <div>
+            <AccordionItem value={analysis.id} key={analysis.id}>
+              <AccordionTrigger>
                 <strong>Repository:</strong> {analysis.repository} <br />
-              </div>
-              {analysis.content.map((content) => (
-                <div key={content.filename} className="mb-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>{content.filename}</CardTitle>
-                      <CardDescription>{content.summary}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="mb-2">
-                        <strong>Related Docs:</strong>{' '}
-                        {content.related_docs.length > 0
-                          ? content.related_docs.join(', ')
-                          : 'None'}
-                      </div>
-                      <div>
-                        <strong>Detailed Analysis:</strong>
-                        <p className="mt-1 text-muted-foreground">
-                          {content.detailed_analysis}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-            </li>
+              </AccordionTrigger>
+              <AccordionContent>
+                {analysis.content.map((content) => (
+                  <div key={content.filename} className="mb-4">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>{content.filename}</CardTitle>
+                        <CardDescription>{content.summary}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="mb-2 w-[700px] rounded-md border text-left">
+                          <strong>Related Docs:</strong>{' '}
+                          <Markdown>
+                            {content.related_docs.length > 0
+                              ? content.related_docs.join(', ')
+                              : 'None'}
+                          </Markdown>
+                        </div>
+                        <div>
+                          <strong>Detailed Analysis:</strong>
+                          <div className="w-[700px] rounded-md border p-4 mt-1 text-muted-foreground text-left">
+                            <Markdown>{content.detailed_analysis}</Markdown>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </ul>
+        </Accordion>
       </div>
     </div>
   )
