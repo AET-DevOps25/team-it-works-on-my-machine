@@ -3,7 +3,7 @@ import { Input } from '../ui/input'
 import { ModeToggle } from '../mode-toggle'
 import { useEffect, useState } from 'react'
 import Profile from '../profile/Profile'
-import type { UserType } from '@/lib/types'
+import type { GitHubUserType, UserType, UserType2 } from '@/lib/types'
 import Cookies from 'universal-cookie'
 
 const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
@@ -101,8 +101,6 @@ function LandingPage() {
   )
   // State to store the retrieved user data
   const [data, setData] = useState<UserType | null>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unused-vars
-  const [, setUser] = useState<any | null>(null)
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRepoUrl(e.target.value)
@@ -128,8 +126,7 @@ function LandingPage() {
         let res = await fetch(`${GH_CONNECTOR_URL}/user`, {
           credentials: 'include',
         })
-        const data = (await res.json()) as UserType
-        setData(data)
+        const data = (await res.json()) as GitHubUserType
 
         res = await fetch(
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -138,10 +135,11 @@ function LandingPage() {
             credentials: 'include',
           },
         )
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const userData = await res.json()
-        alert(JSON.stringify(userData))
-        setUser(userData)
+        const userData = (await res.json()) as UserType2
+        setData({
+          github: data,
+          user: userData,
+        })
       }
     }
     void fetchData()

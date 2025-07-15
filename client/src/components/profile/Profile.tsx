@@ -7,15 +7,34 @@ const Profile = ({ user }: { user: UserType }) => {
     <div className="user-info">
       <h2>User Information</h2>
       <div className="avatar-container">
-        <img src={user.avatar_url} alt="User Avatar" className="avatar" />
+        <img
+          src={user.github.avatar_url}
+          alt="User Avatar"
+          className="avatar"
+        />
       </div>
       <div className="info-container">
-        <p>Login: {user.login}</p>
-        <p>ID: {user.id}</p>
-        <p>Type: {user.type}</p>
-        <p>Followers: {user.followers}</p>
-        <p>Following: {user.following}</p>
-        <p>Public Repos: {user.public_repos}</p>
+        <p>Login: {user.github.login}</p>
+        <p>ID: {user.github.id}</p>
+        <p>Type: {user.github.type}</p>
+        <p>Followers: {user.github.followers}</p>
+        <p>Following: {user.github.following}</p>
+        <p>Public Repos: {user.github.public_repos}</p>
+      </div>
+      <div>
+        <h2>Analysis:</h2>
+        <ul>
+          {user.user.analysis.map((analysis) => (
+            <li key={analysis.id}>
+              <div>
+                <strong>Repository:</strong> {analysis.repository} <br />
+              </div>
+              <div>
+                <strong>Content:</strong> {analysis.content}
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )
