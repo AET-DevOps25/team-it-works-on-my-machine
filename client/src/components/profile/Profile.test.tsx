@@ -23,7 +23,14 @@ describe('Profile', () => {
           {
             id: '1',
             repository: 'test-repo',
-            content: 'test content',
+            content: [
+              {
+                fileName: 'test-file.txt',
+                summary: 'Test summary',
+                related_docs: ['doc1', 'doc2'],
+                detailed_analysis: 'Detailed analysis content',
+              },
+            ],
           },
         ],
         github_id: '1',

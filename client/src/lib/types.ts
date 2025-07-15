@@ -30,5 +30,12 @@ export type UserType2 = {
 export type AnalysisType = {
   id: string
   repository: string
-  content: string
+  content: AnalysisContentType[]
+}
+
+export type AnalysisContentType = {
+  fileName: string
+  summary: string
+  related_docs: string[]
+  detailed_analysis: string
 }

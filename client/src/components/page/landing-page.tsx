@@ -3,7 +3,12 @@ import { Input } from '../ui/input'
 import { ModeToggle } from '../mode-toggle'
 import { useEffect, useState } from 'react'
 import Profile from '../profile/Profile'
-import type { GitHubUserType, UserType, UserType2 } from '@/lib/types'
+import type {
+  AnalysisContentType,
+  GitHubUserType,
+  UserType,
+  UserType2,
+} from '@/lib/types'
 import Cookies from 'universal-cookie'
 
 const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
@@ -141,6 +146,12 @@ function LandingPage() {
           },
         )
         const userData = (await res.json()) as UserType2
+        for (const analysis of userData.analysis) {
+          // Parse the content field of each analysis
+          analysis.content = JSON.parse(
+            analysis.content as unknown as string,
+          ) as AnalysisContentType[]
+        }
 
         if (res.status !== 200) {
           console.error('Failed to fetch user data:', userData)
