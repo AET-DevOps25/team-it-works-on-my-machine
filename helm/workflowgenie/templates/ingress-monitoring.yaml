@@ -27,4 +27,11 @@ spec:
                 name: prometheus-service
                 port:
                   number: {{ .Values.components.prometheus.service.port }}
+          - path: /grafana/
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana-service
+                port:
+                  number: {{ .Values.components.grafana.service.port }}
 {{- end }}
