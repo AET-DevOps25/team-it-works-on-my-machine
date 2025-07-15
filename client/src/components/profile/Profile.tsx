@@ -33,8 +33,8 @@ const Profile = ({ user }: { user: UserType }) => {
                 <strong>Content:</strong>
                 <ul>
                   {analysis.content.map((content) => (
-                    <li key={content.fileName}>
-                      <p>File Name: {content.fileName}</p>
+                    <li key={content.filename}>
+                      <p>File Name: {content.filename}</p>
                       <p>Summary: {content.summary}</p>
                       <p>Related Docs: {content.related_docs.join(', ')}</p>
                       <p>Detailed Analysis: {content.detailed_analysis}</p>

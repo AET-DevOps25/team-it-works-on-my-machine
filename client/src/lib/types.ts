@@ -34,7 +34,7 @@ export type AnalysisType = {
 }
 
 export type AnalysisContentType = {
-  fileName: string
+  filename: string
   summary: string
   related_docs: string[]
   detailed_analysis: string
