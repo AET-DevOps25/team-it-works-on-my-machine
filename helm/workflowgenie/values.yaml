@@ -150,6 +150,35 @@ components:
     #     mountPath: /prometheus
     #     storage: 1Gi
 
+  grafana:
+    namespace: monitoring-womm
+    image:
+      repository: ghcr.io/aet-devops25/team-it-works-on-my-machine/grafana
+      tag: latest
+      pullPolicy: Always
+    env:
+      - name: POSTGRES_DB
+        value: users
+      - name: GF_SECURITY_ADMIN_USER
+        value: admin
+      - name: GF_SECURITY_ADMIN_PASSWORD
+        value: admin
+      - name: GF_USERS_ALLOW_SIGN_UP
+        value: "false"
+      - name: GF_FEATURE_TOGGLES_ENABLE
+        value: logsInExplore
+      - name: GF_LOG_CONSOLECOLORS
+        value: "true"
+      - name: PROMETHEUS_URL
+        value: http://prometheus-service:9090
+      - name: LOKI_URL
+        value: http://loki-service:9092
+    service:
+      type: ClusterIP
+      port: 3000
+      targetPort: 9091
+    replicaCount: 1
+
 ingress:
   enabled: true
   className: "nginx"
