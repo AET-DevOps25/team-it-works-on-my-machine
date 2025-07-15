@@ -128,6 +128,11 @@ function LandingPage() {
         })
         const data = (await res.json()) as GitHubUserType
 
+        if (res.status !== 200) {
+          console.error('Failed to fetch user data:', data)
+          return
+        }
+
         res = await fetch(
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           `${import.meta.env.VITE_USERS_URL}/users/${localStorage.getItem('login')!}`,
@@ -136,6 +141,11 @@ function LandingPage() {
           },
         )
         const userData = (await res.json()) as UserType2
+
+        if (res.status !== 200) {
+          console.error('Failed to fetch user data:', userData)
+          return
+        }
         setData({
           github: data,
           user: userData,
