@@ -3,7 +3,7 @@ import { Input } from '../ui/input'
 import { ModeToggle } from '../mode-toggle'
 import { useEffect, useState } from 'react'
 import Profile from '../profile/Profile'
-import type { OauthResponse, UserType } from '@/lib/types'
+import type { UserType } from '@/lib/types'
 import Cookies from 'universal-cookie'
 
 const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
@@ -11,7 +11,7 @@ const GH_OAUTH_CLIENT_ID = import.meta.env.VITE_GH_OAUTH_CLIENT_ID
 
 function Logout(p: {
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
-  setData: React.Dispatch<React.SetStateAction<UserType | OauthResponse | null>>
+  setData: React.Dispatch<React.SetStateAction<UserType | null>>
 }) {
   function handleLogout() {
     console.log('logout')
@@ -84,13 +84,25 @@ function LandingPage() {
   // Extracting the 'code' parameter from the URL query string (used for authorization)
   const urlParams = new URLSearchParams(window.location.search)
   if (urlParams.get('login')) {
-    localStorage.setItem('login', 'true')
+    const cookies = new Cookies(document.cookie)
+    const id = cookies.get<string | undefined>('id')
+    if (id !== undefined) {
+      localStorage.setItem('login', id)
+    }
+    // Remove "login=success" from the URL if present
+    const url = new URL(window.location.href)
+    if (url.searchParams.has('login')) {
+      url.searchParams.delete('login')
+      window.history.replaceState({}, document.title, url.toString())
+    }
   }
   const [isLoggedIn, setLoggedIn] = useState(
-    localStorage.getItem('login') === 'true',
+    localStorage.getItem('login') !== null,
   )
   // State to store the retrieved user data
-  const [data, setData] = useState<UserType | OauthResponse | null>(null)
+  const [data, setData] = useState<UserType | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unused-vars
+  const [, setUser] = useState<any | null>(null)
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRepoUrl(e.target.value)
@@ -113,11 +125,23 @@ function LandingPage() {
   useEffect(() => {
     const fetchData = async () => {
       if (isLoggedIn) {
-        const res = await fetch(`${GH_CONNECTOR_URL}/user`, {
+        let res = await fetch(`${GH_CONNECTOR_URL}/user`, {
           credentials: 'include',
         })
         const data = (await res.json()) as UserType
         setData(data)
+
+        res = await fetch(
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          `${import.meta.env.VITE_USERS_URL}/users/${localStorage.getItem('login')!}`,
+          {
+            credentials: 'include',
+          },
+        )
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const userData = await res.json()
+        alert(JSON.stringify(userData))
+        setUser(userData)
       }
     }
     void fetchData()
@@ -170,7 +194,7 @@ function LandingPage() {
           )}
           {isLoggedIn && <InstallApp />}
         </div>
-        {data && <Profile user={data as UserType} />}
+        {data && <Profile user={data} />}
       </div>
     </div>
   )
