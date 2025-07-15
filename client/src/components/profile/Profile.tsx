@@ -1,6 +1,13 @@
 // import "./profile.css";
 
 import type { UserType } from '@/lib/types'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card'
 
 const Profile = ({ user }: { user: UserType }) => {
   return (
@@ -29,19 +36,30 @@ const Profile = ({ user }: { user: UserType }) => {
               <div>
                 <strong>Repository:</strong> {analysis.repository} <br />
               </div>
-              <div>
-                <strong>Content:</strong>
-                <ul>
-                  {analysis.content.map((content) => (
-                    <li key={content.filename}>
-                      <p>File Name: {content.filename}</p>
-                      <p>Summary: {content.summary}</p>
-                      <p>Related Docs: {content.related_docs.join(', ')}</p>
-                      <p>Detailed Analysis: {content.detailed_analysis}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {analysis.content.map((content) => (
+                <div key={content.filename} className="mb-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{content.filename}</CardTitle>
+                      <CardDescription>{content.summary}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="mb-2">
+                        <strong>Related Docs:</strong>{' '}
+                        {content.related_docs.length > 0
+                          ? content.related_docs.join(', ')
+                          : 'None'}
+                      </div>
+                      <div>
+                        <strong>Detailed Analysis:</strong>
+                        <p className="mt-1 text-muted-foreground">
+                          {content.detailed_analysis}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
             </li>
           ))}
         </ul>
