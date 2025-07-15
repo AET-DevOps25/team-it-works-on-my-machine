@@ -1,26 +1,22 @@
 package de.tum.gh_connector.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import de.tum.gh_connector.client.GHAPIRestClient;
 import de.tum.gh_connector.client.GHAuthClient;
 import de.tum.gh_connector.client.GenAIRestClient;
 import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
 import feign.FeignException;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 
 @Slf4j
 @Service
@@ -92,10 +88,12 @@ public class GHConnectorService {
 
             GenAIResponse genAIResponse = genAIRestClient.analyzeYamls(genAIRequest);
             if (user != null) {
-                userSRestClient.createAnalysis(id, UserAnalysis.builder()
-                        .content(JsonMapper.builder().build().writeValueAsString(genAIResponse.getResults()))
-                        .repository(repoUri)
-                        .build());
+                userSRestClient.createAnalysis(
+                        id,
+                        UserAnalysis.builder()
+                                .content(JsonMapper.builder().build().writeValueAsString(genAIResponse.getResults()))
+                                .repository(repoUri)
+                                .build());
             }
             return GHConnectorResponse.fromGenAIResponse(genAIResponse);
 
