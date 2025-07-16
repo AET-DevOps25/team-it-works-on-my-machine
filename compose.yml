@@ -78,7 +78,7 @@ services:
     ports:
       - "${PROMETHEUS_PORT}:9090"
     volumes:
-      - ./prometheus/prometheus.local.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/prometheus.docker.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -129,12 +129,9 @@ services:
     command: -config.file=/etc/loki/loki-config.yaml
     restart: unless-stopped
 
-
 volumes:
   users-db-storage:
   prometheus_data:
   grafana-storage:
   loki-storage:
   promtail-storage:
-
-

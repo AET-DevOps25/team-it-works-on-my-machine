@@ -17,6 +17,7 @@ dependencies = [
 
 [project.scripts]
 app = "genai.app.main:main"
+open_api = "genai.app.open_api:main"
 ask = "genai.app.input_query.ask:ask"
 analyze_yaml = "genai.app.input_query.analyze_yaml:analyze_yaml"
 
