@@ -95,7 +95,7 @@ function AccessibleRepos({ repos }: { repos: Repo[] }) {
         <ul>
           {repos.map((repo) => {
             return (
-              <li>
+              <li key={repo.name}>
                 {repo.name}: {repo.html_url}
               </li>
             )
