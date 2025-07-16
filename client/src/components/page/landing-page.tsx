@@ -176,24 +176,35 @@ function LandingPage() {
   useEffect(() => {
     const fetchData = async () => {
       if (isLoggedIn) {
-        let res = await fetch(`${GH_CONNECTOR_URL}/user`, {
-          credentials: 'include',
-        })
-        const data = (await res.json()) as GitHubUserType
+        const [ghRes, userRes, reposRes] = await Promise.all([
+          fetch(`${GH_CONNECTOR_URL}/user`, { credentials: 'include' }),
+          fetch(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            `${import.meta.env.VITE_USERS_URL}/users/${localStorage.getItem('login')!}`,
+            { credentials: 'include' },
+          ),
+          fetch(`${GH_CONNECTOR_URL}/getPrivateRepos`, {
+            credentials: 'include',
+          }),
+        ])
 
-        if (res.status !== 200) {
+        const data = (await ghRes.json()) as GitHubUserType
+        const userData = (await userRes.json()) as UserType2
+        const repos = (await reposRes.json()) as Repo[]
+
+        if (ghRes.status !== 200) {
           console.error('Failed to fetch user data:', data)
           return
         }
+        if (userRes.status !== 200) {
+          console.error('Failed to fetch user data:', userData)
+          return
+        }
+        if (reposRes.status !== 200) {
+          console.error('Failed to fetch repo data:', repos)
+          return
+        }
 
-        res = await fetch(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          `${import.meta.env.VITE_USERS_URL}/users/${localStorage.getItem('login')!}`,
-          {
-            credentials: 'include',
-          },
-        )
-        const userData = (await res.json()) as UserType2
         for (const analysis of userData.analysis) {
           // Parse the content field of each analysis
           analysis.content = JSON.parse(
@@ -201,19 +212,6 @@ function LandingPage() {
           ) as AnalysisContentType[]
         }
         setAnalysis(userData.analysis)
-
-        if (res.status !== 200) {
-          console.error('Failed to fetch user data:', userData)
-          return
-        }
-        res = await fetch(`${GH_CONNECTOR_URL}/getPrivateRepos`, {
-          credentials: 'include',
-        })
-        if (res.status !== 200) {
-          console.error('Failed to fetch repo data:', userData)
-          return
-        }
-        const repos = (await res.json()) as Repo[]
 
         setData({
           github: data,
