@@ -3,6 +3,7 @@ plugins {
 	id("org.springframework.boot") version "3.4.5"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("com.diffplug.spotless") version "7.0.4"
+    id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
 
 group = "de.tum"
@@ -43,6 +44,8 @@ dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-webflux")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+	// Springdoc OpenAPI dependency
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
 	//Prometheus dependencies
     implementation("io.micrometer:micrometer-registry-prometheus")
@@ -56,4 +59,8 @@ dependencyManagement {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+openApi {
+	apiDocsUrl.set("http://localhost:3000/v3/api-docs")
 }

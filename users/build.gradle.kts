@@ -4,6 +4,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.7"
 	id("com.diffplug.spotless") version "7.0.4"
 	id("jacoco")
+    id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
 
 group = "de.tum"
@@ -38,6 +39,8 @@ dependencies {
 	testRuntimeOnly("com.h2database:h2")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+    // Springdoc OpenAPI dependency
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 	//Prometheus dependencies
     implementation("io.micrometer:micrometer-registry-prometheus")
 }
@@ -57,4 +60,8 @@ tasks.jacocoTestReport {
         xml.required.set(true)
         html.required.set(true)
     }
+}
+
+openApi {
+	apiDocsUrl.set("http://localhost:3002/v3/api-docs")
 }
