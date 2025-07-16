@@ -34,7 +34,7 @@ jobs:
           key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
           source: "./prometheus,./grafana,./promtail,./loki"
           target: /home/${{ vars.AWS_EC2_USER }}
-
+          overwrite: true
 
       - name: SSH to VM and Create .env.prod
         uses: appleboy/ssh-action@v1.0.3
