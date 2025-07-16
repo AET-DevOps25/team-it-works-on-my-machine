@@ -1,6 +1,7 @@
 package de.tum.gh_connector.client;
 
 import de.tum.gh_connector.dto.User;
+import de.tum.gh_connector.dto.UserAnalysis;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,4 +20,10 @@ public interface UserSRestClient {
 
     @GetMapping(value = "/ping", produces = MediaType.TEXT_PLAIN_VALUE)
     String ping();
+
+    @PostMapping(
+            value = "/users/{id}/analysis",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    String createAnalysis(@PathVariable("id") String id, @RequestBody UserAnalysis analysis);
 }

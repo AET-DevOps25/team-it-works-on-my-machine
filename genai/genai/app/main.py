@@ -11,6 +11,7 @@ from genai.rag.utils.retrieve_data import retrieve_text
 import traceback
 import uvicorn
 from prometheus_fastapi_instrumentator import Instrumentator
+import asyncio
 
 load_dotenv()
 
@@ -48,9 +49,7 @@ async def ping():
 
 @app.post("/analyze-yamls")
 async def analyze_yamls(payload: YamlRequest):
-    results = []
-
-    for y in payload.yamls:
+    async def analyze_yaml(y: YamlFile):
         try:
             filename = y.filename
             content = y.content
@@ -63,7 +62,7 @@ async def analyze_yamls(payload: YamlRequest):
     {content}
     """
             start = time.time()
-            summary_response = chain.invoke({"question": summary_prompt})
+            summary_response = await asyncio.to_thread(chain.invoke, {"question": summary_prompt})
             print(f"summary time: {time.time() - start:.2f} seconds")
 
             summary = summary_response.content.strip()
@@ -72,7 +71,7 @@ async def analyze_yamls(payload: YamlRequest):
             query_text = f"{summary}\n\n{content}"
 
             start = time.time()
-            retrieved = retrieve_text(query_text, collection_name="workflow_docs")
+            retrieved = await asyncio.to_thread(retrieve_text, query_text, collection_name="workflow_docs")
             print(f"rag retrieval time: {time.time() - start:.2f} seconds")
 
             # Step 3: Combine YAML content and RAG context for deeper analysis
@@ -98,20 +97,21 @@ async def analyze_yamls(payload: YamlRequest):
     Please summarize in detail what this workflow does and suggest improvements if applicable.
     """
             start = time.time()
-            detailed_response = chain.invoke({"question": detailed_prompt})
+            detailed_response = await asyncio.to_thread(chain.invoke, {"question": detailed_prompt})
             print(f"detailed analysis time: {time.time() - start:.2f} seconds")
             final_analysis = detailed_response.content.strip()
 
-            results.append({
+            return {
                 "filename": filename,
                 "summary": summary,
                 "related_docs": rag_snippets,
                 "detailed_analysis": final_analysis
-            })
+            }
         except Exception as e:
             traceback.print_exc()
             raise HTTPException(status_code=500, detail=f"Error processing {y.filename}: {str(e)}")
 
+    results = await asyncio.gather(*(analyze_yaml(y) for y in payload.yamls))
     return {"results": results}
 
 def main():

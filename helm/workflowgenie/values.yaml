@@ -26,6 +26,8 @@ components:
         value: PREFIX_
       - name: PREFIX_GH_CONNECTOR_URL
         value: https://workflow-genie.student.k8s.aet.cit.tum.de/api/gh-connector
+      - name: PREFIX_USERS_URL
+        value: https://workflow-genie.student.k8s.aet.cit.tum.de/api/users
     envFromSecret:
       - name: PREFIX_GH_OAUTH_CLIENT_ID
         secretName: workflow-genie-secrets

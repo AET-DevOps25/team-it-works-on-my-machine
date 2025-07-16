@@ -9,6 +9,7 @@ services:
         - APP_PREFIX=PREFIX_
         - PREFIX_GH_CONNECTOR_URL=${GH_CONNECTOR_URL}
         - PREFIX_GH_OAUTH_CLIENT_ID=${GH_OAUTH_CLIENT_ID}
+        - PREFIX_USERS_URL=${USERS_URL}
     ports:
       - "${CLIENT_PORT}:80"
     depends_on:

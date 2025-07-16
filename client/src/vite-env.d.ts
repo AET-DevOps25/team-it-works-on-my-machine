@@ -9,6 +9,7 @@ interface ViteTypeOptions {
 interface ImportMetaEnv {
   readonly VITE_GH_CONNECTOR_URL: string
   readonly VITE_GH_OAUTH_CLIENT_ID: string
+  readonly VITE_USERS_URL: string
 }
 
 interface ImportMeta {
