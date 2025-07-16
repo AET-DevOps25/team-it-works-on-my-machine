@@ -211,7 +211,12 @@ public class GHConnectorService {
         for (UserInstallation installation : userInstallations.getInstallations()) {
             UserInstallationRepositories repositories =
                     ghAPIRestClient.getUserInstallationRepositories(user.getToken(), installation.getId());
-            result.addAll(repositories.getRepositories());
+
+            for (UserInstallationRepository repo : repositories.getRepositories()) {
+                if (!repo.getVisibility().equals("public")) {
+                    result.add(repo);
+                }
+            }
         }
 
         return result;
