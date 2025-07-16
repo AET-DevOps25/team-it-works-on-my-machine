@@ -8,21 +8,14 @@ services:
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-      - "--entrypoints.gh_connector.address=:${GH_CONNECTOR_PORT}"
-      - "--entrypoints.genai.address=:${GENAI_PORT}"
-      - "--entrypoints.users.address=:${USERS_PORT}"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.letsencrypt.acme.email=admin@tum.de"
+      - "--certificatesresolvers.letsencrypt.acme.email=f.schnabel@tum.de"
       - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
-      - "${GH_CONNECTOR_PORT}:${GH_CONNECTOR_PORT}"
-      - "${GENAI_PORT}:${GENAI_PORT}"
-      - "${USERS_PORT}:${USERS_PORT}"
-      - "${USERS_DB_PORT}:${USERS_DB_PORT}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./letsencrypt:/letsencrypt
@@ -40,13 +33,10 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.client.rule=Host(`${CLIENT_HOST}`)"
-      - "traefik.http.services.client.loadbalancer.server.port=${CLIENT_PORT}"
       - "traefik.http.routers.client.entrypoints=websecure"
       - "traefik.http.routers.client.tls.certresolver=letsencrypt"
-      - "traefik.http.middlewares.client-compress.compress=true"
-      - "traefik.http.routers.client.middlewares=client-compress"
-      - "traefik.http.routers.client.priority=1"
+      - "traefik.http.routers.client.rule=Host(`${CLIENT_HOST}`)"
+      - "traefik.http.services.client.loadbalancer.server.port=${CLIENT_PORT}"
 
   gh-connector:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/gh-connector:latest
@@ -59,10 +49,10 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.gh-connector.entrypoints=websecure"
+      - "traefik.http.routers.gh-connector.tls.certresolver=letsencrypt"
       - "traefik.http.routers.gh-connector.rule=Host(`${GH_CONNECTOR_HOST}`)"
       - "traefik.http.services.gh-connector.loadbalancer.server.port=${GH_CONNECTOR_PORT}"
-      - "traefik.http.routers.gh-connector.entrypoints=gh_connector"
-      - "traefik.http.routers.gh-connector.tls.certresolver=letsencrypt"
 
   genai-python:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/genai:latest
@@ -75,10 +65,10 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.genai.entrypoints=websecure"
+      - "traefik.http.routers.genai.tls.certresolver=letsencrypt"
       - "traefik.http.routers.genai.rule=Host(`${GENAI_HOST}`)"
       - "traefik.http.services.genai.loadbalancer.server.port=${GENAI_PORT}"
-      - "traefik.http.routers.genai.entrypoints=genai"
-      - "traefik.http.routers.genai.tls.certresolver=letsencrypt"
 
   users:
     image: ghcr.io/aet-devops25/team-it-works-on-my-machine/users:latest
@@ -89,10 +79,10 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.users.entrypoints=websecure"
+      - "traefik.http.routers.users.tls.certresolver=letsencrypt"
       - "traefik.http.routers.users.rule=Host(`${USERS_HOST}`)"
       - "traefik.http.services.users.loadbalancer.server.port=${USERS_PORT}"
-      - "traefik.http.routers.users.entrypoints=users"
-      - "traefik.http.routers.users.tls.certresolver=letsencrypt"
 
   users-db:
     image: postgres:15-alpine
@@ -105,8 +95,6 @@ services:
   prometheus:
     image: prom/prometheus:v2.52.0
     container_name: prometheus
-    ports:
-      - "${PROMETHEUS_PORT}:9090"
     volumes:
       - ./prometheus/prometheus.docker.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -117,12 +105,16 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--web.enable-lifecycle'
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.entrypoints=websecure"
+      - "traefik.http.routers.prometheus.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.prometheus.rule=Host(`${PROMETHEUS_HOST}`)"
+      - "traefik.http.services.prometheus.loadbalancer.server.port=${PROMETHEUS_PORT}"
 
   grafana:
     image: grafana/grafana-oss:latest
     container_name: grafana
-    ports:
-      - "${GRAFANA_PORT}:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
@@ -138,6 +130,12 @@ services:
       - prometheus
       - loki
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.grafana.rule=Host(`${GRAFANA_HOST}`)"
+      - "traefik.http.services.grafana.loadbalancer.server.port=${GRAFANA_PORT}"
 
   promtail:
     image: grafana/promtail:latest
@@ -151,12 +149,16 @@ services:
 
   loki:
     image: grafana/loki:2.9.0
-    ports:
-      - "${LOKI_PORT}:9092"
     volumes:
       - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
     command: -config.file=/etc/loki/loki-config.yaml
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.loki.entrypoints=websecure"
+      - "traefik.http.routers.loki.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.loki.rule=Host(`${LOKI_HOST}`)"
+      - "traefik.http.services.loki.loadbalancer.server.port=${LOKI_PORT}"
 
 volumes:
   users-db-storage:

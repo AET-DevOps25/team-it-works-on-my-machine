@@ -5,14 +5,11 @@ import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
 import de.tum.gh_connector.service.GHConnectorService;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,9 +50,14 @@ public class GhConnectorController {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(URI.create(clientUrl + "/?login=success"));
+        String cookieDomain = clientUrl.replaceFirst("^https?://(client.)?", "").replaceFirst(":.*", "");
         httpHeaders.add(
                 HttpHeaders.SET_COOKIE,
-                ResponseCookie.from("id", id).path("/").build().toString());
+                ResponseCookie.from("id", id)
+                        .path("/")
+                        .domain(cookieDomain)
+                        .build()
+                        .toString());
         return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
     }
 
@@ -99,6 +101,16 @@ public class GhConnectorController {
         }
 
         return new ResponseEntity<>(response, status);
+    }
+
+    @GetMapping(value = "/getPrivateRepos", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<UserInstallationRepository>> getPrivateRepos(@CookieValue(value = "id") String id) {
+        List<UserInstallationRepository> result = ghConnectorService.getPrivateRepos(id);
+        if (result == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(result, HttpStatusCode.valueOf(200));
     }
 
     @GetMapping(value = "/ping", produces = MediaType.TEXT_PLAIN_VALUE)

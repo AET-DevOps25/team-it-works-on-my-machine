@@ -1,24 +1,17 @@
-Steps to run this:
+Steps to run this directly on your machine:
 
-1: create `src/main/java/resources/application-secret.properties` file and fill with secret key
-```
+### 1. Setup GH-Connector properties file
+
+gradle is not able to read from a `.env` files. That is why we need to create another file, that contains the secred variables.
+The file must be placed at `gh-connector/src/main/java/resources/application-secret.properties`.
+
+```bash
 oauth.client-id=<your-oauth-client-id>
 oauth.client-secret=<your-oauth-client-secret>
 ```
-Use this guide to generate these values: https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app
 
-2: Run directly with `./gradlew build bootRun`
-
-OR
-
-3: Build the docker image
-
-```bash
-docker build -t gh-connector-image gh-connector
+### 2: Run it
+Using this command
 ```
-
-Run the docker image
-
-```bash
-docker run -p 8589:8589 gh-connector-image
+./gradlew build bootRun
 ```
