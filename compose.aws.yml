@@ -11,6 +11,7 @@ services:
       - "--entrypoints.gh_connector.address=:${GH_CONNECTOR_PORT}"
       - "--entrypoints.genai.address=:${GENAI_PORT}"
       - "--entrypoints.users.address=:${USERS_PORT}"
+      - "--entrypoints.grafana.address=:${GRAFANA_PORT}"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
       - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.letsencrypt.acme.email=admin@tum.de"
@@ -23,6 +24,7 @@ services:
       - "${GENAI_PORT}:${GENAI_PORT}"
       - "${USERS_PORT}:${USERS_PORT}"
       - "${USERS_DB_PORT}:${USERS_DB_PORT}"
+      - "${GRAFANA_PORT}:${GRAFANA_PORT}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./letsencrypt:/letsencrypt
@@ -138,6 +140,12 @@ services:
       - prometheus
       - loki
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`${GRAFANA_HOST}`)"
+      - "traefik.http.services.grafana.loadbalancer.server.port=${GRAFANA_PORT}"
+      - "traefik.http.routers.grafana.entrypoints=grafana"
+      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
 
   promtail:
     image: grafana/promtail:latest

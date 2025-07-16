@@ -6,6 +6,7 @@ on:
       EC2_PUBLIC_IP:
         description: 'Public IP of the AWS EC2 instance'
         required: true
+        default: '52.44.166.222'
 
 jobs:
   deploy:
@@ -74,6 +75,7 @@ jobs:
             echo "QDRANT_API_KEY=${{ secrets.QDRANT_API_KEY }}" >> .env.prod
             echo "QDRANT_URL=${{ secrets.QDRANT_URL }}" >> .env.prod
 
+            echo "GRAFANA_HOST=${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
             echo "GRAFANA_ADMIN_USER=admin" >> .env.prod
             echo "GRAFANA_ADMIN_PASSWORD=admin" >> .env.prod
 
