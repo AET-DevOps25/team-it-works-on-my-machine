@@ -40,6 +40,9 @@ jobs:
             echo "GH_CONNECTOR_PORT=3000" >> .env.prod
             echo "GENAI_PORT=3001" >> .env.prod
             echo "USERS_PORT=3002" >> .env.prod
+            echo "PROMETHEUS_PORT=9090" >> .env.prod
+            echo "GRAFANA_PORT=9091" >> .env.prod
+            echo "LOKI_PORT=9092" >> .env.prod
             echo "USERS_DB_PORT=5432" >> .env.prod
 
             echo "CLIENT_HOST=${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
@@ -60,6 +63,9 @@ jobs:
             echo "GH_OAUTH_CLIENT_SECRET=${{ secrets.GH_OAUTH_CLIENT_SECRET }}" >> .env.prod
             echo "QDRANT_API_KEY=${{ secrets.QDRANT_API_KEY }}" >> .env.prod
             echo "QDRANT_URL=${{ secrets.QDRANT_URL }}" >> .env.prod
+
+            echo "GRAFANA_ADMIN_USER=admin" >> .env.prod
+            echo "GRAFANA_ADMIN_PASSWORD=admin" >> .env.prod
 
 
       - name: SSH to VM and Execute Docker-Compose Up
