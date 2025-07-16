@@ -5,12 +5,16 @@ import { useEffect, useState } from 'react'
 import Profile from '../profile/Profile'
 import type {
   AnalysisContentType,
+  AnalysisSingleType,
+  AnalysisType,
   GitHubUserType,
   Repo,
   UserType,
   UserType2,
 } from '@/lib/types'
 import Cookies from 'universal-cookie'
+import { toast, Toaster } from 'sonner'
+import Analysis from '../profile/Analysis'
 
 const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
 const GH_OAUTH_CLIENT_ID = import.meta.env.VITE_GH_OAUTH_CLIENT_ID
@@ -18,12 +22,14 @@ const GH_OAUTH_CLIENT_ID = import.meta.env.VITE_GH_OAUTH_CLIENT_ID
 function Logout(p: {
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
   setData: React.Dispatch<React.SetStateAction<UserType | null>>
+  setAnalysis: React.Dispatch<React.SetStateAction<AnalysisType[]>>
 }) {
   function handleLogout() {
     console.log('logout')
     localStorage.removeItem('login')
     p.setLoggedIn(false)
     p.setData(null)
+    p.setAnalysis([])
     // Remove "login=success" from the URL if present
     const url = new URL(window.location.href)
     if (url.searchParams.has('login')) {
@@ -115,6 +121,7 @@ function AccessibleRepos({ repos }: { repos: Repo[] }) {
 function LandingPage() {
   const [repoUrl, setRepoUrl] = useState('')
   const [error, setError] = useState(false)
+  const [analysis, setAnalysis] = useState<AnalysisType[]>([])
 
   // Extracting the 'code' parameter from the URL query string (used for authorization)
   const urlParams = new URLSearchParams(window.location.search)
@@ -150,9 +157,20 @@ function LandingPage() {
     const res = await fetch(`${GH_CONNECTOR_URL}/getInfo?repoUrl=${repoUrl}`, {
       credentials: 'include',
     })
-    const data = (await res.json()) as object
-    console.log(data)
-    alert(JSON.stringify(data))
+    const data = (await res.json()) as AnalysisSingleType
+    if (res.status !== 200) {
+      console.error('Failed to fetch repo data:', data)
+      toast.error(data.message || 'Failed to fetch repo data')
+      return
+    }
+    setAnalysis((oldAnalysis) => [
+      ...oldAnalysis,
+      {
+        id: 'unknown',
+        repository: repoUrl,
+        content: data.results,
+      },
+    ])
   }
 
   useEffect(() => {
@@ -182,6 +200,7 @@ function LandingPage() {
             analysis.content as unknown as string,
           ) as AnalysisContentType[]
         }
+        setAnalysis(userData.analysis)
 
         if (res.status !== 200) {
           console.error('Failed to fetch user data:', userData)
@@ -248,13 +267,19 @@ function LandingPage() {
             Analyze
           </Button>
           {isLoggedIn ? (
-            <Logout setLoggedIn={setLoggedIn} setData={setData} />
+            <Logout
+              setLoggedIn={setLoggedIn}
+              setData={setData}
+              setAnalysis={setAnalysis}
+            />
           ) : (
             <Login />
           )}
         </div>
         {data && <Profile user={data} />}
+        {analysis.length > 0 && <Analysis analysis={analysis} />}
       </div>
+      <Toaster />
     </div>
   )
 }
