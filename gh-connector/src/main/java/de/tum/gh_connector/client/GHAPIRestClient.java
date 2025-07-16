@@ -1,6 +1,8 @@
 package de.tum.gh_connector.client;
 
 import de.tum.gh_connector.dto.ContentResponseItem;
+import de.tum.gh_connector.dto.UserInstallationRepositories;
+import de.tum.gh_connector.dto.UserInstallations;
 import feign.Headers;
 import java.util.List;
 import java.util.Map;
@@ -39,4 +41,13 @@ public interface GHAPIRestClient {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     Map<String, Object> getUserInfo(@RequestHeader("Authorization") String bearerToken);
+
+    @GetMapping(value = "/user/installations", produces = MediaType.APPLICATION_JSON_VALUE)
+    UserInstallations getUserInstallations(@RequestHeader("Authorization") String bearerToken);
+
+    @GetMapping(
+            value = "/user/installations/{installationId}/repositories",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    UserInstallationRepositories getUserInstallationRepositories(
+            @RequestHeader("Authorization") String bearerToken, @PathVariable("installationId") int installationId);
 }

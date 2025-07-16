@@ -10,6 +10,7 @@ import de.tum.gh_connector.dto.*;
 import feign.FeignException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -197,6 +198,23 @@ public class GHConnectorService {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Error fetching user data from GitHub: " + ex.getMessage());
         }
+    }
+
+    public List<UserInstallationRepository> getPrivateRepos(String id) {
+        User user = getAuthToken(id);
+        if (user == null) {
+            return null;
+        }
+
+        List<UserInstallationRepository> result = new LinkedList<>();
+        UserInstallations userInstallations = ghAPIRestClient.getUserInstallations(user.getToken());
+        for (UserInstallation installation : userInstallations.getInstallations()) {
+            UserInstallationRepositories repositories =
+                    ghAPIRestClient.getUserInstallationRepositories(user.getToken(), installation.getId());
+            result.addAll(repositories.getRepositories());
+        }
+
+        return result;
     }
 
     public String pingUserS() {
