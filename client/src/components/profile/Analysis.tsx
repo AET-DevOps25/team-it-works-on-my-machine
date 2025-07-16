@@ -18,13 +18,18 @@ export default function Analysis({ analysis }: { analysis: AnalysisType[] }) {
   return (
     <div>
       <h2>Analysis:</h2>
-      <Accordion type="single" collapsible>
+      <Accordion
+        type="single"
+        collapsible
+        className="w-full"
+        defaultValue="item-1"
+      >
         {analysis.map((analysis) => (
           <AccordionItem value={analysis.id} key={analysis.id}>
             <AccordionTrigger>
-              <strong>Repository:</strong> {analysis.repository} <br />
+              <strong>Repository:</strong> {analysis.repository}
             </AccordionTrigger>
-            <AccordionContent>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
               {analysis.content.map((content) => (
                 <div key={content.filename} className="mb-4">
                   <Card>
@@ -34,12 +39,20 @@ export default function Analysis({ analysis }: { analysis: AnalysisType[] }) {
                     </CardHeader>
                     <CardContent>
                       <div className="mb-2 w-[700px] rounded-md border text-left">
-                        <strong>Related Docs:</strong>{' '}
-                        <Markdown>
-                          {content.related_docs.length > 0
-                            ? content.related_docs.join(', ')
-                            : 'None'}
-                        </Markdown>
+                        <strong>Related Docs: </strong>
+                        <ul>
+                          {content.related_docs.length > 0 ? (
+                            content.related_docs.map((doc) => {
+                              return (
+                                <li key={doc}>
+                                  <a href={doc}>{doc}</a>
+                                </li>
+                              )
+                            })
+                          ) : (
+                            <li>None</li>
+                          )}
+                        </ul>
                       </div>
                       <div>
                         <strong>Detailed Analysis:</strong>
