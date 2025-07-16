@@ -52,18 +52,18 @@ jobs:
             echo "GENAI_PORT=3001" >> .env.prod
             echo "USERS_PORT=3002" >> .env.prod
             echo "PROMETHEUS_PORT=9090" >> .env.prod
-            echo "GRAFANA_PORT=9091" >> .env.prod
+            echo "GRAFANA_PORT=3000" >> .env.prod
             echo "LOKI_PORT=9092" >> .env.prod
             echo "USERS_DB_PORT=5432" >> .env.prod
 
-            echo "CLIENT_HOST=${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
-            echo "CLIENT_URL=https://\${CLIENT_HOST}:\${CLIENT_PORT}" >> .env.prod
-            echo "GH_CONNECTOR_HOST=${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
-            echo "GH_CONNECTOR_URL=https://\${GH_CONNECTOR_HOST}:\${GH_CONNECTOR_PORT}" >> .env.prod
+            echo "CLIENT_HOST=client.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
+            echo "CLIENT_URL=https://\${CLIENT_HOST}" >> .env.prod
+            echo "GH_CONNECTOR_HOST=gh-connector.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
+            echo "GH_CONNECTOR_URL=https://\${GH_CONNECTOR_HOST}" >> .env.prod
             echo "GENAI_HOST=genai.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
-            echo "GENAI_URL=https://\${GENAI_HOST}:\${GENAI_PORT}" >> .env.prod
+            echo "GENAI_URL=https://\${GENAI_HOST}" >> .env.prod
             echo "USERS_HOST=user.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
-            echo "USERS_URL=https://\${USERS_HOST}:\${USERS_PORT}" >> .env.prod
+            echo "USERS_URL=https://\${USERS_HOST}" >> .env.prod
 
             echo "USERS_DB_HOST=user-db.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
             echo "USERS_DB_USERNAME=${{ vars.USER_DB_USERNAME }}" >> .env.prod
@@ -75,9 +75,11 @@ jobs:
             echo "QDRANT_API_KEY=${{ secrets.QDRANT_API_KEY }}" >> .env.prod
             echo "QDRANT_URL=${{ secrets.QDRANT_URL }}" >> .env.prod
 
-            echo "GRAFANA_HOST=${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
+            echo "GRAFANA_HOST=grafana.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
             echo "GRAFANA_ADMIN_USER=admin" >> .env.prod
             echo "GRAFANA_ADMIN_PASSWORD=admin" >> .env.prod
+            echo "LOKI_HOST=loki.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
+            echo "PROMETHEUS_HOST=prometheus.${{ inputs.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
 
 
       - name: SSH to VM and Execute Docker-Compose Up
