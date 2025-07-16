@@ -50,7 +50,7 @@ public class GhConnectorController {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(URI.create(clientUrl + "/?login=success"));
-        String cookieDomain = clientUrl.replaceFirst("^https?://(client.)?", "");
+        String cookieDomain = clientUrl.replaceFirst("^https?://(client.)?", "").replaceFirst(":.*", "");
         httpHeaders.add(
                 HttpHeaders.SET_COOKIE,
                 ResponseCookie.from("id", id)
