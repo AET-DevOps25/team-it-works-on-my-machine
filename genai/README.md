@@ -7,18 +7,31 @@ A simple FastAPI-based backend for asking questions to a language model (e.g., G
 ## 📁 Project Structure
 
 ```
-genai/
-│
-├── app/
-│   ├── chains/               # (Optional) Chains used in LangChain
-│   └── input_query/
-│       ├── ask.py            # Chain setup (create_chain function)
-│       ├── main.py           # FastAPI app entry point
+genai/                            # Root directory of the GenAI project
+├── genai/                        # Python source package (import path: genai.*)
+│   ├── app/
+│   │   ├── input_query/
+│   │   │   ├── analyze_yaml.py  # YAML analysis logic
+│   │   ├── main.py              # FastAPI app entrypoint
+│   │   └── open_api.py          # API routes and OpenAPI integration
+│   │
+│   └── rag/                     # Retrieval-Augmented Generation (RAG) modules
+│       ├── data/                # Processed data for RAG
+│       ├── ingest/              # Data ingestion logic
+│       ├── utils/               # Utility functions for RAG
 │       └── __init__.py
 │
-├── .env                      # Contains API keys and base URL
-├── requirements.txt          # Project dependencies
-├── README.md
+├── test/                        # Unit/integration tests
+├── .env                         # Runtime environment variables
+├── .env.example                 # Template for .env
+├── .python-version              # Python version specification
+├── Dockerfile                   # Docker build configuration
+├── openapi.json                 # OpenAPI spec (for Swagger or client SDKs)
+├── pyproject.toml               # Project configuration & dependencies
+├── pytest.ini                   # Pytest configuration
+├── uv.lock                      # Lock file (e.g. from `uv` or `poetry`)
+└── README.md                    # Project documentation
+
 ```
 
 ---

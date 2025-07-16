@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 6,
+  "id": 10,
   "links": [],
   "panels": [
     {
@@ -163,7 +163,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": true,
-          "expr": "count_over_time(http_requests_total{job=\"fastapi\"}[24h])",
+          "expr": "count_over_time(http_requests_total{job=\"genai-python\"}[24h])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": true,
@@ -969,7 +969,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "FastAPI",
+  "title": "GenAI Dashboard",
   "uid": "fastapi",
   "version": 1
 }
