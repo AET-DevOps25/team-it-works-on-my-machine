@@ -15,26 +15,6 @@ describe('Profile', () => {
         following: 5,
         public_repos: 3,
       },
-      user: {
-        id: '1',
-        username: 'testuser',
-        token: 'testtoken',
-        analysis: [
-          {
-            id: '1',
-            repository: 'test-repo',
-            content: [
-              {
-                filename: 'test-file.txt',
-                summary: 'Test summary',
-                related_docs: ['doc1', 'doc2'],
-                detailed_analysis: 'Detailed analysis content',
-              },
-            ],
-          },
-        ],
-        github_id: '1',
-      },
     } as UserType
     render(<Profile user={user} />)
     expect(screen.getByText('User Information')).toBeInTheDocument()

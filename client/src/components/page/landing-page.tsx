@@ -10,7 +10,6 @@ import type {
   GitHubUserType,
   Repo,
   UserType,
-  UserType2,
 } from '@/lib/types'
 import Cookies from 'universal-cookie'
 import { toast, Toaster } from 'sonner'
@@ -180,7 +179,7 @@ function LandingPage() {
           fetch(`${GH_CONNECTOR_URL}/user`, { credentials: 'include' }),
           fetch(
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            `${import.meta.env.VITE_USERS_URL}/users/${localStorage.getItem('login')!}`,
+            `${import.meta.env.VITE_USERS_URL}/users/${localStorage.getItem('login')!}/analysis`,
             { credentials: 'include' },
           ),
           fetch(`${GH_CONNECTOR_URL}/getPrivateRepos`, {
@@ -189,7 +188,7 @@ function LandingPage() {
         ])
 
         const data = (await ghRes.json()) as GitHubUserType
-        const userData = (await userRes.json()) as UserType2
+        const analysis = (await userRes.json()) as AnalysisType[]
         const repos = (await reposRes.json()) as Repo[]
 
         if (ghRes.status !== 200) {
@@ -197,7 +196,7 @@ function LandingPage() {
           return
         }
         if (userRes.status !== 200) {
-          console.error('Failed to fetch user data:', userData)
+          console.error('Failed to fetch analysis data:', analysis)
           return
         }
         if (reposRes.status !== 200) {
@@ -205,17 +204,16 @@ function LandingPage() {
           return
         }
 
-        for (const analysis of userData.analysis) {
+        for (const a of analysis) {
           // Parse the content field of each analysis
-          analysis.content = JSON.parse(
-            analysis.content as unknown as string,
+          a.content = JSON.parse(
+            a.content as unknown as string,
           ) as AnalysisContentType[]
         }
-        setAnalysis(userData.analysis)
+        setAnalysis(analysis)
 
         setData({
           github: data,
-          user: userData,
           repos: repos,
         })
       }

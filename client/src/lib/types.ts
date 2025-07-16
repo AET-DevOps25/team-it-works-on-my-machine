@@ -1,6 +1,5 @@
 export type UserType = {
   github: GitHubUserType
-  user: UserType2
   repos: Repo[]
 }
 
@@ -24,14 +23,6 @@ export type OauthResponse = {
   userData: UserType
   tokenType: string
   token: string
-}
-
-export type UserType2 = {
-  id: string
-  username: string
-  token: string
-  analysis: AnalysisType[]
-  github_id: string
 }
 
 export type AnalysisSingleType = {

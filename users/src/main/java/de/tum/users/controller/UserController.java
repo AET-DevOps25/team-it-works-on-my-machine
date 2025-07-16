@@ -47,6 +47,14 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
     }
 
+    @GetMapping("/users/{id}/analysis")
+    public List<Analysis> getUserAnalysis(@PathVariable String id) {
+        var user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
+        return user.getAnalysis();
+    }
+
     @PostMapping(value = "/users", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public String createUser(@RequestBody User user) {
