@@ -1,6 +1,13 @@
 export type UserType = {
   github: GitHubUserType
   user: UserType2
+  repos: Repo[]
+}
+
+export type Repo = {
+  name: string
+  visibility: string
+  html_url: string
 }
 
 export type GitHubUserType = {
