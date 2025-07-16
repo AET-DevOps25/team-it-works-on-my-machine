@@ -207,10 +207,10 @@ public class GHConnectorService {
         }
 
         List<UserInstallationRepository> result = new LinkedList<>();
-        UserInstallations userInstallations = ghAPIRestClient.getUserInstallations(user.getToken());
+        UserInstallations userInstallations = ghAPIRestClient.getUserInstallations(user.getToken(), 100);
         for (UserInstallation installation : userInstallations.getInstallations()) {
             UserInstallationRepositories repositories =
-                    ghAPIRestClient.getUserInstallationRepositories(user.getToken(), installation.getId());
+                    ghAPIRestClient.getUserInstallationRepositories(user.getToken(), installation.getId(), 100);
 
             for (UserInstallationRepository repo : repositories.getRepositories()) {
                 if (!repo.getVisibility().equals("public")) {
