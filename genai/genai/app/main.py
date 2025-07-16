@@ -76,10 +76,12 @@ async def analyze_yamls(payload: YamlRequest):
 
             # Step 3: Combine YAML content and RAG context for deeper analysis
             rag_snippets = []
+            source_urls=[]
             for item in retrieved:
                 payload = item.payload
                 rag_snippets.append(
                     f"- {payload.get('title', 'Untitled')}: {payload.get('text', '')}")
+                source_urls.append(payload.get('source_url', ''))
 
             rag_context_text = "\n".join(rag_snippets)
 
@@ -104,7 +106,7 @@ async def analyze_yamls(payload: YamlRequest):
             return {
                 "filename": filename,
                 "summary": summary,
-                "related_docs": rag_snippets,
+                "related_docs": source_urls,
                 "detailed_analysis": final_analysis
             }
         except Exception as e:

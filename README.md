@@ -4,7 +4,7 @@ Supercharge your CI/CD workflows with AI. This tool harnesses the power of Gener
 
 This project is currently deployed on both [Kubernetes](https://workflow-genie.student.k8s.aet.cit.tum.de/) and [AWS](https://client.52.44.166.222.nip.io/)(probably offline right now, since running it costs money)
 
-Each deployment is actively monitored. You can view real-time metrics and logs via the Grafana dashboards for [Kubernetes](https://monitoring-womm.student.k8s.aet.cit.tum.de/grafana/login) and [AWS](https://grafana.52.44.166.222.nip.io).
+Each deployment is actively monitored. You can view real-time metrics and logs via the Grafana dashboards(Dashboards from imported from https://grafana.com/grafana/dashboards/) for [Kubernetes](https://monitoring-womm.student.k8s.aet.cit.tum.de/grafana/login) and [AWS](https://grafana.52.44.166.222.nip.io).
 
 # Run Instructions:
 
