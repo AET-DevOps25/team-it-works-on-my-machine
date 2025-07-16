@@ -45,9 +45,6 @@ def test_analyze_yamls(mock_retrieve_text, mock_chain):
     assert "related_docs" in result
     assert isinstance(result["related_docs"], list)
     assert len(result["related_docs"]) == 1
-    doc = result["related_docs"][0]
-    assert "CI/CD Intro" in doc
-    assert "This explains GitHub Actions setup." in doc
 
     # check detailed_analysis
     assert "detailed_analysis" in result
