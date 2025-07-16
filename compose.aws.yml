@@ -157,3 +157,10 @@ services:
       - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
     command: -config.file=/etc/loki/loki-config.yaml
     restart: unless-stopped
+
+volumes:
+  users-db-storage:
+  prometheus_data:
+  grafana-storage:
+  loki-storage:
+  promtail-storage:
