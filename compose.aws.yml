@@ -123,8 +123,6 @@ services:
   grafana:
     image: grafana/grafana-oss:latest
     container_name: grafana
-    ports:
-      - "${GRAFANA_PORT}:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
