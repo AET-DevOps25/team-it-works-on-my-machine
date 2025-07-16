@@ -131,6 +131,39 @@
         }
       }
     },
+    "/getPrivateRepos": {
+      "get": {
+        "tags": [
+          "gh-connector-controller"
+        ],
+        "operationId": "getPrivateRepos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "cookie",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserInstallationRepository"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/getInfo": {
       "get": {
         "tags": [
@@ -172,6 +205,20 @@
   },
   "components": {
     "schemas": {
+      "UserInstallationRepository": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "visibility": {
+            "type": "string"
+          },
+          "html_url": {
+            "type": "string"
+          }
+        }
+      },
       "GHConnectorResponse": {
         "type": "object",
         "properties": {

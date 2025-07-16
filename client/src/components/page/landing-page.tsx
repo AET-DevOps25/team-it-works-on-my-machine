@@ -6,6 +6,7 @@ import Profile from '../profile/Profile'
 import type {
   AnalysisContentType,
   GitHubUserType,
+  Repo,
   UserType,
   UserType2,
 } from '@/lib/types'
@@ -65,21 +66,50 @@ function Login() {
   )
 }
 
-function InstallApp() {
+function AccessibleRepos({ repos }: { repos: Repo[] }) {
   function handleInstall() {
     console.log('install')
     // Open the GitHub App installation page in a new tab
     const installUrl = `https://github.com/apps/devops-workflowgenie-2025/installations/select_target`
     window.open(installUrl, '_blank', 'noopener,noreferrer')
   }
-  return (
-    <Button
-      className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
-      onClick={handleInstall}
-    >
-      Install App on GitHub
-    </Button>
-  )
+
+  if (repos.length === 0) {
+    return (
+      <div>
+        <p>Workflow Genie cannot access any of you private repositories</p>
+        <Button
+          className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
+          onClick={handleInstall}
+        >
+          Grant Access to Workflow Genie
+        </Button>
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <p>
+          Workflow genie currently has access to these private repositories:
+        </p>
+        <ul>
+          {repos.map((repo) => {
+            return (
+              <li key={repo.name}>
+                {repo.name}: {repo.html_url}
+              </li>
+            )
+          })}
+        </ul>
+        <Button
+          className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
+          onClick={handleInstall}
+        >
+          Grant additional or revoke existing Access Permission
+        </Button>
+      </div>
+    )
+  }
 }
 
 function LandingPage() {
@@ -157,9 +187,19 @@ function LandingPage() {
           console.error('Failed to fetch user data:', userData)
           return
         }
+        res = await fetch(`${GH_CONNECTOR_URL}/getPrivateRepos`, {
+          credentials: 'include',
+        })
+        if (res.status !== 200) {
+          console.error('Failed to fetch repo data:', userData)
+          return
+        }
+        const repos = (await res.json()) as Repo[]
+
         setData({
           github: data,
           user: userData,
+          repos: repos,
         })
       }
     }
@@ -170,11 +210,12 @@ function LandingPage() {
     <div className="container mx-auto p-6 text-center relative">
       <ModeToggle className="absolute top-4 right-4" />
       <ul>
-        <li>Public Repo with simple workflows: </li>
+        <li>Public Repo with simple workflows:</li>
         <li>https://github.com/AET-DevOps25/w06-template</li>
         <li>Jonas Private Repo:</li>
         <li>https://github.com/Funky-Punky/bachelor-cellbase</li>
       </ul>
+      {isLoggedIn && data && <AccessibleRepos repos={data.repos} />}
       <h1 className="text-4xl font-extrabold text-primary mb-6 mt-16">
         Workflow Genie
       </h1>
@@ -211,7 +252,6 @@ function LandingPage() {
           ) : (
             <Login />
           )}
-          {isLoggedIn && <InstallApp />}
         </div>
         {data && <Profile user={data} />}
       </div>

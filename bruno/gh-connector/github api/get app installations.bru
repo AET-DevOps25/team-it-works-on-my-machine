@@ -1,11 +1,11 @@
 meta {
-  name: get user installations
+  name: get app installations
   type: http
-  seq: 3
+  seq: 5
 }
 
 get {
-  url: https://api.github.com/user/installations
+  url: https://api.github.com/installations/repositories
   body: none
   auth: inherit
 }
