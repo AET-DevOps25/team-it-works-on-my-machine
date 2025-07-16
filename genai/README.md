@@ -35,7 +35,8 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 2. **Install dependencies**
 
 ```bash
-pip install -r requirements.txt
+pip install uv
+uv sync
 ```
 
 3. **Prepare `.env` file**
@@ -43,8 +44,14 @@ pip install -r requirements.txt
 Create a `.env` file in the root directory and add:
 
 ```env
-OPENAI_API_KEY=your-api-key
-OPENAI_API_BASE=https://api.deepseek.com/v1  # Optional, if using DeepSeek or a proxy
+OPENAI_API_KEY=<your-openai-api-key>
+
+GENAI_PORT=3001
+GENAI_URL=http://localhost:${GENAI_PORT}
+
+# Qdrant configuration for vector storage
+QDRANT_API_KEY=<your-qdrant-api-key>
+QDRANT_URL=<your-qdrant-url>
 ```
 
 ---
@@ -54,42 +61,9 @@ OPENAI_API_BASE=https://api.deepseek.com/v1  # Optional, if using DeepSeek or a 
 Make sure you're in the root of the project (`genai/`), then:
 
 ```bash
-python app
+uv run app
 ```
 
 This starts the FastAPI app at: `http://localhost:3001`
 
 Open your browser at [http://localhost:3001/docs](http://localhost:8000/docs) to test via Swagger UI.
-
----
-
-## 🧪 Test the Chain Logic Directly
-
-You can test the core chain logic without running the API, by directly modifying and running `ask.py`:
-
-### Example
-
-Edit `app/input_query/ask.py`:
-
-```python
-import requests
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-if __name__ == "__main__":
-    url = os.getenv('GENAI_URL') + "/ask"
-    data = {"question": "What is LangChain?"}
-
-    response = requests.post(url, json={"question": "Waht is the Rank of TUM?"})
-    print(response.json()["response"])
-```
-
-Then run:
-
-```bash
-python app/input_query/ask.py
-```
-
-This will prompt you for input and return the model's answer directly using LangChain.
