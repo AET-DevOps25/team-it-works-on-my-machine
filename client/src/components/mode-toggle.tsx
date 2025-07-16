@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useTheme } from '@/components/theme-provider'
+import { useTheme } from 'next-themes'
 import { cn } from '@/lib/utils'
 
 export function ModeToggle({ className }: { className?: string }) {
