@@ -43,7 +43,7 @@ public class AnalysisService {
 
     public GHConnectorResponse analyzeRepo(String repoUri, String id) {
 
-        log.debug("got called with: " + repoUri);
+        log.debug("got called with: {}", repoUri);
 
         WGUser WGUser = authService.getAuthToken(id);
         String bearerToken = WGUser == null ? null : WGUser.getToken();
@@ -70,7 +70,7 @@ public class AnalysisService {
             }
             return GHConnectorResponse.fromGenAIResponse(genAIResponse);
 
-        } catch (IllegalArgumentException | JsonProcessingException e) {
+        } catch (IllegalArgumentException | JsonProcessingException | FeignException.Forbidden e ) {
             return ghConnectorService.constructError("There was an error while working with the provided URL: " + e.getMessage());
         }
     }
@@ -78,12 +78,7 @@ public class AnalysisService {
     private List<WorkflowFile> crawlWorkflows(String owner, String repo, String bearerToken) {
         List<WorkflowFile> workflowFiles = new ArrayList<>();
 
-        try {
-            crawlWorkflows(owner, repo, ".github/workflows", workflowFiles, bearerToken);
-        } catch (Exception e) {
-            // TODO
-            e.printStackTrace();
-        }
+        crawlWorkflows(owner, repo, ".github/workflows", workflowFiles, bearerToken);
 
         return workflowFiles;
     }
@@ -93,27 +88,21 @@ public class AnalysisService {
         List<ContentResponseItem> contents = ghAPIRestClient.getFolderContent(owner, repo, searchPath, bearerToken);
 
         for (ContentResponseItem item : contents) {
-            try {
 
-                if (item.getType().equals("dir")) {
-                    crawlWorkflows(owner, repo, item.getPath(), resulList, bearerToken);
-                }
+            if (item.getType().equals("dir")) {
+                crawlWorkflows(owner, repo, item.getPath(), resulList, bearerToken);
+            }
 
-                if (item.getType().equals("file")
-                        && (item.getName().endsWith(".yml") || item.getName().endsWith(".yaml"))) {
-                    ContentResponseItem contentItem =
-                            ghAPIRestClient.getFileContent(owner, repo, item.getPath(), bearerToken);
-                    resulList.add(WorkflowFile.fromContentResponseItem(contentItem));
-                }
-            } catch (Exception e) {
-                // todo: rate exeeded
-                e.printStackTrace();
+            if (item.getType().equals("file")
+                    && (item.getName().endsWith(".yml") || item.getName().endsWith(".yaml"))) {
+                ContentResponseItem contentItem =
+                        ghAPIRestClient.getFileContent(owner, repo, item.getPath(), bearerToken);
+                resulList.add(WorkflowFile.fromContentResponseItem(contentItem));
             }
         }
     }
 
-    private void assertWorkflowDirAccess(String owner, String repo, String bearerToken)
-            throws IllegalArgumentException {
+    private void assertWorkflowDirAccess(String owner, String repo, String bearerToken) {
         try {
             ghAPIRestClient.getFolderContent(owner, repo, "", bearerToken);
         } catch (FeignException.NotFound e) {
@@ -128,7 +117,7 @@ public class AnalysisService {
         }
     }
 
-    private String constructGHApiContentPath(String repoUri) throws IllegalArgumentException {
+    private String constructGHApiContentPath(String repoUri) {
         URI uri = URI.create(repoUri);
 
         if (!"https".equals(uri.getScheme())) {
