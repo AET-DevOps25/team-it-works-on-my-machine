@@ -55,7 +55,7 @@ public class GHConnectorService {
                     .userInfo(userResponse)
                     .build();
         } catch (Exception e) {
-            return constructError("Error fetching user data from GitHub: " + e.getMessage());
+            return constructError("Error fetching user data: " + e.getMessage());
         }
     }
 

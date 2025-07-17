@@ -63,11 +63,6 @@ public class AuthService {
         if (id == null) {
             return null;
         }
-        try {
-            return userSRestClient.getUserById(id);
-        } catch (Exception ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Error fetching user data from GitHub: " + ex.getMessage());
-        }
+        return userSRestClient.getUserById(id);
     }
 }
