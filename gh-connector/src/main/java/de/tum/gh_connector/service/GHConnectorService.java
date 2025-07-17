@@ -61,16 +61,16 @@ public class GHConnectorService {
 
     public GHConnectorResponse getPrivateRepos(String id) {
         try {
-            WGUser WGUser = authService.getAuthToken(id);
-            if (WGUser == null) {
+            WGUser wgUser = authService.getAuthToken(id);
+            if (wgUser == null) {
                 return null;
             }
 
             List<UserInstallationRepository> result = new LinkedList<>();
-            UserInstallations userInstallations = ghAPIRestClient.getUserInstallations(WGUser.getToken(), 100);
+            UserInstallations userInstallations = ghAPIRestClient.getUserInstallations(wgUser.getToken(), 100);
             for (UserInstallation installation : userInstallations.getInstallations()) {
                 UserInstallationRepositories repositories =
-                        ghAPIRestClient.getUserInstallationRepositories(WGUser.getToken(), installation.getId(), 100);
+                        ghAPIRestClient.getUserInstallationRepositories(wgUser.getToken(), installation.getId(), 100);
 
                 for (UserInstallationRepository repo : repositories.getRepositories()) {
                     if (!repo.getVisibility().equals("public")) {
