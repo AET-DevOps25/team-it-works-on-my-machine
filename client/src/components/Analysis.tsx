@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from '../ui/card'
+} from './ui/card'
 import Markdown from 'react-markdown'
 
 export default function Analysis({ analysis }: { analysis: AnalysisType[] }) {

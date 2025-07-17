@@ -15,7 +15,6 @@ const Profile = ({ user }: { user: UserType }) => {
       </div>
       <div className="info-container">
         <p>Login: {user.ghUser.login}</p>
-        {/*<p>ID: {user.github.id}</p>*/}
         <p>Followers: {user.ghUser.followers}</p>
         <p>Following: {user.ghUser.following}</p>
         <p>Public Repos: {user.ghUser.public_repos}</p>
