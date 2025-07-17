@@ -1,12 +1,10 @@
 package de.tum.gh_connector;
 
 import de.tum.gh_connector.dto.*;
-import de.tum.gh_connector.dto.gh.UserInstallationRepository;
 import de.tum.gh_connector.service.AnalysisService;
 import de.tum.gh_connector.service.AuthService;
 import de.tum.gh_connector.service.GHConnectorService;
 import java.net.URI;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @RestController
@@ -88,13 +85,15 @@ public class GhConnectorController {
     }
 
     @GetMapping(value = "/getPrivateRepos", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<UserInstallationRepository>> getPrivateRepos(@CookieValue(value = "id") String id) {
-        List<UserInstallationRepository> result = ghConnectorService.getPrivateRepos(id);
-        if (result == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<GHConnectorResponse> getPrivateRepos(@CookieValue(value = "id") String id) {
+        GHConnectorResponse response = ghConnectorService.getPrivateRepos(id);
+        HttpStatus status = HttpStatus.resolve(response.getStatus()); // z.B. 200, 404, 500 etc.
+
+        if (status == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR; // Fallback bei ungültigem Statuscode
         }
 
-        return new ResponseEntity<>(result, HttpStatusCode.valueOf(200));
+        return new ResponseEntity<>(response, status);
     }
 
     @GetMapping(value = "/ping", produces = MediaType.TEXT_PLAIN_VALUE)

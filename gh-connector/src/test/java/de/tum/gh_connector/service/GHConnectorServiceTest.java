@@ -10,9 +10,7 @@ import de.tum.gh_connector.client.GHAuthClient;
 import de.tum.gh_connector.client.GenAIRestClient;
 import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
-import de.tum.gh_connector.dto.gh.ContentResponseItem;
-import de.tum.gh_connector.dto.gh.GHAuthResponse;
-import de.tum.gh_connector.dto.gh.UserInfo;
+import de.tum.gh_connector.dto.gh.*;
 import feign.FeignException;
 import feign.Request;
 
@@ -41,7 +39,6 @@ class GHConnectorServiceTest {
     private GHConnectorService ghConnectorService;
 
     private WGUser wgUser;
-
 
     @BeforeEach
     void setUp() {
@@ -98,4 +95,59 @@ class GHConnectorServiceTest {
         assertEquals(resp, response);
     }
 
+    @Test
+    void getPrivateReposTest() {
+        UserInstallation inst1 = UserInstallation.builder()
+                .id(1)
+                .build();
+        UserInstallation inst2 = UserInstallation.builder()
+                .id(2)
+                .build();
+
+        UserInstallations installations = UserInstallations.builder()
+                .totalCount(2)
+                .installations(List.of(inst1, inst2))
+                .build();
+
+        UserInstallationRepository repo1 = UserInstallationRepository.builder()
+                .htmlUrl("https://github.com/owner1/repo1")
+                .name("repo1")
+                .visibility("private")
+                .build();
+
+        UserInstallationRepository repo2 = UserInstallationRepository.builder()
+                .htmlUrl("https://github.com/owner1/repo2")
+                .name("repo2")
+                .visibility("public")
+                .build();
+
+        UserInstallationRepository repo3 = UserInstallationRepository.builder()
+                .htmlUrl("https://github.com/owner2/repo3")
+                .name("repo3")
+                .visibility("private")
+                .build();
+
+        UserInstallationRepositories userInstallationRepositories1 = UserInstallationRepositories.builder()
+                .totalCount(2)
+                .repositories(List.of(repo1, repo2))
+                .build();
+
+        UserInstallationRepositories userInstallationRepositories2 = UserInstallationRepositories.builder()
+                .totalCount(1)
+                .repositories(List.of(repo3))
+                .build();
+
+        when(authService.getAuthToken("wgid")).thenReturn(wgUser);
+        when(ghAPIRestClient.getUserInstallations("token", 100)).thenReturn(installations);
+        when(ghAPIRestClient.getUserInstallationRepositories("token", 1, 100)).thenReturn(userInstallationRepositories1);
+        when(ghAPIRestClient.getUserInstallationRepositories("token", 2, 100)).thenReturn(userInstallationRepositories2);
+
+        GHConnectorResponse resp = ghConnectorService.getPrivateRepos("wgid");
+
+        assertEquals(resp, GHConnectorResponse.builder()
+                .status(200)
+                .repos(List.of(repo1, repo3))
+                .build()
+        );
+    }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 
 import de.tum.gh_connector.dto.gh.UserInfo;
+import de.tum.gh_connector.dto.gh.UserInstallationRepository;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ public class GHConnectorResponse {
     String message;
     List<WorkflowExplanation> results;
     UserInfo userInfo;
+    List<UserInstallationRepository> repos;
 
     public static GHConnectorResponse fromGenAIResponse(GenAIResponse genAIResponse) {
         return GHConnectorResponse.builder()

@@ -56,7 +56,7 @@ public class GHConnectorService {
                 .build();
     }
 
-    public List<UserInstallationRepository> getPrivateRepos(String id) {
+    public GHConnectorResponse getPrivateRepos(String id) {
         WGUser WGUser = authService.getAuthToken(id);
         if (WGUser == null) {
             return null;
@@ -75,7 +75,10 @@ public class GHConnectorService {
             }
         }
 
-        return result;
+        return GHConnectorResponse.builder()
+                .status(200)
+                .repos(result)
+                .build();
     }
 
     public String pingUserS() {
