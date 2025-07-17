@@ -167,6 +167,7 @@ function LandingPage() {
       {
         id: 'unknown',
         repository: repoUrl,
+        created_at: new Date(Date.now()),
         content: data.results,
       },
     ])
@@ -209,6 +210,11 @@ function LandingPage() {
           a.content = JSON.parse(
             a.content as unknown as string,
           ) as AnalysisContentType[]
+          // console.log(new Date((a.created_at as unknown as string).replace(/(\.\d{3})\d*/, '$1')).toLocaleString())
+          a.created_at = new Date(
+            (a.created_at as unknown as string).replace(/(\.\d{3})\d*/, '$1') +
+              'Z',
+          )
         }
         setAnalysis(analysis)
 
