@@ -4,6 +4,8 @@ import de.tum.users.model.Analysis;
 import de.tum.users.model.User;
 import de.tum.users.repository.AnalysisRepository;
 import de.tum.users.repository.UserRepository;
+
+import java.util.Comparator;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -52,7 +54,7 @@ public class UserController {
         var user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
-        return user.getAnalysis();
+        return user.getAnalysis().stream().sorted(Comparator.comparing(Analysis::getCreatedAt)).toList();
     }
 
     @PostMapping(value = "/users", produces = MediaType.TEXT_PLAIN_VALUE)

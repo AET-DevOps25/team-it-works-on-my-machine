@@ -168,13 +168,13 @@ function LandingPage() {
     }
     toast.info('Your Analysis is ready now')
     setAnalysis((oldAnalysis) => [
-      ...oldAnalysis,
       {
         id: 'unknown',
         repository: repoUrl,
         created_at: new Date(Date.now()),
         content: data.results,
       },
+      ...oldAnalysis,
     ])
   }
 
