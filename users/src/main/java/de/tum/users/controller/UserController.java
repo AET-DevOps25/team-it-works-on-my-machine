@@ -4,8 +4,6 @@ import de.tum.users.model.Analysis;
 import de.tum.users.model.User;
 import de.tum.users.repository.AnalysisRepository;
 import de.tum.users.repository.UserRepository;
-
-import java.util.Comparator;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
