@@ -130,29 +130,29 @@ public class AnalysisServiceTest {
     void constructContentPathTest() {
         GHConnectorResponse resp1 = GHConnectorResponse.builder()
                 .status(400)
-                .message(
+                .errorMessage(
                         "There was an error while working with the provided URL: The provided URL is not HTTPS")
                 .build();
         GHConnectorResponse resp2 = GHConnectorResponse.builder()
                 .status(400)
-                .message(
+                .errorMessage(
                         "There was an error while working with the provided URL: URL does not point to github.com")
                 .build();
         GHConnectorResponse resp3 = GHConnectorResponse.builder()
                 .status(400)
-                .message(
+                .errorMessage(
                         "There was an error while working with the provided URL: URL has no specified path")
                 .build();
         GHConnectorResponse resp4 = GHConnectorResponse.builder()
                 .status(400)
-                .message(
+                .errorMessage(
                         "There was an error while working with the provided URL: URL Path is not long enough - The repository is not clear")
                 .build();
 
-        when(ghConnectorService.constructError(resp1.getMessage())).thenReturn(resp1);
-        when(ghConnectorService.constructError(resp2.getMessage())).thenReturn(resp2);
-        when(ghConnectorService.constructError(resp3.getMessage())).thenReturn(resp3);
-        when(ghConnectorService.constructError(resp4.getMessage())).thenReturn(resp4);
+        when(ghConnectorService.constructError(resp1.getErrorMessage())).thenReturn(resp1);
+        when(ghConnectorService.constructError(resp2.getErrorMessage())).thenReturn(resp2);
+        when(ghConnectorService.constructError(resp3.getErrorMessage())).thenReturn(resp3);
+        when(ghConnectorService.constructError(resp4.getErrorMessage())).thenReturn(resp4);
 
         assertEquals(resp1, analysisService.analyzeRepo("http://github.com/ls1intum/Artemis", "id"));
         assertEquals(resp2, analysisService.analyzeRepo("https://gitlab.com/ls1intum/Artemis", "id"));
@@ -169,11 +169,11 @@ public class AnalysisServiceTest {
 
         GHConnectorResponse resp = GHConnectorResponse.builder()
                 .status(400)
-                .message(
+                .errorMessage(
                         "There was an error while working with the provided URL: The specified Repository doesn't exist or you are not authorized to access it")
                 .build();
 
-        when(ghConnectorService.constructError(resp.getMessage())).thenReturn(resp);
+        when(ghConnectorService.constructError(resp.getErrorMessage())).thenReturn(resp);
 
         assertEquals(resp, analysisService.analyzeRepo("https://github.com/hello/world", "id"));
     }
@@ -188,11 +188,11 @@ public class AnalysisServiceTest {
 
         GHConnectorResponse resp = GHConnectorResponse.builder()
                 .status(400)
-                .message(
+                .errorMessage(
                         "There was an error while working with the provided URL: The specified Repository doesn't have a workflow directory")
                 .build();
 
-        when(ghConnectorService.constructError(resp.getMessage())).thenReturn(resp);
+        when(ghConnectorService.constructError(resp.getErrorMessage())).thenReturn(resp);
 
         assertEquals(resp, analysisService.analyzeRepo("https://github.com/hello/world", "id"));
     }

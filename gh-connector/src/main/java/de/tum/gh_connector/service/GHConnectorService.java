@@ -34,7 +34,7 @@ public class GHConnectorService {
 
 
     GHConnectorResponse constructError(String message) {
-        return GHConnectorResponse.builder().status(400).message(message).build();
+        return GHConnectorResponse.builder().status(400).errorMessage(message).build();
     }
 
     public GHConnectorResponse getUserInfo(String wgID) {

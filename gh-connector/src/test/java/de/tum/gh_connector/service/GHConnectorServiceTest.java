@@ -2,29 +2,19 @@ package de.tum.gh_connector.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import de.tum.gh_connector.client.GHAPIRestClient;
-import de.tum.gh_connector.client.GHAuthClient;
-import de.tum.gh_connector.client.GenAIRestClient;
-import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
 import de.tum.gh_connector.dto.gh.*;
-import feign.FeignException;
-import feign.Request;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 
 @SpringBootTest
 class GHConnectorServiceTest {
@@ -54,7 +44,7 @@ class GHConnectorServiceTest {
     void getUserNonExistent() {
         GHConnectorResponse resp = GHConnectorResponse.builder()
                 .status(400)
-                .message("Not authenticated")
+                .errorMessage("Not authenticated")
                 .build();
 
         assertEquals(resp, ghConnectorService.getUserInfo(null));
@@ -84,7 +74,7 @@ class GHConnectorServiceTest {
     void getUserGHError() {
         GHConnectorResponse resp = GHConnectorResponse.builder()
                 .status(400)
-                .message("Error fetching user data from GitHub: error message")
+                .errorMessage("Error fetching user data from GitHub: error message")
                 .build();
 
         when(authService.getAuthToken("wgid")).thenReturn(wgUser);

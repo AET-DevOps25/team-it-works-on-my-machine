@@ -5,11 +5,10 @@ import { useEffect, useState } from 'react'
 import Profile from '../profile/Profile'
 import type {
   AnalysisContentType,
-  AnalysisSingleType,
+  GHConnectorResponse,
   AnalysisType,
-  GitHubUserType,
   Repo,
-  UserType,
+  UserType
 } from '@/lib/types'
 import Cookies from 'universal-cookie'
 import { toast, Toaster } from 'sonner'
@@ -156,10 +155,10 @@ function LandingPage() {
     const res = await fetch(`${GH_CONNECTOR_URL}/getInfo?repoUrl=${repoUrl}`, {
       credentials: 'include',
     })
-    const data = (await res.json()) as AnalysisSingleType
+    const data = (await res.json()) as GHConnectorResponse
     if (res.status !== 200) {
       console.error('Failed to fetch repo data:', data)
-      toast.error(data.message || 'Failed to fetch repo data')
+      toast.error(data.error_message || 'Failed to fetch repo data')
       return
     }
     setAnalysis((oldAnalysis) => [
@@ -176,7 +175,7 @@ function LandingPage() {
   useEffect(() => {
     const fetchData = async () => {
       if (isLoggedIn) {
-        const [ghRes, userRes, reposRes] = await Promise.all([
+        const [ghUserRes, analysesRes, reposRes] = await Promise.all([
           fetch(`${GH_CONNECTOR_URL}/user`, { credentials: 'include' }),
           fetch(
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -188,24 +187,27 @@ function LandingPage() {
           }),
         ])
 
-        const data = (await ghRes.json()) as GitHubUserType
-        const analysis = (await userRes.json()) as AnalysisType[]
-        const repos = (await reposRes.json()) as Repo[]
+        const GHConGHUser = (await ghUserRes.json()) as GHConnectorResponse
+        const analyses = (await analysesRes.json()) as AnalysisType[]
+        const GHConRepos = (await reposRes.json()) as GHConnectorResponse
 
-        if (ghRes.status !== 200) {
-          console.error('Failed to fetch user data:', data)
+        if (ghUserRes.status !== 200) {
+          console.error('Failed to fetch user data:', GHConGHUser)
+          toast.error(GHConGHUser.error_message || 'Failed to fetch user data')
           return
         }
-        if (userRes.status !== 200) {
-          console.error('Failed to fetch analysis data:', analysis)
+        if (analysesRes.status !== 200) {
+          console.error('Failed to fetch analysis data:', analyses)
+          toast.error('Failed to fetch analysis data')
           return
         }
         if (reposRes.status !== 200) {
-          console.error('Failed to fetch repo data:', repos)
+          console.error('Failed to fetch analysis data:', GHConRepos.repos)
+          toast.error(GHConRepos.error_message || 'Failed to fetch analysis data')
           return
         }
 
-        for (const a of analysis) {
+        for (const a of analyses) {
           // Parse the content field of each analysis
           a.content = JSON.parse(
             a.content as unknown as string,
@@ -216,11 +218,11 @@ function LandingPage() {
               'Z',
           )
         }
-        setAnalysis(analysis)
+        setAnalysis(analyses)
 
         setData({
-          github: data,
-          repos: repos,
+          ghUser: GHConGHUser.user_info,
+          repos: GHConRepos.repos,
         })
       }
     }

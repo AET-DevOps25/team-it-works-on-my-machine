@@ -8,17 +8,17 @@ const Profile = ({ user }: { user: UserType }) => {
       <h2>User Information</h2>
       <div className="avatar-container flex justify-center">
         <img
-          src={user.github.avatar_url}
+          src={user.ghUser.avatar_url}
           alt="User Avatar"
           className="avatar h-[64px] w-[64px] rounded-full"
         />
       </div>
       <div className="info-container">
-        <p>Login: {user.github.login}</p>
+        <p>Login: {user.ghUser.login}</p>
         {/*<p>ID: {user.github.id}</p>*/}
-        <p>Followers: {user.github.followers}</p>
-        <p>Following: {user.github.following}</p>
-        <p>Public Repos: {user.github.public_repos}</p>
+        <p>Followers: {user.ghUser.followers}</p>
+        <p>Following: {user.ghUser.following}</p>
+        <p>Public Repos: {user.ghUser.public_repos}</p>
       </div>
     </div>
   )

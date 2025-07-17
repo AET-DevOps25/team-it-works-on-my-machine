@@ -6,7 +6,7 @@ import type { UserType } from '@/lib/types'
 describe('Profile', () => {
   it('renders user info', () => {
     const user = {
-      github: {
+      ghUser: {
         avatar_url: 'avatar.png',
         login: 'testuser',
         id: '1',
