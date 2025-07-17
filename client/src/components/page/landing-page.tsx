@@ -211,7 +211,10 @@ function LandingPage() {
             a.content as unknown as string,
           ) as AnalysisContentType[]
           // console.log(new Date((a.created_at as unknown as string).replace(/(\.\d{3})\d*/, '$1')).toLocaleString())
-          a.created_at = new Date((a.created_at as unknown as string).replace(/(\.\d{3})\d*/, '$1') + "Z")
+          a.created_at = new Date(
+            (a.created_at as unknown as string).replace(/(\.\d{3})\d*/, '$1') +
+              'Z',
+          )
         }
         setAnalysis(analysis)
 
