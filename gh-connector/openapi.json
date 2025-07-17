@@ -153,10 +153,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserInstallationRepository"
-                  }
+                  "$ref": "#/components/schemas/GHConnectorResponse"
                 }
               }
             }
@@ -205,20 +202,6 @@
   },
   "components": {
     "schemas": {
-      "UserInstallationRepository": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "visibility": {
-            "type": "string"
-          },
-          "html_url": {
-            "type": "string"
-          }
-        }
-      },
       "GHConnectorResponse": {
         "type": "object",
         "properties": {
@@ -226,16 +209,22 @@
             "type": "integer",
             "format": "int32"
           },
-          "message": {
-            "type": "string"
-          },
           "results": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/WorkflowExplanation"
             }
           },
-          "userInfo": {
+          "repos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserInstallationRepository"
+            }
+          },
+          "error_message": {
+            "type": "string"
+          },
+          "user_info": {
             "$ref": "#/components/schemas/UserInfo"
           }
         }
@@ -263,6 +252,20 @@
           "public_repos": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "UserInstallationRepository": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "visibility": {
+            "type": "string"
+          },
+          "html_url": {
+            "type": "string"
           }
         }
       },
