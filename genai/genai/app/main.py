@@ -49,8 +49,11 @@ async def ping():
 
 @app.post("/analyze-yamls")
 async def analyze_yamls(payload: YamlRequest):
-    async def analyze_yaml(y: YamlFile):
+    async def analyze_yaml(i: int, y: YamlFile):
         try:
+            # Delay to bypass rate limits
+            await asyncio.sleep(i/4)
+
             filename = y.filename
             content = y.content
 
@@ -116,7 +119,7 @@ async def analyze_yamls(payload: YamlRequest):
             traceback.print_exc()
             raise HTTPException(status_code=500, detail=f"Error processing {y.filename}: {str(e)}")
 
-    results = await asyncio.gather(*(analyze_yaml(y) for y in payload.yamls))
+    results = await asyncio.gather(*(analyze_yaml(i, y) for i, y in enumerate(payload.yamls)))
     return {"results": results}
 
 def main():
