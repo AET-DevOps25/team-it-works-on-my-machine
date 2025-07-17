@@ -28,12 +28,6 @@ public class AnalysisService {
     private final UserSRestClient userSRestClient;
     private final GenAIRestClient genAIRestClient;
 
-    @Value("${gh.oauth.client.id}")
-    private String clientId;
-
-    @Value("${gh.oauth.client.secret}")
-    private String clientSecret;
-
     public AnalysisService(
             GHConnectorService ghConnectorService,
             AuthService authService,

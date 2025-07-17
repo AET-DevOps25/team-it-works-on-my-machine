@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GhConnectorController {
 
-    @Value("${genai.url}")
-    private String genaiUrl;
-
     @Value("${client.url}")
     private String clientUrl;
 
@@ -61,32 +58,23 @@ public class GhConnectorController {
     @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUser(@CookieValue(value = "id", required = false) String id) {
         GHConnectorResponse response = ghConnectorService.getUserInfo(id);
-        HttpStatus status = HttpStatus.resolve(response.getStatus()); // z.B. 200, 404, 500 etc.
-
-        if (status == null) {
-            status = HttpStatus.INTERNAL_SERVER_ERROR; // Fallback bei ungültigem Statuscode
-        }
-
-        return new ResponseEntity<>(response, status);
+        return wrapGHConnectorResponse(response);
     }
-
 
     @GetMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GHConnectorResponse> getInfo(
             @RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
         GHConnectorResponse response = analysisService.analyzeRepo(repoUrl, id);
-        HttpStatus status = HttpStatus.resolve(response.getStatus()); // z.B. 200, 404, 500 etc.
-
-        if (status == null) {
-            status = HttpStatus.INTERNAL_SERVER_ERROR; // Fallback bei ungültigem Statuscode
-        }
-
-        return new ResponseEntity<>(response, status);
+        return wrapGHConnectorResponse(response);
     }
 
     @GetMapping(value = "/getPrivateRepos", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GHConnectorResponse> getPrivateRepos(@CookieValue(value = "id") String id) {
         GHConnectorResponse response = ghConnectorService.getPrivateRepos(id);
+        return wrapGHConnectorResponse(response);
+    }
+
+    private ResponseEntity<GHConnectorResponse> wrapGHConnectorResponse(GHConnectorResponse response) {
         HttpStatus status = HttpStatus.resolve(response.getStatus()); // z.B. 200, 404, 500 etc.
 
         if (status == null) {
