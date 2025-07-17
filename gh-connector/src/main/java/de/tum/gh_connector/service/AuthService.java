@@ -9,9 +9,7 @@ import de.tum.gh_connector.dto.gh.GHAuthResponse;
 import de.tum.gh_connector.dto.gh.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @Service
