@@ -79,9 +79,12 @@ async def analyze_yamls(payload: YamlRequest):
             source_urls=[]
             for item in retrieved:
                 payload = item.payload
+                source_url = payload.get('source_url', '')
+                if source_url in source_urls:
+                    continue
                 rag_snippets.append(
                     f"- {payload.get('title', 'Untitled')}: {payload.get('text', '')}")
-                source_urls.append(payload.get('source_url', ''))
+                source_urls.append(source_url)
 
             rag_context_text = "\n".join(rag_snippets)
 
