@@ -27,7 +27,7 @@ export default function Analysis({ analysis }: { analysis: AnalysisType[] }) {
         {analysis.map((analysis) => (
           <AccordionItem value={analysis.id} key={analysis.id}>
             <AccordionTrigger>
-              <strong>Repository:</strong> {analysis.repository}
+              <strong>Repository:</strong> {analysis.repository} - {analysis.created_at.toLocaleString("de-DE", { timeZone: "Europe/Berlin" })}
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
               {analysis.content.map((content) => (

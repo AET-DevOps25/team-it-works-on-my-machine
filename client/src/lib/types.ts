@@ -34,6 +34,7 @@ export type AnalysisSingleType = {
 export type AnalysisType = {
   id: string
   repository: string
+  created_at: Date
   content: AnalysisContentType[]
 }
 
