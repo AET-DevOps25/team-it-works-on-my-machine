@@ -152,15 +152,21 @@ function LandingPage() {
       setError(true)
       return
     }
+
+    toast.info(
+      'Your request is being processed - This may take up to a minute. Please be patient!',
+    )
     const res = await fetch(`${GH_CONNECTOR_URL}/getInfo?repoUrl=${repoUrl}`, {
       credentials: 'include',
     })
+
     const data = (await res.json()) as GHConnectorResponse
     if (res.status !== 200) {
       console.error('Failed to fetch repo data:', data)
       toast.error(data.error_message || 'Failed to fetch repo data')
       return
     }
+    toast.info('Your Analysis is ready now')
     setAnalysis((oldAnalysis) => [
       ...oldAnalysis,
       {

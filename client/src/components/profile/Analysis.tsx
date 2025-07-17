@@ -26,7 +26,12 @@ export default function Analysis({ analysis }: { analysis: AnalysisType[] }) {
       >
         {analysis.map((analysis) => (
           <AccordionItem value={analysis.id} key={analysis.id}>
-            <AccordionTrigger>
+            <AccordionTrigger
+              style={{
+                backgroundColor:
+                  analysis.id === 'unknown' ? 'red' : 'transparent',
+              }}
+            >
               <strong>Repository:</strong> {analysis.repository} -{' '}
               {analysis.created_at.toLocaleString('de-DE', {
                 timeZone: 'Europe/Berlin',
