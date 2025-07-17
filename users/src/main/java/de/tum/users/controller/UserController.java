@@ -54,7 +54,7 @@ public class UserController {
         var user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
-        return user.getAnalysis().stream().sorted(Comparator.comparing(Analysis::getCreatedAt)).toList();
+        return user.getAnalysis().reversed();
     }
 
     @PostMapping(value = "/users", produces = MediaType.TEXT_PLAIN_VALUE)
