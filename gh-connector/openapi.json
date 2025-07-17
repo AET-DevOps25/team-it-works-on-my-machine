@@ -234,6 +234,35 @@
             "items": {
               "$ref": "#/components/schemas/WorkflowExplanation"
             }
+          },
+          "userInfo": {
+            "$ref": "#/components/schemas/UserInfo"
+          }
+        }
+      },
+      "UserInfo": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "followers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "following": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "avatar_url": {
+            "type": "string"
+          },
+          "public_repos": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
