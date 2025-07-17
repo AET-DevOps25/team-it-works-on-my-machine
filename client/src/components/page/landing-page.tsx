@@ -152,23 +152,34 @@ function LandingPage() {
       setError(true)
       return
     }
-    const res = await fetch(`${GH_CONNECTOR_URL}/getInfo?repoUrl=${repoUrl}`, {
-      credentials: 'include',
-    })
+    const repoUrlTmp = repoUrl
+    setRepoUrl('')
+
+    toast.info(
+      'Your request is being processed - This may take up to a minute. Please be patient!',
+    )
+    const res = await fetch(
+      `${GH_CONNECTOR_URL}/getInfo?repoUrl=${repoUrlTmp}`,
+      {
+        credentials: 'include',
+      },
+    )
+
     const data = (await res.json()) as GHConnectorResponse
     if (res.status !== 200) {
       console.error('Failed to fetch repo data:', data)
       toast.error(data.error_message || 'Failed to fetch repo data')
       return
     }
+    toast.info('Your Analysis is ready now')
     setAnalysis((oldAnalysis) => [
-      ...oldAnalysis,
       {
         id: 'unknown',
-        repository: repoUrl,
+        repository: repoUrlTmp,
         created_at: new Date(Date.now()),
         content: data.results,
       },
+      ...oldAnalysis,
     ])
   }
 
@@ -240,6 +251,7 @@ function LandingPage() {
       </h1>
       <div className="flex flex-col items-center gap-4">
         <Input
+          value={repoUrl}
           type="search"
           placeholder="Insert GitHub Repo URL"
           className={`w-full max-w-md p-3 rounded-lg ${
