@@ -153,10 +153,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserInstallationRepository"
-                  }
+                  "$ref": "#/components/schemas/GHConnectorResponse"
                 }
               }
             }
@@ -205,6 +202,59 @@
   },
   "components": {
     "schemas": {
+      "GHConnectorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowExplanation"
+            }
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserInstallationRepository"
+            }
+          },
+          "error_message": {
+            "type": "string"
+          },
+          "user_info": {
+            "$ref": "#/components/schemas/UserInfo"
+          }
+        }
+      },
+      "UserInfo": {
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "followers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "following": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "avatar_url": {
+            "type": "string"
+          },
+          "public_repos": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "UserInstallationRepository": {
         "type": "object",
         "properties": {
@@ -216,24 +266,6 @@
           },
           "html_url": {
             "type": "string"
-          }
-        }
-      },
-      "GHConnectorResponse": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/WorkflowExplanation"
-            }
           }
         }
       },

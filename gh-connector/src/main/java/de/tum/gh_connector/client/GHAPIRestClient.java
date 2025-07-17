@@ -1,11 +1,11 @@
 package de.tum.gh_connector.client;
 
-import de.tum.gh_connector.dto.ContentResponseItem;
-import de.tum.gh_connector.dto.UserInstallationRepositories;
-import de.tum.gh_connector.dto.UserInstallations;
+import de.tum.gh_connector.dto.gh.ContentResponseItem;
+import de.tum.gh_connector.dto.gh.UserInfo;
+import de.tum.gh_connector.dto.gh.UserInstallationRepositories;
+import de.tum.gh_connector.dto.gh.UserInstallations;
 import feign.Headers;
 import java.util.List;
-import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +41,7 @@ public interface GHAPIRestClient {
             value = "/user",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    Map<String, Object> getUserInfo(@RequestHeader("Authorization") String bearerToken);
+    UserInfo getUserInfo(@RequestHeader("Authorization") String bearerToken);
 
     @GetMapping(value = "/user/installations", produces = MediaType.APPLICATION_JSON_VALUE)
     UserInstallations getUserInstallations(
