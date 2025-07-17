@@ -66,7 +66,7 @@ class GHConnectorServiceTest {
     void getUserGHError() {
         GHConnectorResponse resp = GHConnectorResponse.builder()
                 .status(400)
-                .errorMessage("Error fetching user data from GitHub: error message")
+                .errorMessage("Error fetching user data: error message")
                 .build();
 
         when(authService.getAuthToken("wgid")).thenReturn(wgUser);
