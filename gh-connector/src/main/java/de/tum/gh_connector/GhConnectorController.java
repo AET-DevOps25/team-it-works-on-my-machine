@@ -1,14 +1,12 @@
 package de.tum.gh_connector;
 
-import de.tum.gh_connector.client.GHAPIRestClient;
-import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
-import de.tum.gh_connector.dto.gh.UserInfo;
 import de.tum.gh_connector.dto.gh.UserInstallationRepository;
+import de.tum.gh_connector.service.AnalysisService;
+import de.tum.gh_connector.service.AuthService;
 import de.tum.gh_connector.service.GHConnectorService;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -22,9 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class GhConnectorController {
 
-    private final UserSRestClient userSRestClient;
-    private final GHAPIRestClient ghAPIRestClient;
-
     @Value("${genai.url}")
     private String genaiUrl;
 
@@ -32,17 +27,20 @@ public class GhConnectorController {
     private String clientUrl;
 
     private final GHConnectorService ghConnectorService;
+    private final AuthService authService;
+    private final AnalysisService analysisService;
 
     public GhConnectorController(
-            GHConnectorService ghConnectorService, UserSRestClient userSRestClient, GHAPIRestClient ghAPIRestClient) {
+            GHConnectorService ghConnectorService,
+            AuthService authService, AnalysisService analysisService) {
         this.ghConnectorService = ghConnectorService;
-        this.userSRestClient = userSRestClient;
-        this.ghAPIRestClient = ghAPIRestClient;
+        this.authService = authService;
+        this.analysisService = analysisService;
     }
 
     @GetMapping(value = "/oauth/redirect", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> oauthRedirect(@RequestParam String code) {
-        String id = ghConnectorService.performAuth(code);
+        String id = authService.performAuth(code);
 
         if (id == null) {
             return ResponseEntity.badRequest()
@@ -65,37 +63,21 @@ public class GhConnectorController {
 
     @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUser(@CookieValue(value = "id", required = false) String id) {
-        WGUser WGUser = getAuthToken(id);
-        if (WGUser == null) {
-            return ResponseEntity.badRequest().body("Not authenticated");
+        GHConnectorResponse response = ghConnectorService.getUserInfo(id);
+        HttpStatus status = HttpStatus.resolve(response.getStatus()); // z.B. 200, 404, 500 etc.
+
+        if (status == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR; // Fallback bei ungültigem Statuscode
         }
 
-        UserInfo userResponse;
-        try {
-            userResponse = ghAPIRestClient.getUserInfo(WGUser.getToken());
-        } catch (Exception ex) {
-            return ResponseEntity.badRequest().body("Error fetching user data from GitHub: " + ex.getMessage());
-        }
-
-        return ResponseEntity.ok(userResponse);
+        return new ResponseEntity<>(response, status);
     }
 
-    private WGUser getAuthToken(String id) {
-        if (id == null) {
-            return null;
-        }
-        try {
-            return userSRestClient.getUserById(id);
-        } catch (Exception ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Error fetching user data from GitHub: " + ex.getMessage());
-        }
-    }
 
     @GetMapping(value = "/getInfo", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GHConnectorResponse> getInfo(
             @RequestParam String repoUrl, @CookieValue(value = "id", required = false) String id) {
-        GHConnectorResponse response = ghConnectorService.analyzeRepo(repoUrl, id);
+        GHConnectorResponse response = analysisService.analyzeRepo(repoUrl, id);
         HttpStatus status = HttpStatus.resolve(response.getStatus()); // z.B. 200, 404, 500 etc.
 
         if (status == null) {

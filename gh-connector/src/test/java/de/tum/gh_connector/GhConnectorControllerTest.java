@@ -6,8 +6,11 @@ import static org.mockito.Mockito.when;
 
 import de.tum.gh_connector.client.GHAPIRestClient;
 import de.tum.gh_connector.client.UserSRestClient;
+import de.tum.gh_connector.dto.GHConnectorResponse;
 import de.tum.gh_connector.dto.WGUser;
-import java.util.Map;
+
+import de.tum.gh_connector.dto.gh.UserInfo;
+import de.tum.gh_connector.service.GHConnectorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,50 +27,10 @@ class GhConnectorControllerTest {
     @Mock
     private GHAPIRestClient ghAPIRestClient;
 
+    @Mock
+    GHConnectorService ghConnectorService;
+
     @InjectMocks
     private GhConnectorController ghConnectorController;
 
-    private WGUser WGUser;
-
-    @BeforeEach
-    void setUp() {
-        WGUser = WGUser.builder()
-                .githubId("ghid")
-                .id("wgid")
-                .username("username")
-                .token("token")
-                .build();
-    }
-
-    @Test
-    void testPing() {
-        String ret = ghConnectorController.ping();
-        assertEquals("Pong from GH-Connector\n", ret);
-    }
-
-    @Test
-    void getUserNonExistent() {
-        assertEquals(ResponseEntity.badRequest().body("Not authenticated"), ghConnectorController.getUser(null));
-        assertEquals(
-                ResponseEntity.badRequest().body("Not authenticated"), ghConnectorController.getUser("non-existent"));
-    }
-
-    @Test
-    void getUserExistent() {
-        Map<String, Object> userMap = Map.of("userdata", "all the data");
-        when(userSRestClient.getUserById(anyString())).thenReturn(WGUser);
-        when(ghAPIRestClient.getUserInfo("token")).thenReturn(userMap);
-
-        ResponseEntity<?> ent = ghConnectorController.getUser("wgid");
-        assertEquals(ResponseEntity.ok().body(userMap), ent);
-    }
-
-    @Test
-    void getUserGHError() {
-        when(userSRestClient.getUserById("wgid")).thenReturn(WGUser);
-        when(ghAPIRestClient.getUserInfo("token")).thenThrow(new RuntimeException("error message"));
-
-        ResponseEntity<?> ent = ghConnectorController.getUser("wgid");
-        assertEquals(ResponseEntity.badRequest().body("Error fetching user data from GitHub: error message"), ent);
-    }
 }

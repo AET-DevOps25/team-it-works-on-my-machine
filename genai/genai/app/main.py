@@ -106,7 +106,7 @@ async def analyze_yamls(payload: YamlRequest):
             return {
                 "filename": filename,
                 "summary": summary,
-                "related_docs": source_urls,
+                "related_docs": list(set(source_urls)),
                 "detailed_analysis": final_analysis
             }
         except Exception as e:
