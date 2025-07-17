@@ -1,11 +1,10 @@
 package de.tum.gh_connector.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.tum.gh_connector.dto.gh.UserInfo;
 import de.tum.gh_connector.dto.gh.UserInstallationRepository;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 

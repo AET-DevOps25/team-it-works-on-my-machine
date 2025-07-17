@@ -59,7 +59,6 @@ public class AuthService {
         return userSRestClient.createOrUpdateUser(wgUser);
     }
 
-
     WGUser getAuthToken(String id) {
         if (id == null) {
             return null;

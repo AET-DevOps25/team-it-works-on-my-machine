@@ -25,8 +25,7 @@ public class GhConnectorController {
     private final AnalysisService analysisService;
 
     public GhConnectorController(
-            GHConnectorService ghConnectorService,
-            AuthService authService, AnalysisService analysisService) {
+            GHConnectorService ghConnectorService, AuthService authService, AnalysisService analysisService) {
         this.ghConnectorService = ghConnectorService;
         this.authService = authService;
         this.analysisService = analysisService;

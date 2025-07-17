@@ -9,13 +9,11 @@ import de.tum.gh_connector.dto.*;
 import de.tum.gh_connector.dto.gh.ContentResponseItem;
 import de.tum.gh_connector.dto.gh.UserAnalysis;
 import feign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -70,8 +68,9 @@ public class AnalysisService {
             }
             return GHConnectorResponse.fromGenAIResponse(genAIResponse);
 
-        } catch (IllegalArgumentException | JsonProcessingException | FeignException.Forbidden e ) {
-            return ghConnectorService.constructError("There was an error while working with the provided URL: " + e.getMessage());
+        } catch (IllegalArgumentException | JsonProcessingException | FeignException.Forbidden e) {
+            return ghConnectorService.constructError(
+                    "There was an error while working with the provided URL: " + e.getMessage());
         }
     }
 
@@ -144,5 +143,4 @@ public class AnalysisService {
 
         return pathParts[1] + "/" + pathParts[2];
     }
-
 }

@@ -1,5 +1,10 @@
 package de.tum.gh_connector.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import de.tum.gh_connector.client.GHAPIRestClient;
 import de.tum.gh_connector.client.GHAuthClient;
 import de.tum.gh_connector.client.UserSRestClient;
@@ -9,11 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class AuthServiceTest {
@@ -28,7 +28,6 @@ public class AuthServiceTest {
 
     @InjectMocks
     private AuthService authService;
-
 
     @Test
     void performAuthNoType() {
@@ -56,13 +55,10 @@ public class AuthServiceTest {
                 .build();
 
         when(ghAuthClient.performAuth("code", null, null)).thenReturn(ghAuthResponse);
-        when(ghAPIRestClient.getUserInfo("Bearer token")).thenReturn(UserInfo.builder()
-                .id("ghid")
-                .login("username")
-                .build());
+        when(ghAPIRestClient.getUserInfo("Bearer token"))
+                .thenReturn(UserInfo.builder().id("ghid").login("username").build());
         when(userSRestClient.createOrUpdateUser(any())).thenReturn("success");
 
         assertEquals("success", authService.performAuth("code"));
     }
-
 }

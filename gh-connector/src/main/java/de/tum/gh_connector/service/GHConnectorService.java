@@ -5,10 +5,8 @@ import de.tum.gh_connector.client.GenAIRestClient;
 import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
 import de.tum.gh_connector.dto.gh.*;
-
 import java.util.LinkedList;
 import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +20,6 @@ public class GHConnectorService {
     private final UserSRestClient userSRestClient;
     private final GenAIRestClient genAIRestClient;
 
-
     public GHConnectorService(
             AuthService authService,
             GHAPIRestClient ghAPIRestClient,
@@ -33,7 +30,6 @@ public class GHConnectorService {
         this.genAIRestClient = genAIRestClient;
         this.authService = authService;
     }
-
 
     GHConnectorResponse constructError(String message) {
         return GHConnectorResponse.builder().status(400).errorMessage(message).build();
@@ -83,10 +79,7 @@ public class GHConnectorService {
                 }
             }
 
-            return GHConnectorResponse.builder()
-                    .status(200)
-                    .repos(result)
-                    .build();
+            return GHConnectorResponse.builder().status(200).repos(result).build();
         } catch (Exception e) {
             return constructError("Error fetching data from GitHub: " + e.getMessage());
         }

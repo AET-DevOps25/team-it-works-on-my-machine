@@ -1,15 +1,12 @@
 package de.tum.gh_connector.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import de.tum.gh_connector.client.GHAPIRestClient;
 import de.tum.gh_connector.dto.*;
 import de.tum.gh_connector.dto.gh.*;
-
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -53,15 +50,10 @@ class GHConnectorServiceTest {
 
     @Test
     void getUserExistent() {
-        UserInfo userInfo = UserInfo.builder()
-                .id("ghid")
-                .login("username")
-                .build();
+        UserInfo userInfo = UserInfo.builder().id("ghid").login("username").build();
 
-        GHConnectorResponse resp = GHConnectorResponse.builder()
-                .status(200)
-                .userInfo(userInfo)
-                .build();
+        GHConnectorResponse resp =
+                GHConnectorResponse.builder().status(200).userInfo(userInfo).build();
 
         when(authService.getAuthToken("wgid")).thenReturn(wgUser);
         when(ghAPIRestClient.getUserInfo("token")).thenReturn(userInfo);
@@ -80,19 +72,14 @@ class GHConnectorServiceTest {
         when(authService.getAuthToken("wgid")).thenReturn(wgUser);
         when(ghAPIRestClient.getUserInfo("token")).thenThrow(new RuntimeException("error message"));
 
-
         GHConnectorResponse response = ghConnectorService.getUserInfo("wgid");
         assertEquals(resp, response);
     }
 
     @Test
     void getPrivateReposTest() {
-        UserInstallation inst1 = UserInstallation.builder()
-                .id(1)
-                .build();
-        UserInstallation inst2 = UserInstallation.builder()
-                .id(2)
-                .build();
+        UserInstallation inst1 = UserInstallation.builder().id(1).build();
+        UserInstallation inst2 = UserInstallation.builder().id(2).build();
 
         UserInstallations installations = UserInstallations.builder()
                 .totalCount(2)
@@ -129,15 +116,18 @@ class GHConnectorServiceTest {
 
         when(authService.getAuthToken("wgid")).thenReturn(wgUser);
         when(ghAPIRestClient.getUserInstallations("token", 100)).thenReturn(installations);
-        when(ghAPIRestClient.getUserInstallationRepositories("token", 1, 100)).thenReturn(userInstallationRepositories1);
-        when(ghAPIRestClient.getUserInstallationRepositories("token", 2, 100)).thenReturn(userInstallationRepositories2);
+        when(ghAPIRestClient.getUserInstallationRepositories("token", 1, 100))
+                .thenReturn(userInstallationRepositories1);
+        when(ghAPIRestClient.getUserInstallationRepositories("token", 2, 100))
+                .thenReturn(userInstallationRepositories2);
 
         GHConnectorResponse resp = ghConnectorService.getPrivateRepos("wgid");
 
-        assertEquals(resp, GHConnectorResponse.builder()
-                .status(200)
-                .repos(List.of(repo1, repo3))
-                .build()
-        );
+        assertEquals(
+                resp,
+                GHConnectorResponse.builder()
+                        .status(200)
+                        .repos(List.of(repo1, repo3))
+                        .build());
     }
 }

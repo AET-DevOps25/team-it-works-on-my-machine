@@ -8,7 +8,7 @@ import type {
   GHConnectorResponse,
   AnalysisType,
   Repo,
-  UserType
+  UserType,
 } from '@/lib/types'
 import Cookies from 'universal-cookie'
 import { toast, Toaster } from 'sonner'
@@ -203,7 +203,9 @@ function LandingPage() {
         }
         if (reposRes.status !== 200) {
           console.error('Failed to fetch analysis data:', GHConRepos.repos)
-          toast.error(GHConRepos.error_message || 'Failed to fetch analysis data')
+          toast.error(
+            GHConRepos.error_message || 'Failed to fetch analysis data',
+          )
           return
         }
 

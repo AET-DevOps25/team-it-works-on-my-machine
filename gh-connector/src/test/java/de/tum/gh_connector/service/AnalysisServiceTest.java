@@ -1,5 +1,8 @@
 package de.tum.gh_connector.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 import de.tum.gh_connector.client.GHAPIRestClient;
 import de.tum.gh_connector.client.GHAuthClient;
 import de.tum.gh_connector.client.GenAIRestClient;
@@ -8,18 +11,14 @@ import de.tum.gh_connector.dto.*;
 import de.tum.gh_connector.dto.gh.ContentResponseItem;
 import feign.FeignException;
 import feign.Request;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class AnalysisServiceTest {
@@ -106,7 +105,6 @@ public class AnalysisServiceTest {
                     .build()))
             .build();
 
-
     @Test
     void analyzeRepoTest() {
         when(ghAPIRestClient.getFolderContent("ls1intum", "Artemis", ".github/workflows", null))
@@ -130,8 +128,7 @@ public class AnalysisServiceTest {
     void constructContentPathTest() {
         GHConnectorResponse resp1 = GHConnectorResponse.builder()
                 .status(400)
-                .errorMessage(
-                        "There was an error while working with the provided URL: The provided URL is not HTTPS")
+                .errorMessage("There was an error while working with the provided URL: The provided URL is not HTTPS")
                 .build();
         GHConnectorResponse resp2 = GHConnectorResponse.builder()
                 .status(400)
@@ -140,8 +137,7 @@ public class AnalysisServiceTest {
                 .build();
         GHConnectorResponse resp3 = GHConnectorResponse.builder()
                 .status(400)
-                .errorMessage(
-                        "There was an error while working with the provided URL: URL has no specified path")
+                .errorMessage("There was an error while working with the provided URL: URL has no specified path")
                 .build();
         GHConnectorResponse resp4 = GHConnectorResponse.builder()
                 .status(400)
