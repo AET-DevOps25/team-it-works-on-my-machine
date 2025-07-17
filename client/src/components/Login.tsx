@@ -4,9 +4,10 @@ function Login() {
   function handleLogin() {
     console.log('login')
     // Function to redirect the user to the GitHub OAuth authorization page
-    const redirect_uri = import.meta.env.VITE_GH_OAUTH_CLIENT_ID + '/oauth/redirect'
+    const redirect_uri =
+      import.meta.env.VITE_GH_CONNECTOR_URL + '/oauth/redirect'
     // const scope = 'read:user,repo'
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${GH_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri}`
+    const authUrl = `https://github.com/login/oauth/authorize?client_id=${import.meta.env.VITE_GH_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri}`
 
     window.location.href = authUrl
   }
