@@ -10,7 +10,6 @@ describe('Profile', () => {
         avatar_url: 'avatar.png',
         login: 'testuser',
         id: '1',
-        type: 'User',
         followers: 10,
         following: 5,
         public_repos: 3,

@@ -1,4 +1,4 @@
-package de.tum.gh_connector.dto;
+package de.tum.gh_connector.dto.gh;
 
 import lombok.Data;
 

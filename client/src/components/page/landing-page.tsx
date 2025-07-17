@@ -230,12 +230,6 @@ function LandingPage() {
   return (
     <div className="container mx-auto p-6 text-center relative">
       <ModeToggle className="absolute top-4 right-4" />
-      <ul>
-        <li>Public Repo with simple workflows:</li>
-        <li>https://github.com/AET-DevOps25/w06-template</li>
-        <li>Jonas Private Repo:</li>
-        <li>https://github.com/Funky-Punky/bachelor-cellbase</li>
-      </ul>
       {isLoggedIn && data && <AccessibleRepos repos={data.repos} />}
       <h1 className="text-4xl font-extrabold text-primary mb-6 mt-16">
         Workflow Genie

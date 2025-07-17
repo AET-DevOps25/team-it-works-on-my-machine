@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 import de.tum.gh_connector.client.GHAPIRestClient;
 import de.tum.gh_connector.client.UserSRestClient;
-import de.tum.gh_connector.dto.User;
+import de.tum.gh_connector.dto.WGUser;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,11 +27,11 @@ class GhConnectorControllerTest {
     @InjectMocks
     private GhConnectorController ghConnectorController;
 
-    private User user;
+    private WGUser WGUser;
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
+        WGUser = WGUser.builder()
                 .githubId("ghid")
                 .id("wgid")
                 .username("username")
@@ -55,7 +55,7 @@ class GhConnectorControllerTest {
     @Test
     void getUserExistent() {
         Map<String, Object> userMap = Map.of("userdata", "all the data");
-        when(userSRestClient.getUserById(anyString())).thenReturn(user);
+        when(userSRestClient.getUserById(anyString())).thenReturn(WGUser);
         when(ghAPIRestClient.getUserInfo("token")).thenReturn(userMap);
 
         ResponseEntity<?> ent = ghConnectorController.getUser("wgid");
@@ -64,7 +64,7 @@ class GhConnectorControllerTest {
 
     @Test
     void getUserGHError() {
-        when(userSRestClient.getUserById("wgid")).thenReturn(user);
+        when(userSRestClient.getUserById("wgid")).thenReturn(WGUser);
         when(ghAPIRestClient.getUserInfo("token")).thenThrow(new RuntimeException("error message"));
 
         ResponseEntity<?> ent = ghConnectorController.getUser("wgid");

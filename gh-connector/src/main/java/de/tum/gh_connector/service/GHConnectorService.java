@@ -7,12 +7,12 @@ import de.tum.gh_connector.client.GHAuthClient;
 import de.tum.gh_connector.client.GenAIRestClient;
 import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
+import de.tum.gh_connector.dto.gh.*;
 import feign.FeignException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -57,24 +57,24 @@ public class GHConnectorService {
 
         String auth = tokenType + " " + accessToken;
 
-        Map<String, Object> userResponse = ghAPIRestClient.getUserInfo(auth);
+        UserInfo userResponse = ghAPIRestClient.getUserInfo(auth);
         log.info("userResponse: {}", userResponse);
 
-        User user = User.builder()
+        WGUser wgUser = WGUser.builder()
                 .token(auth)
-                .githubId(userResponse.get("id").toString())
-                .username((String) userResponse.get("login"))
+                .githubId(userResponse.getId())
+                .username(userResponse.getLogin())
                 .build();
 
-        return userSRestClient.createOrUpdateUser(user);
+        return userSRestClient.createOrUpdateUser(wgUser);
     }
 
     public GHConnectorResponse analyzeRepo(String repoUri, String id) {
 
         log.debug("got called with: " + repoUri);
 
-        User user = getAuthToken(id);
-        String bearerToken = user == null ? null : user.getToken();
+        WGUser WGUser = getAuthToken(id);
+        String bearerToken = WGUser == null ? null : WGUser.getToken();
 
         try {
             String ownerRepo = constructGHApiContentPath(repoUri);
@@ -88,7 +88,7 @@ public class GHConnectorService {
             GenAIRequest genAIRequest = GenAIRequest.builder().yamls(yamls).build();
 
             GenAIResponse genAIResponse = genAIRestClient.analyzeYamls(genAIRequest);
-            if (user != null) {
+            if (WGUser != null) {
                 userSRestClient.createAnalysis(
                         id,
                         UserAnalysis.builder()
@@ -188,7 +188,7 @@ public class GHConnectorService {
         return GHConnectorResponse.builder().status(400).message(message).build();
     }
 
-    private User getAuthToken(String id) {
+    private WGUser getAuthToken(String id) {
         if (id == null) {
             return null;
         }
@@ -201,16 +201,16 @@ public class GHConnectorService {
     }
 
     public List<UserInstallationRepository> getPrivateRepos(String id) {
-        User user = getAuthToken(id);
-        if (user == null) {
+        WGUser WGUser = getAuthToken(id);
+        if (WGUser == null) {
             return null;
         }
 
         List<UserInstallationRepository> result = new LinkedList<>();
-        UserInstallations userInstallations = ghAPIRestClient.getUserInstallations(user.getToken(), 100);
+        UserInstallations userInstallations = ghAPIRestClient.getUserInstallations(WGUser.getToken(), 100);
         for (UserInstallation installation : userInstallations.getInstallations()) {
             UserInstallationRepositories repositories =
-                    ghAPIRestClient.getUserInstallationRepositories(user.getToken(), installation.getId(), 100);
+                    ghAPIRestClient.getUserInstallationRepositories(WGUser.getToken(), installation.getId(), 100);
 
             for (UserInstallationRepository repo : repositories.getRepositories()) {
                 if (!repo.getVisibility().equals("public")) {

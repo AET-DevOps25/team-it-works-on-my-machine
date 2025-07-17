@@ -3,6 +3,8 @@ package de.tum.gh_connector.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Base64;
+
+import de.tum.gh_connector.dto.gh.ContentResponseItem;
 import lombok.Builder;
 import lombok.Data;
 

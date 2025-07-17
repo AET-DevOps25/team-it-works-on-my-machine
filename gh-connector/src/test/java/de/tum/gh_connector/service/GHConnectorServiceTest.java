@@ -9,6 +9,8 @@ import de.tum.gh_connector.client.GHAuthClient;
 import de.tum.gh_connector.client.GenAIRestClient;
 import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
+import de.tum.gh_connector.dto.gh.ContentResponseItem;
+import de.tum.gh_connector.dto.gh.GHAuthResponse;
 import feign.FeignException;
 import feign.Request;
 import java.util.Collection;
@@ -39,7 +41,7 @@ class GHConnectorServiceTest {
     @InjectMocks
     private GHConnectorService ghConnectorService;
 
-    private User user;
+    private WGUser WGUser;
 
     ContentResponseItem item1 = ContentResponseItem.builder()
             .name("item1.yml")
@@ -105,7 +107,7 @@ class GHConnectorServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
+        WGUser = WGUser.builder()
                 .githubId("ghid")
                 .id("wgid")
                 .username("username")

@@ -3,6 +3,8 @@ package de.tum.gh_connector;
 import de.tum.gh_connector.client.GHAPIRestClient;
 import de.tum.gh_connector.client.UserSRestClient;
 import de.tum.gh_connector.dto.*;
+import de.tum.gh_connector.dto.gh.UserInfo;
+import de.tum.gh_connector.dto.gh.UserInstallationRepository;
 import de.tum.gh_connector.service.GHConnectorService;
 import java.net.URI;
 import java.util.List;
@@ -63,14 +65,14 @@ public class GhConnectorController {
 
     @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUser(@CookieValue(value = "id", required = false) String id) {
-        User user = getAuthToken(id);
-        if (user == null) {
+        WGUser WGUser = getAuthToken(id);
+        if (WGUser == null) {
             return ResponseEntity.badRequest().body("Not authenticated");
         }
 
-        Map<String, Object> userResponse;
+        UserInfo userResponse;
         try {
-            userResponse = ghAPIRestClient.getUserInfo(user.getToken());
+            userResponse = ghAPIRestClient.getUserInfo(WGUser.getToken());
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body("Error fetching user data from GitHub: " + ex.getMessage());
         }
@@ -78,7 +80,7 @@ public class GhConnectorController {
         return ResponseEntity.ok(userResponse);
     }
 
-    private User getAuthToken(String id) {
+    private WGUser getAuthToken(String id) {
         if (id == null) {
             return null;
         }
