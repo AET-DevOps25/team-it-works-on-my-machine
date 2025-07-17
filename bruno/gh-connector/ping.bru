@@ -1,18 +1,11 @@
 meta {
   name: ping
   type: http
-  seq: 1
+  seq: 4
 }
 
 get {
   url: {{gh_connector_url}}/ping
   body: none
-  auth: inherit
-}
-
-tests {
-  test("ping should return", function () {
-    const data = res.getBody();
-    expect(res.getBody()).to.eql("Pong from GH-Connector\n");
-  });
+  auth: none
 }

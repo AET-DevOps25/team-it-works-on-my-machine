@@ -1,0 +1,15 @@
+meta {
+  name: getInfo
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{gh_connector_url}}/getInfo?repoUrl=https://github.com/AET-DevOps25/team-it-works-on-my-machine
+  body: none
+  auth: none
+}
+
+params:query {
+  repoUrl: https://github.com/AET-DevOps25/team-it-works-on-my-machine
+}
