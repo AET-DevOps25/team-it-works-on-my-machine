@@ -10,7 +10,8 @@ import type {
   UserType,
 } from '@/lib/types'
 import Cookies from 'universal-cookie'
-import { toast, Toaster } from 'sonner'
+import { toast } from 'sonner'
+import { Toaster } from '../ui/sonner'
 import Analysis from '../Analysis'
 import AccessibleRepos from '../AccessibleRepos'
 import Logout from '../Logout'
@@ -191,8 +192,8 @@ function LandingPage() {
           )}
         </div>
         {data && <Profile user={data} />}
-        {analysis.length > 0 && <Analysis analysis={analysis} />}
       </div>
+      {analysis.length > 0 && <Analysis analysis={analysis} />}
       <Toaster />
     </div>
   )
