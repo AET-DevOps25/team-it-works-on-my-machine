@@ -1,6 +1,5 @@
-import type { Repo } from "@/lib/types"
-import { Button } from "@/components/ui/button"
-
+import type { Repo } from '@/lib/types'
+import { Button } from '@/components/ui/button'
 
 function AccessibleRepos({ repos }: { repos: Repo[] }) {
   function handleInstall() {

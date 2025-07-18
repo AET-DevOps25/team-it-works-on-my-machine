@@ -1,6 +1,6 @@
-import type { AnalysisType, UserType } from "@/lib/types"
-import Cookies from "universal-cookie"
-import { Button } from "@/components/ui/button"
+import type { AnalysisType, UserType } from '@/lib/types'
+import Cookies from 'universal-cookie'
+import { Button } from '@/components/ui/button'
 
 function Logout(p: {
   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
