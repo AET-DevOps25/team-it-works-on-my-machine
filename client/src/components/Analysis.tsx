@@ -7,6 +7,61 @@ import {
 } from '@/components/ui/accordion'
 import MarkdownRenderer from '@/components/ui/markdown-renderer'
 
+function Summary({ summary }: { summary: string }) {
+  return (
+    <>
+      <strong className="text-2xl">Summary:</strong>
+      <div className="mb-2 w-full rounded-md border p-4 text-left">
+        {summary}
+      </div>
+    </>
+  )
+}
+
+function RelatedDocs({
+  related_docs,
+}: {
+  related_docs: AnalysisType['content'][number]['related_docs']
+}) {
+  return (
+    <>
+      <strong className="text-2xl">Related Docs:</strong>
+      <div className="mb-2 w-full rounded-md border p-4 text-left">
+        <ul>
+          {related_docs.length > 0 ? (
+            related_docs.map((doc) => {
+              return (
+                <li key={doc} className="list-disc list-inside hover:underline">
+                  <a href={doc} target="_blank">
+                    {doc}
+                  </a>
+                </li>
+              )
+            })
+          ) : (
+            <li>None</li>
+          )}
+        </ul>
+      </div>
+    </>
+  )
+}
+
+function DetailedAnalysis({
+  detailed_analysis,
+}: {
+  detailed_analysis: string
+}) {
+  return (
+    <>
+      <strong className="text-2xl">Detailed Analysis:</strong>
+      <div className="w-full rounded-md border p-4 text-left">
+        <MarkdownRenderer>{detailed_analysis}</MarkdownRenderer>
+      </div>
+    </>
+  )
+}
+
 export default function Analysis({ analysis }: { analysis: AnalysisType[] }) {
   return (
     <div className="mt-4">
@@ -39,34 +94,11 @@ export default function Analysis({ analysis }: { analysis: AnalysisType[] }) {
                       {content.filename}
                     </AccordionTrigger>
                     <AccordionContent className="flex flex-col gap-4">
-                      <strong className="text-2xl">Summary:</strong>
-                      <div className="mb-2 w-full rounded-md border p-4 text-left">
-                        {content.summary}
-                      </div>
-                      <strong className="text-2xl">Related Docs:</strong>
-                      <div className="mb-2 w-full rounded-md border p-4 text-left">
-                        <ul>
-                          {content.related_docs.length > 0 ? (
-                            content.related_docs.map((doc) => {
-                              return (
-                                <li key={doc} className="list-disc list-inside">
-                                  <a href={doc} target="_blank">
-                                    {doc}
-                                  </a>
-                                </li>
-                              )
-                            })
-                          ) : (
-                            <li>None</li>
-                          )}
-                        </ul>
-                      </div>
-                      <strong className="text-2xl">Detailed Analysis:</strong>
-                      <div className="w-full rounded-md border p-4 text-left">
-                        <MarkdownRenderer>
-                          {content.detailed_analysis}
-                        </MarkdownRenderer>
-                      </div>
+                      <Summary summary={content.summary} />
+                      <DetailedAnalysis
+                        detailed_analysis={content.detailed_analysis}
+                      />
+                      <RelatedDocs related_docs={content.related_docs} />
                     </AccordionContent>
                   </AccordionItem>
                 ))}
