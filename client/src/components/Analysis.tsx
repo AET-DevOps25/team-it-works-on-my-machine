@@ -5,13 +5,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from './ui/card'
 import MarkdownRenderer from '@/components/ui/markdown-renderer'
 
 export default function Analysis({ analysis }: { analysis: AnalysisType[] }) {
@@ -36,49 +29,48 @@ export default function Analysis({ analysis }: { analysis: AnalysisType[] }) {
               </span>
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
-              {analysis.content.map((content) => (
-                <div key={content.filename} className="mb-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>{content.filename}</CardTitle>
-                      <CardDescription>{content.summary}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div>
-                        <strong>Related Docs:</strong>
-                        <div className="mb-2 w-full rounded-md border p-4 text-left">
-                          <ul>
-                            {content.related_docs.length > 0 ? (
-                              content.related_docs.map((doc) => {
-                                return (
-                                  <li
-                                    key={doc}
-                                    className="list-disc list-inside"
-                                  >
-                                    <a href={doc} target="_blank">
-                                      {doc}
-                                    </a>
-                                  </li>
-                                )
-                              })
-                            ) : (
-                              <li>None</li>
-                            )}
-                          </ul>
-                        </div>
+              <Accordion type="single" collapsible>
+                {analysis.content.map((content) => (
+                  <AccordionItem
+                    value={content.filename}
+                    key={content.filename}
+                  >
+                    <AccordionTrigger className="pl-8 pr-8">
+                      {content.filename}
+                    </AccordionTrigger>
+                    <AccordionContent className="flex flex-col gap-4">
+                      <strong className="text-2xl">Summary:</strong>
+                      <div className="mb-2 w-full rounded-md border p-4 text-left">
+                        {content.summary}
                       </div>
-                      <div>
-                        <strong>Detailed Analysis:</strong>
-                        <div className="w-full rounded-md border p-4 text-left text-muted-foreground">
-                          <MarkdownRenderer>
-                            {content.detailed_analysis}
-                          </MarkdownRenderer>
-                        </div>
+                      <strong className="text-2xl">Related Docs:</strong>
+                      <div className="mb-2 w-full rounded-md border p-4 text-left">
+                        <ul>
+                          {content.related_docs.length > 0 ? (
+                            content.related_docs.map((doc) => {
+                              return (
+                                <li key={doc} className="list-disc list-inside">
+                                  <a href={doc} target="_blank">
+                                    {doc}
+                                  </a>
+                                </li>
+                              )
+                            })
+                          ) : (
+                            <li>None</li>
+                          )}
+                        </ul>
                       </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
+                      <strong className="text-2xl">Detailed Analysis:</strong>
+                      <div className="w-full rounded-md border p-4 text-left">
+                        <MarkdownRenderer>
+                          {content.detailed_analysis}
+                        </MarkdownRenderer>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </AccordionContent>
           </AccordionItem>
         ))}
