@@ -1,7 +1,10 @@
-import { useState } from "react"
-import Cookies from "universal-cookie"
+import { useState } from 'react'
+import Cookies from 'universal-cookie'
 
-export function useLoginQueryParameter(): [string | null, React.Dispatch<React.SetStateAction<string | null>>] {
+export function useLoginQueryParameter(): [
+  string | null,
+  React.Dispatch<React.SetStateAction<string | null>>,
+] {
   // Extracting the 'code' parameter from the URL query string (used for authorization)
   const urlParams = new URLSearchParams(window.location.search)
   if (urlParams.get('login')) {
