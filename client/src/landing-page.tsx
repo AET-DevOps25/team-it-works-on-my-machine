@@ -1,139 +1,36 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ModeToggle } from '@/components/mode-toggle'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Profile from '@/components/logged-in/profile'
-import type {
-  AnalysisContent,
-  GHConnectorResponse,
-  Analysis,
-  User,
-} from '@/lib/types'
-import { toast } from 'sonner'
+import type { Analysis, User } from '@/lib/types'
 import { Toaster } from '@/components/ui/sonner'
 import Analyses from '@/components/analyses'
 import AccessibleRepos from '@/components/logged-in/accessible-repos'
 import Logout from '@/components/logged-in/logout'
 import Login from '@/components/anonymous/login'
 import { useLoginQueryParameter } from '@/hooks/use-login-query-parameter'
-
-const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
+import { useDataFromBackend } from './hooks/use-data-from-backend'
+import { handleSearch } from './lib/handleSearch'
 
 function LandingPage() {
+  // State to manage the repository URL input
   const [repoUrl, setRepoUrl] = useState('')
-  const [analyses, setAnalyses] = useState<Analysis[]>([])
 
-  const [login, setLogin] = useLoginQueryParameter()
+  // State to manage loading state
   const [loading, setLoading] = useState(false)
 
   // State to store the retrieved user data
   const [data, setData] = useState<User | null>(null)
 
-  function handleSearch() {
-    if (!repoUrl) {
-      toast.error('Please enter a GitHub repository URL')
-      return
-    }
-    const repoUrlTmp = repoUrl
-    setRepoUrl('')
+  // State to store analyses
+  const [analyses, setAnalyses] = useState<Analysis[]>([])
 
-    async function handleSearchInner() {
-      const res = await fetch(
-        `${GH_CONNECTOR_URL}/getInfo?repoUrl=${repoUrlTmp}`,
-        {
-          credentials: 'include',
-        },
-      )
+  // Custom hook to manage login query parameter and state
+  const [login, setLogin] = useLoginQueryParameter()
 
-      const data = (await res.json()) as GHConnectorResponse
-      if (res.status !== 200) {
-        console.error('Failed to fetch repo data:', data)
-        toast.error(data.error_message || 'Failed to fetch repo data')
-        return
-      }
-      setAnalyses((oldAnalysis) => [
-        {
-          id: 'unknown',
-          repository: repoUrlTmp,
-          created_at: new Date(Date.now()),
-          content: data.results,
-        },
-        ...oldAnalysis,
-      ])
-    }
-
-    toast.promise(handleSearchInner, {
-      loading:
-        'Your request is being processed - This may take up to a minute. Please be patient!',
-      success: () => {
-        return 'Your Analysis is ready now'
-      },
-      error: 'Failed to fetch repo data',
-    })
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (login) {
-        setLoading(true)
-        const [ghUserRes, analysesRes, reposRes] = await Promise.all([
-          fetch(`${GH_CONNECTOR_URL}/user`, { credentials: 'include' }),
-          fetch(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            `${import.meta.env.VITE_USERS_URL}/users/${localStorage.getItem('login')!}/analysis`,
-            { credentials: 'include' },
-          ),
-          fetch(`${GH_CONNECTOR_URL}/getPrivateRepos`, {
-            credentials: 'include',
-          }),
-        ])
-
-        const GHConGHUser = (await ghUserRes.json()) as GHConnectorResponse
-        const analyses = (await analysesRes.json()) as Analysis[]
-        const GHConRepos = (await reposRes.json()) as GHConnectorResponse
-
-        if (ghUserRes.status !== 200) {
-          console.error('Failed to fetch user data:', GHConGHUser)
-          toast.error(GHConGHUser.error_message || 'Failed to fetch user data')
-          return
-        }
-        if (analysesRes.status !== 200) {
-          console.error('Failed to fetch analysis data:', analyses)
-          toast.error('Failed to fetch analysis data')
-          return
-        }
-        if (reposRes.status !== 200) {
-          console.error('Failed to fetch analysis data:', GHConRepos.repos)
-          toast.error(
-            GHConRepos.error_message || 'Failed to fetch analysis data',
-          )
-          return
-        }
-
-        for (const analysis of analyses) {
-          // Parse the content field of each analysis
-          analysis.content = JSON.parse(
-            analysis.content as unknown as string,
-          ) as AnalysisContent[]
-          // console.log(new Date((analysis.created_at as unknown as string).replace(/(\.\d{3})\d*/, '$1')).toLocaleString())
-          analysis.created_at = new Date(
-            (analysis.created_at as unknown as string).replace(
-              /(\.\d{3})\d*/,
-              '$1',
-            ) + 'Z',
-          )
-        }
-        setAnalyses(analyses)
-
-        setData({
-          ghUser: GHConGHUser.user_info,
-          repos: GHConRepos.repos,
-        })
-        setLoading(false)
-      }
-    }
-    void fetchData()
-  }, [login])
+  // Fetch data from the backend using the login state
+  useDataFromBackend(login, setLoading, setData, setAnalyses)
 
   return (
     <div className="container mx-auto p-6 text-center relative">
@@ -153,7 +50,7 @@ function LandingPage() {
           }
           onKeyUp={(e) => {
             if (e.key === 'Enter') {
-              handleSearch()
+              handleSearch(repoUrl, setRepoUrl, setAnalyses)
             }
           }}
           onChange={(e) => {
@@ -163,7 +60,9 @@ function LandingPage() {
         <div className="flex gap-4">
           <Button
             className="px-6 py-2 bg-primary text-primary-foreground rounded-lg shadow hover:bg-primary/80"
-            onClick={handleSearch}
+            onClick={() => {
+              handleSearch(repoUrl, setRepoUrl, setAnalyses)
+            }}
           >
             Analyze
           </Button>
