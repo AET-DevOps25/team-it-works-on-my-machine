@@ -1,4 +1,4 @@
-import { ModeToggle } from '@/components/mode-toggle'
+import { ModeToggle } from '@/components/ui/mode-toggle'
 import { useState } from 'react'
 import Profile from '@/components/logged-in/profile'
 import type { Analysis, User } from '@/lib/types'
@@ -59,7 +59,7 @@ function LandingPage() {
         )}
       </div>
       {<Analyses analyses={analyses} loading={loading} />}
-      <Toaster position="top-center" richColors />
+      <Toaster richColors />
     </div>
   )
 }
