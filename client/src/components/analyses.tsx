@@ -69,8 +69,8 @@ function Analysis(analysis: Analysis) {
       <AccordionTrigger
         className={
           analysis.id === 'unknown'
-            ? 'bg-amber-700 p-2 text-center'
-            : 'p-2 text-center'
+            ? 'bg-amber-700 p-2 text-center border m-1'
+            : 'p-2 text-center border m-1'
         }
       >
         <strong>Repository:</strong> {analysis.repository}
@@ -84,10 +84,10 @@ function Analysis(analysis: Analysis) {
         <Accordion type="single" collapsible>
           {analysis.content.map((content) => (
             <AccordionItem value={content.filename} key={content.filename}>
-              <AccordionTrigger className="pl-8 pr-8">
+              <AccordionTrigger className="mx-8 my-1 px-2 border">
                 {content.filename}
               </AccordionTrigger>
-              <AccordionContent className="flex flex-col gap-4">
+              <AccordionContent className="flex flex-col gap-4 mx-8">
                 <Summary summary={content.summary} />
                 <DetailedAnalysis
                   detailed_analysis={content.detailed_analysis}

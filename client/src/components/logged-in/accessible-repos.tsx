@@ -60,7 +60,7 @@ function AccessibleRepos({
             setPrivateRepoUrl('')
           }}
         >
-          <SelectTrigger className="w-[90%]">
+          <SelectTrigger className="w-[90%] mx-5">
             <SelectValue placeholder="Repo URL" />
           </SelectTrigger>
           <SelectContent>
