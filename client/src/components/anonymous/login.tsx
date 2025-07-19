@@ -2,7 +2,6 @@ import { Button } from '../ui/button'
 
 function Login() {
   function handleLogin() {
-    console.log('login')
     // Function to redirect the user to the GitHub OAuth authorization page
     const redirect_uri =
       import.meta.env.VITE_GH_CONNECTOR_URL + '/oauth/redirect'

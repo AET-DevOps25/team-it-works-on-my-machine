@@ -8,7 +8,6 @@ function Logout(p: {
   setAnalyses: React.Dispatch<React.SetStateAction<Analysis[]>>
 }) {
   function handleLogout() {
-    console.log('logout')
     localStorage.removeItem('login')
     p.setLogin(null)
     p.setData(null)

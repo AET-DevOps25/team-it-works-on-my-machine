@@ -58,7 +58,6 @@ export function useDataFromBackend(
           analysis.content = JSON.parse(
             analysis.content as unknown as string,
           ) as AnalysisContent[]
-          // console.log(new Date((analysis.created_at as unknown as string).replace(/(\.\d{3})\d*/, '$1')).toLocaleString())
           analysis.created_at = new Date(
             (analysis.created_at as unknown as string).replace(
               /(\.\d{3})\d*/,

@@ -12,6 +12,7 @@ import Search from './components/search'
 function LandingPage() {
   // State to manage the repository URL input
   const [repoUrl, setRepoUrl] = useState('')
+  const [privateRepoUrl, setPrivateRepoUrl] = useState('')
 
   // State to manage loading state
   const [loading, setLoading] = useState(false)
@@ -45,7 +46,17 @@ function LandingPage() {
           setData={setData}
           className={login ? 'w-1/2' : 'w-full'}
         />
-        {login && <AccessibleRepos repos={data?.repos} className="w-1/2" />}
+        {login && (
+          <AccessibleRepos
+            privateRepoUrl={privateRepoUrl}
+            setPrivateRepoUrl={setPrivateRepoUrl}
+            repoUrl={repoUrl}
+            setRepoUrl={setRepoUrl}
+            repos={data?.repos}
+            setAnalyses={setAnalyses}
+            className="w-1/2"
+          />
+        )}
       </div>
       {<Analyses analyses={analyses} loading={loading} />}
       <Toaster position="top-center" richColors />

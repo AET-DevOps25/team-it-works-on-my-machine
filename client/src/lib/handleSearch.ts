@@ -21,9 +21,7 @@ export function handleSearch(repoUrl: string, setRepoUrl: React.Dispatch<React.S
 
       const data = (await res.json()) as GHConnectorResponse
       if (res.status !== 200) {
-        console.error('Failed to fetch repo data:', data)
-        toast.error(data.error_message || 'Failed to fetch repo data')
-        return
+        throw new Error(data.error_message || 'Failed to fetch repo data')
       }
       setAnalyses((oldAnalysis) => [
         {
@@ -42,6 +40,6 @@ export function handleSearch(repoUrl: string, setRepoUrl: React.Dispatch<React.S
       success: () => {
         return 'Your Analysis is ready now'
       },
-      error: 'Failed to fetch repo data',
+      error: (e: Error) => e.message,
     })
   }

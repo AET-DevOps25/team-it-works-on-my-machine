@@ -1,4 +1,4 @@
-import type { Repo } from '@/lib/types'
+import type { Analysis, Repo } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '../ui/skeleton'
 import {
@@ -9,19 +9,28 @@ import {
   SelectValue,
 } from '../ui/select'
 import { cn } from '@/lib/utils'
+import { handleSearch } from '@/lib/handleSearch'
 
 function handleInstall() {
-  console.log('install')
   // Open the GitHub App installation page in a new tab
   const installUrl = `https://github.com/apps/devops-workflowgenie-2025/installations/select_target`
   window.open(installUrl, '_blank', 'noopener,noreferrer')
 }
 
 function AccessibleRepos({
+  privateRepoUrl,
+  setPrivateRepoUrl,
+  setRepoUrl,
   repos,
+  setAnalyses,
   className,
 }: {
+  privateRepoUrl: string
+  setPrivateRepoUrl: React.Dispatch<React.SetStateAction<string>>
+  repoUrl: string
+  setRepoUrl: React.Dispatch<React.SetStateAction<string>>
   repos: Repo[] | undefined
+  setAnalyses: React.Dispatch<React.SetStateAction<Analysis[]>>
   className?: string
 }) {
   if (!repos) {
@@ -44,7 +53,13 @@ function AccessibleRepos({
     return (
       <div className={cn('flex flex-col gap-2 items-center', className)}>
         <p className="mb-5">Select from one of your private repositories</p>
-        <Select>
+        <Select
+          value={privateRepoUrl}
+          onValueChange={(url) => {
+            handleSearch(url, setRepoUrl, setAnalyses)
+            setPrivateRepoUrl('')
+          }}
+        >
           <SelectTrigger className="w-[90%]">
             <SelectValue placeholder="Repo URL" />
           </SelectTrigger>
