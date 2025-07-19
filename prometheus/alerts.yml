@@ -1,0 +1,49 @@
+groups:
+  - name: system
+    rules:
+      - alert: HighCPUUsage
+        expr: (100 - (avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)) > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value }}% for last 10 minutes (threshold: 80%)"
+
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value }}% for last 15 minutes (threshold: 85%)"
+
+  - name: service-down
+    rules:
+      - alert: gh-connector-Down
+        expr: up{job="gh-connector"} == 0
+        for: 20s
+        labels:
+          severity: critical
+        annotations:
+          summary: "gh-connector is down"
+          description: "The gh-connector service is down"
+
+      - alert: genai-python-Down
+        expr: up{job="template-service"} == 0
+        for: 20s
+        labels:
+          severity: critical
+        annotations:
+          summary: "genai-python Service is down"
+          description: "The genai-python service is down"
+
+      - alert: users-service-Down
+        expr: up{job="users-service"} == 0
+        for: 20s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Users Service is down"
+          description: "The users service is down"
