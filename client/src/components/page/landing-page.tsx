@@ -21,7 +21,6 @@ const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
 
 function LandingPage() {
   const [repoUrl, setRepoUrl] = useState('')
-  const [error, setError] = useState(false)
   const [analysis, setAnalysis] = useState<AnalysisType[]>([])
 
   // Extracting the 'code' parameter from the URL query string (used for authorization)
@@ -47,43 +46,49 @@ function LandingPage() {
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRepoUrl(e.target.value)
-    if (error) setError(false) // Clear error when user starts typing
   }
 
-  async function handleSearch() {
+  function handleSearch() {
     if (!repoUrl) {
-      setError(true)
+      toast.error('Please enter a GitHub repository URL')
       return
     }
     const repoUrlTmp = repoUrl
     setRepoUrl('')
 
-    toast.info(
-      'Your request is being processed - This may take up to a minute. Please be patient!',
-    )
-    const res = await fetch(
-      `${GH_CONNECTOR_URL}/getInfo?repoUrl=${repoUrlTmp}`,
-      {
-        credentials: 'include',
-      },
-    )
+    async function handleSearchInner() {
+      const res = await fetch(
+        `${GH_CONNECTOR_URL}/getInfo?repoUrl=${repoUrlTmp}`,
+        {
+          credentials: 'include',
+        },
+      )
 
-    const data = (await res.json()) as GHConnectorResponse
-    if (res.status !== 200) {
-      console.error('Failed to fetch repo data:', data)
-      toast.error(data.error_message || 'Failed to fetch repo data')
-      return
+      const data = (await res.json()) as GHConnectorResponse
+      if (res.status !== 200) {
+        console.error('Failed to fetch repo data:', data)
+        toast.error(data.error_message || 'Failed to fetch repo data')
+        return
+      }
+      setAnalysis((oldAnalysis) => [
+        {
+          id: 'unknown',
+          repository: repoUrlTmp,
+          created_at: new Date(Date.now()),
+          content: data.results,
+        },
+        ...oldAnalysis,
+      ])
     }
-    toast.info('Your Analysis is ready now')
-    setAnalysis((oldAnalysis) => [
-      {
-        id: 'unknown',
-        repository: repoUrlTmp,
-        created_at: new Date(Date.now()),
-        content: data.results,
+
+    toast.promise(handleSearchInner, {
+      loading:
+        'Your request is being processed - This may take up to a minute. Please be patient!',
+      success: () => {
+        return 'Your Analysis is ready now'
       },
-      ...oldAnalysis,
-    ])
+      error: 'Error',
+    })
   }
 
   useEffect(() => {
@@ -157,27 +162,20 @@ function LandingPage() {
           value={repoUrl}
           type="search"
           placeholder="Insert GitHub Repo URL"
-          className={`w-full max-w-md p-3 rounded-lg ${
-            error
-              ? 'border-red-500 focus-visible:ring-red-300 hover:border-red-500'
-              : 'border-border hover:border-border'
-          }`}
+          className={
+            'w-full max-w-md p-3 rounded-lg border-border hover:border-border'
+          }
           onKeyUp={(e) => {
             if (e.key === 'Enter') {
-              void handleSearch()
+              handleSearch()
             }
           }}
           onChange={handleInputChange}
         />
-        {error && (
-          <p className="text-red-500 text-sm">
-            Please enter a GitHub repository URL
-          </p>
-        )}
         <div className="flex gap-4">
           <Button
             className="px-6 py-2 bg-primary text-primary-foreground rounded-lg shadow hover:bg-primary/80"
-            onClick={() => void handleSearch()}
+            onClick={handleSearch}
           >
             Analyze
           </Button>
@@ -194,7 +192,7 @@ function LandingPage() {
         {data && <Profile user={data} />}
       </div>
       {analysis.length > 0 && <Analysis analysis={analysis} />}
-      <Toaster />
+      <Toaster position="top-center" richColors />
     </div>
   )
 }
