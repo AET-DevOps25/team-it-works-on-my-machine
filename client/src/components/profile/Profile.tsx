@@ -1,24 +1,23 @@
-// import "./profile.css";
-
 import type { UserType } from '@/lib/types'
+import { cn } from '@/lib/utils'
+import { Button } from '../ui/button'
 
-const Profile = ({ user }: { user: UserType }) => {
+const Profile = ({
+  user,
+  className,
+}: {
+  user: UserType
+  className?: string
+}) => {
   return (
-    <div className="user-info">
-      <h2>User Information</h2>
-      <div className="avatar-container flex justify-center">
-        <img
-          src={user.ghUser.avatar_url}
-          alt="User Avatar"
-          className="avatar h-[64px] w-[64px] rounded-full"
-        />
-      </div>
-      <div className="info-container">
-        <p>Login: {user.ghUser.login}</p>
-        <p>Followers: {user.ghUser.followers}</p>
-        <p>Following: {user.ghUser.following}</p>
-        <p>Public Repos: {user.ghUser.public_repos}</p>
-      </div>
+    <div className={cn('user-info', className)}>
+      <Button
+        variant="outline"
+        size="icon"
+        className="flex justify-center overflow-hidden"
+      >
+        <img src={user.ghUser.avatar_url} alt="User Avatar" />
+      </Button>
     </div>
   )
 }

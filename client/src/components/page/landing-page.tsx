@@ -44,10 +44,6 @@ function LandingPage() {
   // State to store the retrieved user data
   const [data, setData] = useState<UserType | null>(null)
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setRepoUrl(e.target.value)
-  }
-
   function handleSearch() {
     if (!repoUrl) {
       toast.error('Please enter a GitHub repository URL')
@@ -153,6 +149,7 @@ function LandingPage() {
   return (
     <div className="container mx-auto p-6 text-center relative">
       <ModeToggle className="absolute top-4 right-4" />
+      {data && <Profile user={data} className="absolute top-4 right-16" />}
       {isLoggedIn && data && <AccessibleRepos repos={data.repos} />}
       <h1 className="text-4xl font-extrabold text-primary mb-6 mt-16">
         Workflow Genie
@@ -170,7 +167,9 @@ function LandingPage() {
               handleSearch()
             }
           }}
-          onChange={handleInputChange}
+          onChange={(e) => {
+            setRepoUrl(e.target.value)
+          }}
         />
         <div className="flex gap-4">
           <Button
@@ -189,7 +188,6 @@ function LandingPage() {
             <Login />
           )}
         </div>
-        {data && <Profile user={data} />}
       </div>
       {analysis.length > 0 && <Analysis analysis={analysis} />}
       <Toaster position="top-center" richColors />
