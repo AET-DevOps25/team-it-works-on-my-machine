@@ -1,8 +1,8 @@
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
-import { ModeToggle } from '../mode-toggle'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ModeToggle } from '@/components/mode-toggle'
 import { useEffect, useState } from 'react'
-import Profile from '../profile/Profile'
+import Profile from '@/components/logged-in/profile'
 import type {
   AnalysisContent,
   GHConnectorResponse,
@@ -10,11 +10,11 @@ import type {
   User,
 } from '@/lib/types'
 import { toast } from 'sonner'
-import { Toaster } from '../ui/sonner'
-import Analyses from '../Analyses'
-import AccessibleRepos from '../AccessibleRepos'
-import Logout from '../Logout'
-import Login from '../Login'
+import { Toaster } from '@/components/ui/sonner'
+import Analyses from '@/components/analyses'
+import AccessibleRepos from '@/components/logged-in/accessible-repos'
+import Logout from '@/components/logged-in/logout'
+import Login from '@/components/anonymous/login'
 import { useLoginQueryParameter } from '@/hooks/use-login-query-parameter'
 
 const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL

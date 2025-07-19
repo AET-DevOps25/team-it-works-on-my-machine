@@ -1,4 +1,4 @@
-import LandingPage from './components/page/landing-page'
+import LandingPage from './landing-page'
 import { BrowserRouter, Routes, Route } from 'react-router'
 
 export default function Routing() {
