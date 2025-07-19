@@ -1,18 +1,18 @@
-import type { AnalysisType, UserType } from '@/lib/types'
+import type { Analysis, User } from '@/lib/types'
 import Cookies from 'universal-cookie'
 import { Button } from '@/components/ui/button'
 
 function Logout(p: {
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
-  setData: React.Dispatch<React.SetStateAction<UserType | null>>
-  setAnalysis: React.Dispatch<React.SetStateAction<AnalysisType[]>>
+  setLogin: React.Dispatch<React.SetStateAction<string | null>>
+  setData: React.Dispatch<React.SetStateAction<User | null>>
+  setAnalyses: React.Dispatch<React.SetStateAction<Analysis[]>>
 }) {
   function handleLogout() {
     console.log('logout')
     localStorage.removeItem('login')
-    p.setLoggedIn(false)
+    p.setLogin(null)
     p.setData(null)
-    p.setAnalysis([])
+    p.setAnalyses([])
     // Remove "login=success" from the URL if present
     const url = new URL(window.location.href)
     if (url.searchParams.has('login')) {
