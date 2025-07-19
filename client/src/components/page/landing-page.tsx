@@ -87,7 +87,7 @@ function LandingPage() {
       success: () => {
         return 'Your Analysis is ready now'
       },
-      error: 'Error',
+      error: 'Failed to fetch repo data',
     })
   }
 
