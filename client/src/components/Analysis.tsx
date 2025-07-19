@@ -27,11 +27,11 @@ function RelatedDocs({
     <>
       <strong className="text-2xl">Related Docs:</strong>
       <div className="mb-2 w-full rounded-md border p-4 text-left">
-        <ul>
+        <ul className="list-disc">
           {related_docs.length > 0 ? (
             related_docs.map((doc) => {
               return (
-                <li key={doc} className="list-disc list-inside hover:underline">
+                <li key={doc} className="hover:underline">
                   <a href={doc} target="_blank">
                     {doc}
                   </a>
