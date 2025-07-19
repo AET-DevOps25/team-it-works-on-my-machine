@@ -4,45 +4,30 @@ import { ModeToggle } from '../mode-toggle'
 import { useEffect, useState } from 'react'
 import Profile from '../profile/Profile'
 import type {
-  AnalysisContentType,
+  AnalysisContent,
   GHConnectorResponse,
-  AnalysisType,
-  UserType,
+  Analysis,
+  User,
 } from '@/lib/types'
-import Cookies from 'universal-cookie'
 import { toast } from 'sonner'
 import { Toaster } from '../ui/sonner'
-import Analysis from '../Analysis'
+import Analyses from '../Analyses'
 import AccessibleRepos from '../AccessibleRepos'
 import Logout from '../Logout'
 import Login from '../Login'
+import { useLoginQueryParameter } from '@/hooks/use-login-query-parameter'
 
 const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
 
 function LandingPage() {
   const [repoUrl, setRepoUrl] = useState('')
-  const [analysis, setAnalysis] = useState<AnalysisType[]>([])
+  const [analyses, setAnalyses] = useState<Analysis[]>([])
 
-  // Extracting the 'code' parameter from the URL query string (used for authorization)
-  const urlParams = new URLSearchParams(window.location.search)
-  if (urlParams.get('login')) {
-    const cookies = new Cookies(document.cookie)
-    const id = cookies.get<string | undefined>('id')
-    if (id !== undefined) {
-      localStorage.setItem('login', id)
-    }
-    // Remove "login=success" from the URL if present
-    const url = new URL(window.location.href)
-    if (url.searchParams.has('login')) {
-      url.searchParams.delete('login')
-      window.history.replaceState({}, document.title, url.toString())
-    }
-  }
-  const [isLoggedIn, setLoggedIn] = useState(
-    localStorage.getItem('login') !== null,
-  )
+  const [login, setLogin] = useLoginQueryParameter()
+  const [loading, setLoading] = useState(false)
+
   // State to store the retrieved user data
-  const [data, setData] = useState<UserType | null>(null)
+  const [data, setData] = useState<User | null>(null)
 
   function handleSearch() {
     if (!repoUrl) {
@@ -66,7 +51,7 @@ function LandingPage() {
         toast.error(data.error_message || 'Failed to fetch repo data')
         return
       }
-      setAnalysis((oldAnalysis) => [
+      setAnalyses((oldAnalysis) => [
         {
           id: 'unknown',
           repository: repoUrlTmp,
@@ -89,7 +74,8 @@ function LandingPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (isLoggedIn) {
+      if (login) {
+        setLoading(true)
         const [ghUserRes, analysesRes, reposRes] = await Promise.all([
           fetch(`${GH_CONNECTOR_URL}/user`, { credentials: 'include' }),
           fetch(
@@ -103,7 +89,7 @@ function LandingPage() {
         ])
 
         const GHConGHUser = (await ghUserRes.json()) as GHConnectorResponse
-        const analyses = (await analysesRes.json()) as AnalysisType[]
+        const analyses = (await analysesRes.json()) as Analysis[]
         const GHConRepos = (await reposRes.json()) as GHConnectorResponse
 
         if (ghUserRes.status !== 200) {
@@ -124,33 +110,36 @@ function LandingPage() {
           return
         }
 
-        for (const a of analyses) {
+        for (const analysis of analyses) {
           // Parse the content field of each analysis
-          a.content = JSON.parse(
-            a.content as unknown as string,
-          ) as AnalysisContentType[]
-          // console.log(new Date((a.created_at as unknown as string).replace(/(\.\d{3})\d*/, '$1')).toLocaleString())
-          a.created_at = new Date(
-            (a.created_at as unknown as string).replace(/(\.\d{3})\d*/, '$1') +
-              'Z',
+          analysis.content = JSON.parse(
+            analysis.content as unknown as string,
+          ) as AnalysisContent[]
+          // console.log(new Date((analysis.created_at as unknown as string).replace(/(\.\d{3})\d*/, '$1')).toLocaleString())
+          analysis.created_at = new Date(
+            (analysis.created_at as unknown as string).replace(
+              /(\.\d{3})\d*/,
+              '$1',
+            ) + 'Z',
           )
         }
-        setAnalysis(analyses)
+        setAnalyses(analyses)
 
         setData({
           ghUser: GHConGHUser.user_info,
           repos: GHConRepos.repos,
         })
+        setLoading(false)
       }
     }
     void fetchData()
-  }, [isLoggedIn])
+  }, [login])
 
   return (
     <div className="container mx-auto p-6 text-center relative">
       <ModeToggle className="absolute top-4 right-4" />
       {data && <Profile user={data} className="absolute top-4 right-16" />}
-      {isLoggedIn && data && <AccessibleRepos repos={data.repos} />}
+      {login && data && <AccessibleRepos repos={data.repos} />}
       <h1 className="text-4xl font-extrabold text-primary mb-6 mt-16">
         Workflow Genie
       </h1>
@@ -178,18 +167,18 @@ function LandingPage() {
           >
             Analyze
           </Button>
-          {isLoggedIn ? (
+          {login ? (
             <Logout
-              setLoggedIn={setLoggedIn}
+              setLogin={setLogin}
               setData={setData}
-              setAnalysis={setAnalysis}
+              setAnalyses={setAnalyses}
             />
           ) : (
             <Login />
           )}
         </div>
       </div>
-      {analysis.length > 0 && <Analysis analysis={analysis} />}
+      {<Analyses analyses={analyses} loading={loading} />}
       <Toaster position="top-center" richColors />
     </div>
   )

@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import Profile from './Profile'
-import type { UserType } from '@/lib/types'
+import type { User } from '@/lib/types'
 
 describe('Profile', () => {
   it('renders user info', () => {
@@ -14,7 +14,7 @@ describe('Profile', () => {
         following: 5,
         public_repos: 3,
       },
-    } as UserType
+    } as User
     render(<Profile user={user} />)
     expect(screen.getByText('User Information')).toBeInTheDocument()
     expect(screen.getByText('Login: testuser')).toBeInTheDocument()

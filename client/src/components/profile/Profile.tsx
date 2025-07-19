@@ -1,14 +1,8 @@
-import type { UserType } from '@/lib/types'
+import type { User } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { Button } from '../ui/button'
 
-const Profile = ({
-  user,
-  className,
-}: {
-  user: UserType
-  className?: string
-}) => {
+const Profile = ({ user, className }: { user: User; className?: string }) => {
   return (
     <div className={cn('user-info', className)}>
       <Button
