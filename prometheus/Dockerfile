@@ -3,6 +3,7 @@ from prom/prometheus:latest
 EXPOSE 9090
 
 COPY prometheus.k8s.yml /etc/prometheus/prometheus.yml
+COPY alerts.yml /etc/prometheus/alerts.yml
 
 ENTRYPOINT [ "/bin/prometheus" ]
 CMD [ "-config.file=/etc/prometheus/prometheus.yml", \
