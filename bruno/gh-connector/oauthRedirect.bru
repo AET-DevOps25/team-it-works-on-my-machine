@@ -1,13 +1,13 @@
 meta {
-  name: oauth-redirect
+  name: oauthRedirect
   type: http
-  seq: 3
+  seq: 5
 }
 
 get {
   url: {{gh_connector_url}}/oauth/redirect?code=cc2b0f1a726b278e2bbf
   body: none
-  auth: inherit
+  auth: none
 }
 
 params:query {

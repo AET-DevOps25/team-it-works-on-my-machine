@@ -88,12 +88,12 @@ public class GhConnectorController {
         return "Pong from GH-Connector\n";
     }
 
-    @GetMapping(value = "/pingusers")
+    @GetMapping(value = "/pingusers", produces = MediaType.TEXT_PLAIN_VALUE)
     public String pingUser() {
         return "through GH-Connector: " + ghConnectorService.pingUserS();
     }
 
-    @GetMapping(value = "/pinggenai")
+    @GetMapping(value = "/pinggenai", produces = MediaType.TEXT_PLAIN_VALUE)
     public String pingGenAI() {
         return "through GH-Connector: " + ghConnectorService.pingGenAI();
     }

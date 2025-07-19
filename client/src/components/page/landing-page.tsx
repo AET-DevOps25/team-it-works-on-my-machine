@@ -7,114 +7,17 @@ import type {
   AnalysisContentType,
   GHConnectorResponse,
   AnalysisType,
-  Repo,
   UserType,
 } from '@/lib/types'
 import Cookies from 'universal-cookie'
-import { toast, Toaster } from 'sonner'
-import Analysis from '../profile/Analysis'
+import { toast } from 'sonner'
+import { Toaster } from '../ui/sonner'
+import Analysis from '../Analysis'
+import AccessibleRepos from '../AccessibleRepos'
+import Logout from '../Logout'
+import Login from '../Login'
 
 const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
-const GH_OAUTH_CLIENT_ID = import.meta.env.VITE_GH_OAUTH_CLIENT_ID
-
-function Logout(p: {
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
-  setData: React.Dispatch<React.SetStateAction<UserType | null>>
-  setAnalysis: React.Dispatch<React.SetStateAction<AnalysisType[]>>
-}) {
-  function handleLogout() {
-    console.log('logout')
-    localStorage.removeItem('login')
-    p.setLoggedIn(false)
-    p.setData(null)
-    p.setAnalysis([])
-    // Remove "login=success" from the URL if present
-    const url = new URL(window.location.href)
-    if (url.searchParams.has('login')) {
-      url.searchParams.delete('login')
-      window.history.replaceState({}, document.title, url.toString())
-    }
-    const cookies = new Cookies(document.cookie)
-    cookies.remove('id')
-    cookies.update()
-  }
-
-  return (
-    <Button
-      className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
-      onClick={handleLogout}
-    >
-      Logout
-    </Button>
-  )
-}
-
-function Login() {
-  function handleLogin() {
-    console.log('login')
-    // Function to redirect the user to the GitHub OAuth authorization page
-    const redirect_uri = GH_CONNECTOR_URL + '/oauth/redirect'
-    // const scope = 'read:user,repo'
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${GH_OAUTH_CLIENT_ID}&redirect_uri=${redirect_uri}`
-
-    window.location.href = authUrl
-  }
-
-  return (
-    <Button
-      className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
-      onClick={handleLogin}
-    >
-      Login
-    </Button>
-  )
-}
-
-function AccessibleRepos({ repos }: { repos: Repo[] }) {
-  function handleInstall() {
-    console.log('install')
-    // Open the GitHub App installation page in a new tab
-    const installUrl = `https://github.com/apps/devops-workflowgenie-2025/installations/select_target`
-    window.open(installUrl, '_blank', 'noopener,noreferrer')
-  }
-
-  if (repos.length === 0) {
-    return (
-      <div>
-        <p>Workflow Genie cannot access any of you private repositories</p>
-        <Button
-          className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
-          onClick={handleInstall}
-        >
-          Grant Access to Workflow Genie
-        </Button>
-      </div>
-    )
-  } else {
-    return (
-      <div>
-        <p>
-          Workflow genie currently has access to these private repositories:
-        </p>
-        <ul>
-          {repos.map((repo) => {
-            return (
-              <li key={repo.name}>
-                {repo.name}: {repo.html_url}
-              </li>
-            )
-          })}
-        </ul>
-        <Button
-          className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
-          onClick={handleInstall}
-        >
-          Grant additional or revoke existing Access Permission
-        </Button>
-      </div>
-    )
-  }
-}
 
 function LandingPage() {
   const [repoUrl, setRepoUrl] = useState('')
@@ -289,8 +192,8 @@ function LandingPage() {
           )}
         </div>
         {data && <Profile user={data} />}
-        {analysis.length > 0 && <Analysis analysis={analysis} />}
       </div>
+      {analysis.length > 0 && <Analysis analysis={analysis} />}
       <Toaster />
     </div>
   )
