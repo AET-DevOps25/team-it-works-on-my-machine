@@ -39,7 +39,7 @@ function AccessibleRepos({
 
   if (repos.length === 0) {
     return (
-      <div className={className}>
+      <div className={cn('flex flex-col gap-2', className)}>
         <p>Workflow Genie cannot access any of you private repositories</p>
         <Button
           className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
