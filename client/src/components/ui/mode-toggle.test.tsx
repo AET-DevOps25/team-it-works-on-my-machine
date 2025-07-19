@@ -1,9 +1,7 @@
-import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import { ModeToggle } from './mode-toggle'
+import { test } from 'vitest'
 
-describe('ModeToggle', () => {
-  it('renders without crashing', () => {
-    render(<ModeToggle />)
-  })
+test('renders without crashing', () => {
+  render(<ModeToggle />)
 })

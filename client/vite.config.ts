@@ -16,5 +16,9 @@ export default defineConfig(({ mode }) => {
     server: {
       port: Number(env.CLIENT_PORT),
     },
+    test: {
+      environment: 'jsdom',
+      setupFiles: './setupTests.ts',
+    },
   }
 })
