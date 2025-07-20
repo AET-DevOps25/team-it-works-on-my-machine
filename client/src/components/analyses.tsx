@@ -153,10 +153,13 @@ function DeleteAnalysis({
             <div
               onClick={(e) => {
                 e.stopPropagation()
-                void deleteAnalysis(login, analysis.id)
-                useGlobalState.setState((state) => ({
-                  analyses: state.analyses.filter((a) => a.id !== analysis.id),
-                }))
+                void deleteAnalysis(login, analysis.id).then(() => {
+                  useGlobalState.setState((state) => ({
+                    analyses: state.analyses.filter(
+                      (a) => a.id !== analysis.id,
+                    ),
+                  }))
+                })
               }}
             >
               Delete
@@ -176,9 +179,8 @@ async function deleteAnalysis(login: string, analysisId: string) {
     },
   )
   if (!res.ok) {
-    console.error('Failed to delete analysis:', res.text())
     toast.error('Failed to remove analysis')
-    return
+    throw new Error(`Failed to delete analysis: ${res.statusText}`)
   }
   toast.info('Analysis removed')
 }
