@@ -9,7 +9,7 @@ export function handleSearch(
   addAnalysis: (analysis: Analysis) => void,
 ) {
   if (!repoUrl) {
-    toast.error('Please enter a GitHub repository URL')
+    toast.warning('Please enter a GitHub repository URL')
     return
   }
   const repoUrlTmp = repoUrl
