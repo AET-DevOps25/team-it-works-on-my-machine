@@ -118,13 +118,12 @@ function DeleteAnalysis({
   return (
     <AlertDialog>
       <AlertDialogTrigger
-        className="cursor-pointer text-red-500 hover:text-red-700 h-[24px]"
         onClick={(e) => {
           e.stopPropagation()
         }}
       >
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger className="cursor-pointer text-red-500 hover:text-red-700 h-[24px]">
             <CircleMinus />
           </TooltipTrigger>
           <TooltipContent>
@@ -189,8 +188,9 @@ function OpenRepository({ repoUrl }: { repoUrl: string }) {
   return (
     <Tooltip>
       <TooltipTrigger
-        className="cursor-pointer"
-        onClick={() => {
+        className="cursor-pointer hover:text-foreground/80"
+        onClick={(e) => {
+          e.stopPropagation()
           window.open(repoUrl, '_blank', 'noopener,noreferrer')
         }}
       >
