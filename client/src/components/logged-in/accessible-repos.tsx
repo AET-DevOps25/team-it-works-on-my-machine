@@ -1,4 +1,3 @@
-import type { Repo } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '../ui/skeleton'
 import {
@@ -10,6 +9,7 @@ import {
 } from '../ui/select'
 import { cn } from '@/lib/utils'
 import { IconExternalLink } from '@tabler/icons-react'
+import { useGlobalState } from '@/hooks/use-global-state'
 
 function handleInstall() {
   // Open the GitHub App installation page in a new tab
@@ -17,20 +17,11 @@ function handleInstall() {
   window.open(installUrl, '_blank', 'noopener,noreferrer')
 }
 
-function AccessibleRepos({
-  privateRepoUrl,
-  setPrivateRepoUrl,
-  setRepoUrl,
-  repos,
-  className,
-}: {
-  privateRepoUrl: string
-  setPrivateRepoUrl: React.Dispatch<React.SetStateAction<string>>
-  repoUrl: string
-  setRepoUrl: React.Dispatch<React.SetStateAction<string>>
-  repos: Repo[] | undefined
-  className?: string
-}) {
+function AccessibleRepos({ className }: { className?: string }) {
+  const repos = useGlobalState((state) => state.data?.repos)
+  const setRepoUrl = useGlobalState((state) => state.setRepoUrl)
+  const privateRepoUrl = useGlobalState((state) => state.privateRepoUrl)
+  const setPrivateRepoUrl = useGlobalState((state) => state.setPrivateRepoUrl)
   if (!repos) {
     return (
       <div className={className}>

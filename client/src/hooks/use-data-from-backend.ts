@@ -2,19 +2,18 @@ import type {
   Analysis,
   AnalysisContent,
   GHConnectorResponse,
-  User,
 } from '@/lib/types'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
+import { useGlobalState } from './use-global-state'
 
 const GH_CONNECTOR_URL = import.meta.env.VITE_GH_CONNECTOR_URL
 
-export function useDataFromBackend(
-  login: string | null,
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  setData: React.Dispatch<React.SetStateAction<User | null>>,
-  setAnalyses: React.Dispatch<React.SetStateAction<Analysis[]>>,
-) {
+export function useDataFromBackend() {
+  const login = useGlobalState((state) => state.login)
+  const setLoading = useGlobalState((state) => state.setLoading)
+  const setData = useGlobalState((state) => state.setData)
+  const setAnalyses = useGlobalState((state) => state.setAnalyses)
   useEffect(() => {
     const fetchData = async () => {
       if (login) {
@@ -77,3 +76,4 @@ export function useDataFromBackend(
     void fetchData()
   }, [login, setAnalyses, setData, setLoading])
 }
+

@@ -1,28 +1,16 @@
 import { handleSearch } from '@/lib/handleSearch'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
-import Logout from './logged-in/logout'
 import Login from './anonymous/login'
-import type { Analysis, User } from '@/lib/types'
 import { cn } from '@/lib/utils'
+import { useGlobalState } from '@/hooks/use-global-state'
 
-export default function Search({
-  repoUrl,
-  setRepoUrl,
-  login,
-  setLogin,
-  setAnalyses,
-  setData,
-  className,
-}: {
-  repoUrl: string
-  setRepoUrl: React.Dispatch<React.SetStateAction<string>>
-  login: string | null
-  setLogin: React.Dispatch<React.SetStateAction<string | null>>
-  setAnalyses: React.Dispatch<React.SetStateAction<Analysis[]>>
-  setData: React.Dispatch<React.SetStateAction<User | null>>
-  className?: string
-}) {
+export default function Search({ className }: { className?: string }) {
+  const resetRepoUrl = useGlobalState((state) => state.resetRepoUrl)
+  const setRepoUrl = useGlobalState((state) => state.setRepoUrl)
+  const addAnalysis = useGlobalState((state) => state.addAnalysis)
+  const repoUrl = useGlobalState((state) => state.repoUrl)
+  const login = useGlobalState((state) => state.login)
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <p className="mb-5">Insert GitHub Repo URL</p>
@@ -35,7 +23,7 @@ export default function Search({
         }
         onKeyUp={(e) => {
           if (e.key === 'Enter') {
-            handleSearch(repoUrl, setRepoUrl, setAnalyses)
+            handleSearch(repoUrl, resetRepoUrl, addAnalysis)
           }
         }}
         onChange={(e) => {
@@ -46,7 +34,7 @@ export default function Search({
         <Button
           className="m-3 px-6 py-2 bg-primary text-primary-foreground rounded-lg shadow hover:bg-primary/80"
           onClick={() => {
-            handleSearch(repoUrl, setRepoUrl, setAnalyses)
+            handleSearch(repoUrl, resetRepoUrl, addAnalysis)
           }}
         >
           Analyze

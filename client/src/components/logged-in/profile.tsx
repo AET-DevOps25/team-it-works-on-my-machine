@@ -1,15 +1,10 @@
-import type { User } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { Button } from '../ui/button'
 import { Skeleton } from '../ui/skeleton'
+import { useGlobalState } from '@/hooks/use-global-state'
 
-const Profile = ({
-  user,
-  className,
-}: {
-  user: User | null
-  className?: string
-}) => {
+const Profile = ({ className }: { className?: string }) => {
+  const user = useGlobalState((state) => state.data)
   if (!user) {
     return <Skeleton className={cn('size-9', className)} />
   }

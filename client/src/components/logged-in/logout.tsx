@@ -1,19 +1,18 @@
-import type { Analysis, User } from '@/lib/types'
 import Cookies from 'universal-cookie'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useGlobalState } from '@/hooks/use-global-state'
 
-function Logout(p: {
-  setLogin: React.Dispatch<React.SetStateAction<string | null>>
-  setData: React.Dispatch<React.SetStateAction<User | null>>
-  setAnalyses: React.Dispatch<React.SetStateAction<Analysis[]>>
-  className?: string
-}) {
+function Logout(p: { className?: string }) {
+  const setLogin = useGlobalState((state) => state.setLogin)
+  const setData = useGlobalState((state) => state.setData)
+  const setAnalyses = useGlobalState((state) => state.setAnalyses)
+
   function handleLogout() {
     localStorage.removeItem('login')
-    p.setLogin(null)
-    p.setData(null)
-    p.setAnalyses([])
+    setLogin(null)
+    setData(null)
+    setAnalyses([])
     // Remove "login=success" from the URL if present
     const url = new URL(window.location.href)
     if (url.searchParams.has('login')) {

@@ -32,7 +32,8 @@
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
-    "universal-cookie": "^8.0.1"
+    "universal-cookie": "^8.0.1",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.28.0",

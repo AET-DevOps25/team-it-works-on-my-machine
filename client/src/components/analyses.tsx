@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/accordion'
 import MarkdownRenderer from '@/components/ui/markdown-renderer'
 import { Skeleton } from './ui/skeleton'
+import { useGlobalState } from '@/hooks/use-global-state'
 
 function Summary({ summary }: { summary: string }) {
   return (
@@ -102,13 +103,9 @@ function Analysis(analysis: Analysis) {
   )
 }
 
-export default function Analyses({
-  analyses,
-  loading,
-}: {
-  analyses: Analysis[]
-  loading: boolean
-}) {
+export default function Analyses() {
+  const analyses = useGlobalState((state) => state.analyses)
+  const loading = useGlobalState((state) => state.loading)
   return (
     <div className="mt-8">
       <h2 className="text-4xl m-2">Analyses:</h2>
