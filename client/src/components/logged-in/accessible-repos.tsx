@@ -8,8 +8,9 @@ import {
   SelectValue,
 } from '../ui/select'
 import { cn } from '@/lib/utils'
-import { IconExternalLink } from '@tabler/icons-react'
 import { useGlobalState } from '@/hooks/use-global-state'
+import { useState } from 'react'
+import { ExternalLink } from '../icons/tabler'
 
 function handleInstall() {
   // Open the GitHub App installation page in a new tab
@@ -20,8 +21,7 @@ function handleInstall() {
 function AccessibleRepos({ className }: { className?: string }) {
   const repos = useGlobalState((state) => state.data?.repos)
   const setRepoUrl = useGlobalState((state) => state.setRepoUrl)
-  const privateRepoUrl = useGlobalState((state) => state.privateRepoUrl)
-  const setPrivateRepoUrl = useGlobalState((state) => state.setPrivateRepoUrl)
+  const [privateRepoUrl, setPrivateRepoUrl] = useState('')
   if (!repos) {
     return (
       <div className={className}>
@@ -71,7 +71,7 @@ function AccessibleRepos({ className }: { className?: string }) {
           onClick={handleInstall}
         >
           Choose Accessible Repositories
-          <IconExternalLink />
+          <ExternalLink />
         </Button>
       </div>
     )

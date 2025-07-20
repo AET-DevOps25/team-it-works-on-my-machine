@@ -7,8 +7,6 @@ interface GlobalState {
   repoUrl: string
   resetRepoUrl: () => void
   setRepoUrl: (url: string) => void
-  privateRepoUrl: string
-  setPrivateRepoUrl: (privateRepoUrl: string) => void
 
   // State to manage loading state
   loading: boolean
@@ -53,10 +51,6 @@ export const useGlobalState = create<GlobalState>((set) => {
     },
     setRepoUrl: (url: string) => {
       set({ repoUrl: url })
-    },
-    privateRepoUrl: '',
-    setPrivateRepoUrl: (privateRepoUrl: string) => {
-      set({ privateRepoUrl })
     },
     // State to manage loading state
     loading: false,

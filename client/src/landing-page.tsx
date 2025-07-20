@@ -5,9 +5,9 @@ import Analyses from '@/components/analyses'
 import AccessibleRepos from '@/components/logged-in/accessible-repos'
 import { useDataFromBackend } from './hooks/use-data-from-backend'
 import Search from './components/search'
-import { IconArrowLeft } from '@tabler/icons-react'
 import Logout from './components/logged-in/logout'
 import { useGlobalState } from './hooks/use-global-state'
+import { ArrowLeft } from './components/icons/tabler'
 
 function LandingPage() {
   const login = useGlobalState((state) => state.login)
@@ -23,17 +23,17 @@ function LandingPage() {
         Workflow Genie
       </h1>
       <div className="flex">
-        <Search className={login ? 'w-1/2' : 'w-full'} />
+        <Search className={login ? 'w-[45%]' : 'w-full'} />
         {login && (
           <>
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center w-[10%]">
               <div className="mb-8">or</div>
               <div>
-                <IconArrowLeft />
+                <ArrowLeft />
               </div>
               <div></div>
             </div>
-            <AccessibleRepos className="w-1/2" />
+            <AccessibleRepos className="w-[45%]" />
           </>
         )}
       </div>
