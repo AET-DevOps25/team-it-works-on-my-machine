@@ -23,17 +23,17 @@ function LandingPage() {
         Workflow Genie
       </h1>
       <div className="flex">
-        <Search className={login ? 'w-[45%]' : 'w-full'} />
+        <Search className={login ? 'w-[47.5%]' : 'w-full'} />
         {login && (
           <>
-            <div className="flex flex-col items-center w-[10%]">
+            <div className="flex flex-col items-center w-[5%]">
               <div className="mb-8">or</div>
               <div>
                 <ArrowLeft />
               </div>
               <div></div>
             </div>
-            <AccessibleRepos className="w-[45%]" />
+            <AccessibleRepos className="w-[47.5%]" />
           </>
         )}
       </div>
