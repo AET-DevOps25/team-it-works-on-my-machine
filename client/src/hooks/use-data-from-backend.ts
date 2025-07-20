@@ -37,11 +37,13 @@ export function useDataFromBackend() {
         if (ghUserRes.status !== 200) {
           console.error('Failed to fetch user data:', GHConGHUser)
           toast.error(GHConGHUser.error_message || 'Failed to fetch user data')
+          setLoading(false)
           return
         }
         if (analysesRes.status !== 200) {
           console.error('Failed to fetch analysis data:', analyses)
           toast.error('Failed to fetch analysis data')
+          setLoading(false)
           return
         }
         if (reposRes.status !== 200) {
@@ -49,6 +51,7 @@ export function useDataFromBackend() {
           toast.error(
             GHConRepos.error_message || 'Failed to fetch analysis data',
           )
+          setLoading(false)
           return
         }
 
@@ -73,8 +76,7 @@ export function useDataFromBackend() {
         setLoading(false)
       }
     }
-    void fetchData().catch((error: unknown) => {
-      console.error('Error fetching data from backend:', error)
+    void fetchData().catch(() => {
       toast.error('Failed to fetch data from backend')
       setLoading(false)
     })
