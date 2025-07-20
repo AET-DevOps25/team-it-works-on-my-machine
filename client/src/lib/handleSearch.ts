@@ -27,12 +27,14 @@ export function handleSearch(
     if (res.status !== 200) {
       throw new Error(data.error_message || 'Failed to fetch repo data')
     }
-    addAnalysis({
-      id: 'unknown',
-      repository: repoUrlTmp,
-      created_at: new Date(Date.now()),
-      content: data.results,
-    })
+    data.analysis.created_at = new Date(
+      (data.analysis.created_at as unknown as string).replace(
+        /(\.\d{3})\d*/,
+        '$1',
+      ) + 'Z',
+    )
+    data.analysis.highlighted = true
+    addAnalysis(data.analysis)
   }
 
   toast.promise(handleSearchInner, {

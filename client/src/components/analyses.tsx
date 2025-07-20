@@ -10,8 +10,8 @@ import { Skeleton } from './ui/skeleton'
 import { useGlobalState } from '@/hooks/use-global-state'
 import { CircleMinus, Refresh } from './icons/tabler'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
 import { handleSearch } from '@/lib/handleSearch'
+import { cn } from '@/lib/utils'
 
 function Summary({ summary }: { summary: string }) {
   return (
@@ -84,6 +84,9 @@ async function deleteAnalysis(login: string, analysisId: string) {
 }
 
 function Analysis(analysis: Analysis) {
+  const markAnalysisNotHighlighted = useGlobalState(
+    (state) => state.markAnalysisNotHighlighted,
+  )
   const createdAt = analysis.created_at.toLocaleString('de-DE', {
     timeZone: 'Europe/Berlin',
   })
@@ -93,10 +96,19 @@ function Analysis(analysis: Analysis) {
     <AccordionItem value={analysis.id}>
       <AccordionTrigger
         className={cn(
-          'text-center border m-1 p-2',
-          analysis.id === 'unknown' ? 'bg-amber-700 hover:bg-amber-700/80' : '',
+          'text-center border m-1 p-2 relative',
+          analysis.highlighted ? 'border-primary animate-pulse' : '',
         )}
+        onClick={() => {
+          markAnalysisNotHighlighted(analysis.id)
+        }}
       >
+        {analysis.highlighted && (
+          <span className="absolute top-0 right-0 -mt-1 -mr-1 flex size-3">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>{' '}
+            <span className="relative inline-flex size-3 rounded-full bg-sky-500"></span>
+          </span>
+        )}
         <div className="flex flex-1 justify-between items-center min-h-[24px]">
           <div>
             <strong>Repository: </strong>

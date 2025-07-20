@@ -27,7 +27,7 @@ export type OauthResponse = {
 export type GHConnectorResponse = {
   status: number
   error_message: string
-  results: AnalysisContent[]
+  analysis: Analysis
   user_info: GitHubUser
   repos: Repo[]
 }
@@ -37,6 +37,7 @@ export type Analysis = {
   repository: string
   created_at: Date
   content: AnalysisContent[]
+  highlighted?: boolean
 }
 
 export type AnalysisContent = {

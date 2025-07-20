@@ -17,17 +17,23 @@ public class GHConnectorResponse {
     @JsonProperty("error_message")
     String errorMessage;
 
-    List<WorkflowExplanation> results;
+    Analysis analysis;
 
     @JsonProperty("user_info")
     UserInfo userInfo;
 
     List<UserInstallationRepository> repos;
 
-    public static GHConnectorResponse fromGenAIResponse(GenAIResponse genAIResponse) {
+    public static GHConnectorResponse fromGenAIResponse(
+            GenAIResponse genAIResponse, String analysisId, String repository, String createdAt) {
         return GHConnectorResponse.builder()
                 .status(200)
-                .results(genAIResponse.getResults())
+                .analysis(Analysis.builder()
+                        .content(genAIResponse.getResults())
+                        .id(analysisId)
+                        .repository(repository)
+                        .createdAt(createdAt)
+                        .build())
                 .build();
     }
 }
