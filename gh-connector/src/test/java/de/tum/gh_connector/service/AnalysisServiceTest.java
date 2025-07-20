@@ -97,12 +97,16 @@ public class AnalysisServiceTest {
 
     GHConnectorResponse ghConnectorResponse = GHConnectorResponse.builder()
             .status(200)
-            .results(List.of(WorkflowExplanation.builder()
+            .analysis(Analysis.builder().content(List.of(WorkflowExplanation.builder()
                     .fileName(".github/workflows/item1.yml")
                     .summary("summary1")
                     .detailedAnalysis("analysis1")
                     .relatedDocs(List.of())
                     .build()))
+                    .repository("https://github.com/ls1intum/Artemis")
+                    .createdAt("2023-10-01T12:00:00Z")
+                    .id("unknown")
+                    .build())
             .build();
 
     @Test
@@ -120,8 +124,9 @@ public class AnalysisServiceTest {
                 .thenReturn(item3);
 
         when(genAIRestClient.analyzeYamls(genAIRequest)).thenReturn(genAIResponse);
-
-        assertEquals(ghConnectorResponse, analysisService.analyzeRepo("https://github.com/ls1intum/Artemis", "id"));
+        var result = analysisService.analyzeRepo("https://github.com/ls1intum/Artemis", "id");
+        result.getAnalysis().setCreatedAt("2023-10-01T12:00:00Z");
+        assertEquals(ghConnectorResponse, result);
     }
 
     @Test
