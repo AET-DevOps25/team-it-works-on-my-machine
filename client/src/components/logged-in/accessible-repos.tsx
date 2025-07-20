@@ -66,13 +66,12 @@ function AccessibleRepos({ className }: { className?: string }) {
             })}
           </SelectContent>
         </Select>
-        <Button
-          className="m-3 px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
-          onClick={handleInstall}
-        >
-          Choose Accessible Repositories
-          <ExternalLink />
-        </Button>
+        <div className="flex justify-center items-center gap-4 mt-4">
+          <Button variant={'secondary'} onClick={handleInstall}>
+            Choose Accessible Repositories
+            <ExternalLink />
+          </Button>
+        </div>
       </div>
     )
   }

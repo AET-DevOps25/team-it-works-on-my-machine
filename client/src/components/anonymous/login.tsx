@@ -13,12 +13,8 @@ function Login() {
   }
 
   return (
-    <Button
-      className="m-3 px-6 py-2 bg-primary text-primary-foreground rounded-lg shadow hover:bg-primary/80"
-      onClick={handleLogin}
-    >
-      {/* TODO fix formatting */}
-      <BrandGithub />
+    <Button variant={'secondary'} onClick={handleLogin}>
+      <BrandGithub className="h-5" />
       Login
     </Button>
   )
