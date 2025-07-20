@@ -118,12 +118,13 @@ function DeleteAnalysis({
   return (
     <AlertDialog>
       <AlertDialogTrigger
+        className="h-[24px]"
         onClick={(e) => {
           e.stopPropagation()
         }}
       >
         <Tooltip>
-          <TooltipTrigger className="cursor-pointer text-red-500 hover:text-red-700 h-[24px]">
+          <TooltipTrigger className="cursor-pointer text-red-500 hover:text-red-700">
             <CircleMinus />
           </TooltipTrigger>
           <TooltipContent>
