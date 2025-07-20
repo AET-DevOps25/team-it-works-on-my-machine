@@ -3,6 +3,18 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useGlobalState } from '@/hooks/use-global-state'
 
+function removeCookie(cookies: Cookies, name: string) {
+  const domain = window.location.hostname
+  const domainParts = domain.split('.')
+
+  for (let i = 0; i < domainParts.length; i++) {
+    const currentDomain = domainParts.slice(i).join('.')
+    cookies.remove(name, {
+      domain: currentDomain,
+    })
+  }
+}
+
 function Logout(p: { className?: string }) {
   const setLogin = useGlobalState((state) => state.setLogin)
   const setData = useGlobalState((state) => state.setData)
@@ -22,7 +34,7 @@ function Logout(p: { className?: string }) {
       window.history.replaceState({}, document.title, url.toString())
     }
     const cookies = new Cookies(document.cookie)
-    cookies.remove('id')
+    removeCookie(cookies, 'id')
     cookies.update()
   }
 
