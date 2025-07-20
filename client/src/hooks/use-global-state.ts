@@ -19,6 +19,7 @@ interface GlobalState {
   // State to store analyses
   analyses: Analysis[]
   addAnalysis: (analysis: Analysis) => void
+  markAnalysisNotHighlighted: (analysisId: string) => void
   setAnalyses: (analyses: Analysis[]) => void
 
   // State to manage login query parameter and state
@@ -67,6 +68,15 @@ export const useGlobalState = create<GlobalState>((set) => {
     addAnalysis: (analysis: Analysis) => {
       set((state) => ({
         analyses: [analysis, ...state.analyses],
+      }))
+    },
+    markAnalysisNotHighlighted: (analysisId: string) => {
+      set((state) => ({
+        analyses: state.analyses.map((analysis) =>
+          analysis.id === analysisId
+            ? { ...analysis, highlighted: false }
+            : analysis,
+        ),
       }))
     },
     setAnalyses: (analyses: Analysis[]) => {

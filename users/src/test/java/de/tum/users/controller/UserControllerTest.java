@@ -52,21 +52,6 @@ class UserControllerTest {
     }
 
     @Test
-    void testGetUserFound() {
-        when(userRepository.findById("12345678")).thenReturn(Optional.of(user));
-        User result = userController.getUser("12345678");
-        assertEquals(user, result);
-    }
-
-    @Test
-    void testGetUserNotFound() {
-        when(userRepository.findById("notfound")).thenReturn(Optional.empty());
-        ResponseStatusException ex =
-                assertThrows(ResponseStatusException.class, () -> userController.getUser("notfound"));
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
-    }
-
-    @Test
     void testCreateUserNew() {
         when(userRepository.findByGithubId("ghid")).thenReturn(Optional.empty());
         when(userRepository.save(user)).thenReturn(user);

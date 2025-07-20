@@ -51,7 +51,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "text/plain": {
                 "schema": {
                   "type": "string"
                 }
@@ -71,7 +71,7 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "text/plain": {
                 "schema": {
                   "type": "string"
                 }
@@ -202,6 +202,26 @@
   },
   "components": {
     "schemas": {
+      "Analysis": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "repository": {
+            "type": "string"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowExplanation"
+            }
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
       "GHConnectorResponse": {
         "type": "object",
         "properties": {
@@ -209,11 +229,8 @@
             "type": "integer",
             "format": "int32"
           },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/WorkflowExplanation"
-            }
+          "analysis": {
+            "$ref": "#/components/schemas/Analysis"
           },
           "repos": {
             "type": "array",

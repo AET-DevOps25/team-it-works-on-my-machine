@@ -8,15 +8,31 @@ import {
 import MarkdownRenderer from '@/components/ui/markdown-renderer'
 import { Skeleton } from './ui/skeleton'
 import { useGlobalState } from '@/hooks/use-global-state'
-import { CircleMinus, Refresh } from './icons/tabler'
+import { CircleMinus, ExternalLink, Refresh } from './icons/tabler'
 import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
 import { handleSearch } from '@/lib/handleSearch'
+import { cn } from '@/lib/utils'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 function Summary({ summary }: { summary: string }) {
   return (
     <>
-      <strong className="text-2xl">Summary:</strong>
+      <strong className="text-2xl text-left">Summary:</strong>
       <div className="mb-2 w-full rounded-md border p-4 text-left">
         {summary}
       </div>
@@ -31,9 +47,9 @@ function RelatedDocs({
 }) {
   return (
     <>
-      <strong className="text-2xl">Related Docs:</strong>
-      <div className="mb-2 w-full rounded-md border p-4 text-left">
-        <ul className="list-disc">
+      <strong className="text-2xl text-left">Related Docs:</strong>
+      <div className="w-full rounded-md border p-4 text-left">
+        <ul className="list-disc pl-2">
           {related_docs.length > 0 ? (
             related_docs.map((doc) => {
               return (
@@ -60,11 +76,98 @@ function DetailedAnalysis({
 }) {
   return (
     <>
-      <strong className="text-2xl">Detailed Analysis:</strong>
+      <strong className="text-2xl text-left">Detailed Analysis:</strong>
       <div className="w-full rounded-md border p-4 text-left">
         <MarkdownRenderer>{detailed_analysis}</MarkdownRenderer>
       </div>
     </>
+  )
+}
+
+function RefreshAnalysis({ analysis }: { analysis: Analysis }) {
+  const addAnalysis = useGlobalState((state) => state.addAnalysis)
+
+  return (
+    <Tooltip>
+      <TooltipTrigger>
+        <div
+          className="cursor-pointer text-blue-500 hover:text-blue-700"
+          onClick={(e) => {
+            e.stopPropagation()
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            handleSearch(analysis.repository, () => {}, addAnalysis)
+          }}
+        >
+          <Refresh />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Rerun</p>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+function DeleteAnalysis({
+  login,
+  analysis,
+}: {
+  login: string
+  analysis: Analysis
+}) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger
+        className="cursor-pointer text-red-500 hover:text-red-700 h-[24px]"
+        onClick={(e) => {
+          e.stopPropagation()
+        }}
+      >
+        <Tooltip>
+          <TooltipTrigger>
+            <CircleMinus />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Delete</p>
+          </TooltipContent>
+        </Tooltip>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Are you sure you want to delete the analysis?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel
+            onClick={(e) => {
+              e.stopPropagation()
+            }}
+          >
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction>
+            <div
+              onClick={(e) => {
+                e.stopPropagation()
+                void deleteAnalysis(login, analysis.id).then(() => {
+                  useGlobalState.setState((state) => ({
+                    analyses: state.analyses.filter(
+                      (a) => a.id !== analysis.id,
+                    ),
+                  }))
+                })
+              }}
+            >
+              Delete
+            </div>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }
 
@@ -76,64 +179,71 @@ async function deleteAnalysis(login: string, analysisId: string) {
     },
   )
   if (!res.ok) {
-    console.error('Failed to delete analysis:', res.text())
     toast.error('Failed to remove analysis')
-    return
+    throw new Error(`Failed to delete analysis: ${res.statusText}`)
   }
   toast.info('Analysis removed')
 }
 
+function OpenRepository({ repoUrl }: { repoUrl: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        className="cursor-pointer"
+        onClick={() => {
+          window.open(repoUrl, '_blank', 'noopener,noreferrer')
+        }}
+      >
+        <ExternalLink />
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Open Repository</p>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+function HighlightedPing() {
+  return (
+    <span className="absolute top-0 right-0 -mt-1 -mr-1 flex size-3">
+      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>{' '}
+      <span className="relative inline-flex size-3 rounded-full bg-sky-500"></span>
+    </span>
+  )
+}
+
 function Analysis(analysis: Analysis) {
+  const markAnalysisNotHighlighted = useGlobalState(
+    (state) => state.markAnalysisNotHighlighted,
+  )
   const createdAt = analysis.created_at.toLocaleString('de-DE', {
     timeZone: 'Europe/Berlin',
   })
   const login = useGlobalState((state) => state.login)
-  const addAnalysis = useGlobalState((state) => state.addAnalysis)
   return (
     <AccordionItem value={analysis.id}>
       <AccordionTrigger
         className={cn(
-          'text-center border m-1 p-2',
-          analysis.id === 'unknown' ? 'bg-amber-700 hover:bg-amber-700/80' : '',
+          'text-center border m-1 p-2 relative',
+          analysis.highlighted ? 'border-primary animate-pulse' : '',
         )}
+        onClick={() => {
+          markAnalysisNotHighlighted(analysis.id)
+        }}
       >
-        <div className="flex flex-1 justify-between items-center min-h-[24px]">
+        {analysis.highlighted && <HighlightedPing />}
+        <div className="flex flex-1 justify-between items-center">
           <div>
             <strong>Repository: </strong>
             {analysis.repository}
           </div>
           <div className="flex gap-2 items-center">
             <span>{createdAt}</span>
-            {analysis.id !== 'unknown' && (
-              <div
-                className="cursor-pointer text-red-500 hover:text-red-700"
-                onClick={(e) => {
-                  if (!login) {
-                    toast.error('You must be logged in to delete analyses')
-                    return
-                  }
-                  e.stopPropagation()
-                  void deleteAnalysis(login, analysis.id)
-                  useGlobalState.setState((state) => ({
-                    analyses: state.analyses.filter(
-                      (a) => a.id !== analysis.id,
-                    ),
-                  }))
-                }}
-              >
-                <CircleMinus />
-              </div>
+            <OpenRepository repoUrl={analysis.repository} />
+            <RefreshAnalysis analysis={analysis} />
+            {analysis.id !== 'unknown' && login && (
+              <DeleteAnalysis login={login} analysis={analysis} />
             )}
-            <div
-              className="cursor-pointer text-blue-500 hover:text-blue-700"
-              onClick={(e) => {
-                e.stopPropagation()
-                // eslint-disable-next-line @typescript-eslint/no-empty-function
-                handleSearch(analysis.repository, () => {}, addAnalysis)
-              }}
-            >
-              <Refresh />
-            </div>
           </div>
         </div>
       </AccordionTrigger>
@@ -144,7 +254,7 @@ function Analysis(analysis: Analysis) {
               <AccordionTrigger className="mx-8 my-1 px-2 border">
                 {content.filename}
               </AccordionTrigger>
-              <AccordionContent className="flex flex-col gap-4 mx-8 items-center">
+              <AccordionContent className="flex flex-col gap-4 mx-8 mb-5 mt-4">
                 <Summary summary={content.summary} />
                 <DetailedAnalysis
                   detailed_analysis={content.detailed_analysis}

@@ -10,6 +10,7 @@ import de.tum.gh_connector.dto.gh.ContentResponseItem;
 import de.tum.gh_connector.dto.gh.UserAnalysis;
 import feign.FeignException;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -58,15 +59,20 @@ public class AnalysisService {
             GenAIRequest genAIRequest = GenAIRequest.builder().yamls(yamls).build();
 
             GenAIResponse genAIResponse = genAIRestClient.analyzeYamls(genAIRequest);
+            String analysisId;
             if (WGUser != null) {
-                userSRestClient.createAnalysis(
+                analysisId = userSRestClient.createAnalysis(
                         id,
                         UserAnalysis.builder()
                                 .content(JsonMapper.builder().build().writeValueAsString(genAIResponse.getResults()))
                                 .repository(repoUri)
                                 .build());
+            } else {
+                analysisId = "unknown";
             }
-            return GHConnectorResponse.fromGenAIResponse(genAIResponse);
+
+            return GHConnectorResponse.fromGenAIResponse(
+                    genAIResponse, analysisId, repoUri, LocalDateTime.now().toString());
 
         } catch (IllegalArgumentException | JsonProcessingException | FeignException.Forbidden e) {
             return ghConnectorService.constructError(
