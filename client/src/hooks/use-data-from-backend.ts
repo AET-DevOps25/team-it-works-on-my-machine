@@ -73,6 +73,10 @@ export function useDataFromBackend() {
         setLoading(false)
       }
     }
-    void fetchData()
+    void fetchData().catch((error: unknown) => {
+      console.error('Error fetching data from backend:', error)
+      toast.error('Failed to fetch data from backend')
+      setLoading(false)
+    })
   }, [login, setAnalyses, setData, setLoading])
 }
