@@ -1,8 +1,8 @@
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
+import { IconBrandGithub } from '@tabler/icons-react'
 
 function Login() {
   function handleLogin() {
-    console.log('login')
     // Function to redirect the user to the GitHub OAuth authorization page
     const redirect_uri =
       import.meta.env.VITE_GH_CONNECTOR_URL + '/oauth/redirect'
@@ -17,7 +17,7 @@ function Login() {
       className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
       onClick={handleLogin}
     >
-      Login
+      <IconBrandGithub /> Login
     </Button>
   )
 }

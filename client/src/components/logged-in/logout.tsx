@@ -1,18 +1,18 @@
-import type { AnalysisType, UserType } from '@/lib/types'
 import Cookies from 'universal-cookie'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { useGlobalState } from '@/hooks/use-global-state'
 
-function Logout(p: {
-  setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
-  setData: React.Dispatch<React.SetStateAction<UserType | null>>
-  setAnalysis: React.Dispatch<React.SetStateAction<AnalysisType[]>>
-}) {
+function Logout(p: { className?: string }) {
+  const setLogin = useGlobalState((state) => state.setLogin)
+  const setData = useGlobalState((state) => state.setData)
+  const setAnalyses = useGlobalState((state) => state.setAnalyses)
+
   function handleLogout() {
-    console.log('logout')
     localStorage.removeItem('login')
-    p.setLoggedIn(false)
-    p.setData(null)
-    p.setAnalysis([])
+    setLogin(null)
+    setData(null)
+    setAnalyses([])
     // Remove "login=success" from the URL if present
     const url = new URL(window.location.href)
     if (url.searchParams.has('login')) {
@@ -26,7 +26,10 @@ function Logout(p: {
 
   return (
     <Button
-      className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
+      className={cn(
+        'absolute px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80',
+        p.className,
+      )}
       onClick={handleLogout}
     >
       Logout

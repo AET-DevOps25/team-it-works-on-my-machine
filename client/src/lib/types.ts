@@ -1,5 +1,5 @@
-export type UserType = {
-  ghUser: GitHubUserType
+export type User = {
+  ghUser: GitHubUser
   repos: Repo[]
 }
 
@@ -9,7 +9,7 @@ export type Repo = {
   html_url: string
 }
 
-export type GitHubUserType = {
+export type GitHubUser = {
   avatar_url: string
   login: string
   id: string
@@ -19,7 +19,7 @@ export type GitHubUserType = {
 }
 
 export type OauthResponse = {
-  userData: UserType
+  userData: User
   tokenType: string
   token: string
 }
@@ -27,19 +27,19 @@ export type OauthResponse = {
 export type GHConnectorResponse = {
   status: number
   error_message: string
-  results: AnalysisContentType[]
-  user_info: GitHubUserType
+  results: AnalysisContent[]
+  user_info: GitHubUser
   repos: Repo[]
 }
 
-export type AnalysisType = {
+export type Analysis = {
   id: string
   repository: string
   created_at: Date
-  content: AnalysisContentType[]
+  content: AnalysisContent[]
 }
 
-export type AnalysisContentType = {
+export type AnalysisContent = {
   filename: string
   summary: string
   related_docs: string[]
