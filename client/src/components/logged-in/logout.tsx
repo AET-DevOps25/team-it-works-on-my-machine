@@ -7,12 +7,14 @@ function Logout(p: { className?: string }) {
   const setLogin = useGlobalState((state) => state.setLogin)
   const setData = useGlobalState((state) => state.setData)
   const setAnalyses = useGlobalState((state) => state.setAnalyses)
+  const setLoading = useGlobalState((state) => state.setLoading)
 
   function handleLogout() {
     localStorage.removeItem('login')
     setLogin(null)
     setData(null)
     setAnalyses([])
+    setLoading(false)
     // Remove "login=success" from the URL if present
     const url = new URL(window.location.href)
     if (url.searchParams.has('login')) {

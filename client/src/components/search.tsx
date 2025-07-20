@@ -30,9 +30,9 @@ export default function Search({ className }: { className?: string }) {
           setRepoUrl(e.target.value)
         }}
       />
-      <div>
+      <div className="flex justify-center items-center gap-4 mt-4">
         <Button
-          className="m-3 px-6 py-2 bg-primary text-primary-foreground rounded-lg shadow hover:bg-primary/80"
+          variant={'default'}
           onClick={() => {
             handleSearch(repoUrl, resetRepoUrl, addAnalysis)
           }}
