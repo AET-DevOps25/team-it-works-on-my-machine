@@ -8,6 +8,8 @@ import AccessibleRepos from '@/components/logged-in/accessible-repos'
 import { useLoginQueryParameter } from '@/hooks/use-login-query-parameter'
 import { useDataFromBackend } from './hooks/use-data-from-backend'
 import Search from './components/search'
+import { IconArrowLeft } from '@tabler/icons-react'
+import Logout from './components/logged-in/logout'
 
 function LandingPage() {
   // State to manage the repository URL input
@@ -31,12 +33,20 @@ function LandingPage() {
 
   return (
     <div className="container mx-auto p-6 text-center relative">
-      <ModeToggle className="absolute top-4 right-4" />
-      {login && <Profile user={data} className="absolute top-4 right-16" />}
+      <ModeToggle className="absolute top-4 right-37" />
+      {login && <Profile user={data} className="absolute top-4 right-25" />}
+      {login && (
+        <Logout
+          setLogin={setLogin}
+          setData={setData}
+          setAnalyses={setAnalyses}
+          className="absolute top-4 right-0"
+        />
+      )}
       <h1 className="text-4xl font-extrabold text-primary mb-6 mt-16">
         Workflow Genie
       </h1>
-      <div className="flex content-stretch">
+      <div className="flex">
         <Search
           repoUrl={repoUrl}
           setRepoUrl={setRepoUrl}
@@ -47,15 +57,23 @@ function LandingPage() {
           className={login ? 'w-1/2' : 'w-full'}
         />
         {login && (
-          <AccessibleRepos
-            privateRepoUrl={privateRepoUrl}
-            setPrivateRepoUrl={setPrivateRepoUrl}
-            repoUrl={repoUrl}
-            setRepoUrl={setRepoUrl}
-            repos={data?.repos}
-            setAnalyses={setAnalyses}
-            className="w-1/2"
-          />
+          <>
+            <div className="flex flex-col">
+              <div className="mb-8">or</div>
+              <div>
+                <IconArrowLeft />
+              </div>
+              <div></div>
+            </div>
+            <AccessibleRepos
+              privateRepoUrl={privateRepoUrl}
+              setPrivateRepoUrl={setPrivateRepoUrl}
+              repoUrl={repoUrl}
+              setRepoUrl={setRepoUrl}
+              repos={data?.repos}
+              className="w-1/2"
+            />
+          </>
         )}
       </div>
       {<Analyses analyses={analyses} loading={loading} />}

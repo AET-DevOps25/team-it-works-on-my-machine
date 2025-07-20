@@ -51,15 +51,7 @@ export default function Search({
         >
           Analyze
         </Button>
-        {login ? (
-          <Logout
-            setLogin={setLogin}
-            setData={setData}
-            setAnalyses={setAnalyses}
-          />
-        ) : (
-          <Login />
-        )}
+        {!login && <Login />}
       </div>
     </div>
   )

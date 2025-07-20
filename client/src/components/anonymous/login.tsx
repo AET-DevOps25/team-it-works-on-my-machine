@@ -1,4 +1,5 @@
 import { Button } from '../ui/button'
+import { IconBrandGithub } from '@tabler/icons-react'
 
 function Login() {
   function handleLogin() {
@@ -16,7 +17,7 @@ function Login() {
       className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
       onClick={handleLogin}
     >
-      Login
+      <IconBrandGithub /> Login
     </Button>
   )
 }

@@ -1,4 +1,4 @@
-import type { Analysis, Repo } from '@/lib/types'
+import type { Repo } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '../ui/skeleton'
 import {
@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '../ui/select'
 import { cn } from '@/lib/utils'
-import { handleSearch } from '@/lib/handleSearch'
+import { IconExternalLink } from '@tabler/icons-react'
 
 function handleInstall() {
   // Open the GitHub App installation page in a new tab
@@ -22,7 +22,6 @@ function AccessibleRepos({
   setPrivateRepoUrl,
   setRepoUrl,
   repos,
-  setAnalyses,
   className,
 }: {
   privateRepoUrl: string
@@ -30,11 +29,14 @@ function AccessibleRepos({
   repoUrl: string
   setRepoUrl: React.Dispatch<React.SetStateAction<string>>
   repos: Repo[] | undefined
-  setAnalyses: React.Dispatch<React.SetStateAction<Analysis[]>>
   className?: string
 }) {
   if (!repos) {
-    return <Skeleton className={cn('h-32', className)} />
+    return (
+      <div className={className}>
+        <Skeleton className="h-35 mx-4" />
+      </div>
+    )
   }
 
   if (repos.length === 0) {
@@ -45,7 +47,7 @@ function AccessibleRepos({
           className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
           onClick={handleInstall}
         >
-          Grant Access to Workflow Genie
+          Grant Workflow Genie Access
         </Button>
       </div>
     )
@@ -56,7 +58,7 @@ function AccessibleRepos({
         <Select
           value={privateRepoUrl}
           onValueChange={(url) => {
-            handleSearch(url, setRepoUrl, setAnalyses)
+            setRepoUrl(url)
             setPrivateRepoUrl('')
           }}
         >
@@ -77,7 +79,8 @@ function AccessibleRepos({
           className="m-3 px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
           onClick={handleInstall}
         >
-          Change Access Permission
+          Choose Accessible Repositories
+          <IconExternalLink />
         </Button>
       </div>
     )

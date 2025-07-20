@@ -1,11 +1,13 @@
 import type { Analysis, User } from '@/lib/types'
 import Cookies from 'universal-cookie'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 function Logout(p: {
   setLogin: React.Dispatch<React.SetStateAction<string | null>>
   setData: React.Dispatch<React.SetStateAction<User | null>>
   setAnalyses: React.Dispatch<React.SetStateAction<Analysis[]>>
+  className?: string
 }) {
   function handleLogout() {
     localStorage.removeItem('login')
@@ -25,7 +27,10 @@ function Logout(p: {
 
   return (
     <Button
-      className="px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80"
+      className={cn(
+        'absolute px-6 py-2 bg-secondary text-secondary-foreground rounded-lg shadow hover:bg-secondary/80',
+        p.className,
+      )}
       onClick={handleLogout}
     >
       Logout
