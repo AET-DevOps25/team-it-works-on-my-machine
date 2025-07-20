@@ -15,7 +15,7 @@ function LandingPage() {
   useDataFromBackend()
 
   return (
-    <div className="container mx-auto pt-22 text-center relative">
+    <div className="container mx-auto pt-24 text-center relative">
       <ModeToggle className="absolute top-4 right-37" />
       {login && <Profile className="absolute top-4 right-25" />}
       {login && <Logout className="absolute top-4 right-0" />}
