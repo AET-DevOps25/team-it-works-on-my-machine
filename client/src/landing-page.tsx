@@ -18,18 +18,12 @@ function LandingPage() {
     <div className="container mx-auto p-6 text-center relative">
       <ModeToggle className="absolute top-4 right-37" />
       {login && <Profile className="absolute top-4 right-25" />}
-      {login && (
-        <Logout
-          className="absolute top-4 right-0"
-        />
-      )}
+      {login && <Logout className="absolute top-4 right-0" />}
       <h1 className="text-4xl font-extrabold text-primary mb-6 mt-16">
         Workflow Genie
       </h1>
       <div className="flex">
-        <Search
-          className={login ? 'w-1/2' : 'w-full'}
-        />
+        <Search className={login ? 'w-1/2' : 'w-full'} />
         {login && (
           <>
             <div className="flex flex-col">
@@ -39,9 +33,7 @@ function LandingPage() {
               </div>
               <div></div>
             </div>
-            <AccessibleRepos
-              className="w-1/2"
-            />
+            <AccessibleRepos className="w-1/2" />
           </>
         )}
       </div>

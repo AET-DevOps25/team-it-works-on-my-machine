@@ -76,4 +76,3 @@ export function useDataFromBackend() {
     void fetchData()
   }, [login, setAnalyses, setData, setLoading])
 }
-
