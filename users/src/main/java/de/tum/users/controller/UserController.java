@@ -40,6 +40,13 @@ public class UserController {
                 .toList();
     }
 
+    @GetMapping("/users/{id}")
+    public User getUser(@PathVariable String id) {
+        return userRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
+    }
+
     @GetMapping("/users/{id}/analysis")
     public List<Analysis> getUserAnalysis(@PathVariable String id) {
         var user = userRepository
