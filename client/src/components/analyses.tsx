@@ -8,6 +8,10 @@ import {
 import MarkdownRenderer from '@/components/ui/markdown-renderer'
 import { Skeleton } from './ui/skeleton'
 import { useGlobalState } from '@/hooks/use-global-state'
+import { CircleMinus, Refresh } from './icons/tabler'
+import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
+import { handleSearch } from '@/lib/handleSearch'
 
 function Summary({ summary }: { summary: string }) {
   return (
@@ -64,22 +68,74 @@ function DetailedAnalysis({
   )
 }
 
+async function deleteAnalysis(login: string, analysisId: string) {
+  const res = await fetch(
+    `${import.meta.env.VITE_USERS_URL}/users/${login}/analysis/${analysisId}`,
+    {
+      method: 'DELETE',
+    },
+  )
+  if (!res.ok) {
+    console.error('Failed to delete analysis:', res.text())
+    toast.error('Failed to remove analysis')
+    return
+  }
+  toast.info('Analysis removed')
+}
+
 function Analysis(analysis: Analysis) {
+  const createdAt = analysis.created_at.toLocaleString('de-DE', {
+    timeZone: 'Europe/Berlin',
+  })
+  const login = useGlobalState((state) => state.login)
+  const addAnalysis = useGlobalState((state) => state.addAnalysis)
   return (
     <AccordionItem value={analysis.id}>
       <AccordionTrigger
-        className={
-          analysis.id === 'unknown'
-            ? 'bg-amber-700 p-2 text-center border m-1'
-            : 'p-2 text-center border m-1'
-        }
+        className={cn(
+          'text-center border m-1 p-2',
+          analysis.id === 'unknown' ? 'bg-amber-700' : '',
+        )}
       >
-        <strong>Repository:</strong> {analysis.repository}
-        <span>
-          {analysis.created_at.toLocaleString('de-DE', {
-            timeZone: 'Europe/Berlin',
-          })}
-        </span>
+        <div className="flex flex-1 justify-between items-center">
+          <div>
+            <strong>Repository: </strong>
+            {analysis.repository}
+          </div>
+          <div className="flex gap-2">
+            <span>{createdAt}</span>
+            {analysis.id !== 'unknown' && (
+              <div
+                className="cursor-pointer text-red-500 hover:text-red-700"
+                onClick={(e) => {
+                  if (!login) {
+                    toast.error('You must be logged in to delete analyses')
+                    return
+                  }
+                  e.stopPropagation()
+                  void deleteAnalysis(login, analysis.id)
+                  useGlobalState.setState((state) => ({
+                    analyses: state.analyses.filter(
+                      (a) => a.id !== analysis.id,
+                    ),
+                  }))
+                }}
+              >
+                <CircleMinus />
+              </div>
+            )}
+            <div
+              className="cursor-pointer text-blue-500 hover:text-blue-700"
+              onClick={(e) => {
+                e.stopPropagation()
+                // eslint-disable-next-line @typescript-eslint/no-empty-function
+                handleSearch(analysis.repository, () => {}, addAnalysis)
+              }}
+            >
+              <Refresh />
+            </div>
+          </div>
+        </div>
       </AccordionTrigger>
       <AccordionContent className="flex flex-col gap-4 text-balance">
         <Accordion type="single" collapsible>
