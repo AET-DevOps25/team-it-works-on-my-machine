@@ -94,15 +94,15 @@ function Analysis(analysis: Analysis) {
       <AccordionTrigger
         className={cn(
           'text-center border m-1 p-2',
-          analysis.id === 'unknown' ? 'bg-amber-700' : '',
+          analysis.id === 'unknown' ? 'bg-amber-700 hover:bg-amber-700/80' : '',
         )}
       >
-        <div className="flex flex-1 justify-between items-center">
+        <div className="flex flex-1 justify-between items-center min-h-[24px]">
           <div>
             <strong>Repository: </strong>
             {analysis.repository}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <span>{createdAt}</span>
             {analysis.id !== 'unknown' && (
               <div
@@ -144,7 +144,7 @@ function Analysis(analysis: Analysis) {
               <AccordionTrigger className="mx-8 my-1 px-2 border">
                 {content.filename}
               </AccordionTrigger>
-              <AccordionContent className="flex flex-col gap-4 mx-8">
+              <AccordionContent className="flex flex-col gap-4 mx-8 items-center">
                 <Summary summary={content.summary} />
                 <DetailedAnalysis
                   detailed_analysis={content.detailed_analysis}
@@ -174,7 +174,10 @@ export default function Analyses() {
           </div>
         ) : (
           analyses.map((analysis) => (
-            <Analysis key={analysis.id} {...analysis} />
+            <Analysis
+              key={analysis.id + analysis.created_at.toISOString()}
+              {...analysis}
+            />
           ))
         )}
       </Accordion>

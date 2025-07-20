@@ -118,3 +118,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.AccordionChevron {
+	transition: transform 200ms;
+}
+
+.AccordionTrigger[data-state='open'] > div > svg.AccordionChevron {
+	transform: rotate(180deg);
+}
