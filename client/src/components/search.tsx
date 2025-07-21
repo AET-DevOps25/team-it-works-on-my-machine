@@ -37,7 +37,7 @@ export default function Search({ className }: { className?: string }) {
             handleSearch(repoUrl, resetRepoUrl, addAnalysis)
           }}
         >
-          Analyze
+          Analyse
         </Button>
         {!login && <Login />}
       </div>
